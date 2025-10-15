@@ -13,7 +13,7 @@ afterEach(() => server.resetHandlers())
 afterAll(() => server.close())
 
 // Mock environment variables for tests
-process.env.NODE_ENV = 'test'
+;(process.env as any).NODE_ENV = 'test'
 process.env.NEXT_PUBLIC_SUPABASE_URL = 'https://test.supabase.co'
 process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY = 'test-key'
 process.env.SUPABASE_SERVICE_ROLE_KEY = 'test-service-key'
