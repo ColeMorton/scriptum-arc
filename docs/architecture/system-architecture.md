@@ -1,3 +1,7 @@
+---
+**← [Product Requirements](../product/product-requirements-document.md)** | **[Back to Documentation Index](../index.md)** | **[Financial Projections](../financial/financial-projections-unit-economics.md)** →
+---
+
 # Scriptum Arc - System Architecture Document
 
 **Version**: 1.0

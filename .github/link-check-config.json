@@ -1,0 +1,31 @@
+{
+  "ignorePatterns": [
+    {
+      "pattern": "^https://scriptumarc.github.io/"
+    },
+    {
+      "pattern": "^https://github.com/scriptumarc/"
+    },
+    {
+      "pattern": "^mailto:"
+    }
+  ],
+  "replacementPatterns": [
+    {
+      "pattern": "^../",
+      "replacement": "https://scriptumarc.github.io/scriptum-arc/"
+    }
+  ],
+  "httpHeaders": [
+    {
+      "urls": ["https://scriptumarc.github.io/"],
+      "headers": {
+        "Accept-Encoding": "gzip, deflate, br"
+      }
+    }
+  ],
+  "timeout": "20s",
+  "retryOn429": true,
+  "retryCount": 3,
+  "fallbackRetryDelay": "1000ms"
+}

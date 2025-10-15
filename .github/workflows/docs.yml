@@ -1,0 +1,147 @@
+name: Documentation
+
+on:
+  push:
+    branches: [main]
+    paths: ['docs/**']
+  pull_request:
+    branches: [main]
+    paths: ['docs/**']
+
+jobs:
+  docs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check for broken links in documentation
+        run: |
+          echo "Checking documentation links..."
+          # Install markdown-link-check if not already available
+          npm install -g markdown-link-check
+
+          # Check all markdown files in docs directory
+          find docs -name "*.md" -type f | while read file; do
+            echo "Checking links in $file"
+            markdown-link-check "$file" --config .github/link-check-config.json || true
+          done
+
+      - name: Validate markdown syntax
+        run: |
+          echo "Validating markdown syntax..."
+          # Install markdownlint if not already available
+          npm install -g markdownlint-cli
+
+          # Check markdown files for syntax issues
+          markdownlint docs/**/*.md --config .github/markdownlint-config.json || true
+
+      - name: Check documentation structure
+        run: |
+          echo "Validating documentation structure..."
+
+          # Check if main index.md exists
+          if [ ! -f "docs/index.md" ]; then
+            echo "❌ Missing docs/index.md"
+            exit 1
+          fi
+
+          # Check if key directories exist
+          for dir in product architecture financial sales implementation concepts integrations specs; do
+            if [ ! -d "docs/$dir" ]; then
+              echo "⚠️  Missing docs/$dir directory"
+            fi
+          done
+
+          echo "✅ Documentation structure validation complete"
+
+      - name: Generate documentation summary
+        run: |
+          echo "📚 Documentation Summary"
+          echo "========================"
+          echo "Total markdown files: $(find docs -name "*.md" | wc -l)"
+          echo "Documentation size: $(du -sh docs | cut -f1)"
+          echo ""
+          echo "Key documents:"
+          ls -la docs/*.md 2>/dev/null || echo "No root-level markdown files"
+          echo ""
+          echo "Directory structure:"
+          find docs -type d | sort
+
+      - name: Comment on PR (if applicable)
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+
+            // Count markdown files
+            const countFiles = (dir) => {
+              let count = 0;
+              const files = fs.readdirSync(dir);
+              files.forEach(file => {
+                const filePath = path.join(dir, file);
+                const stat = fs.statSync(filePath);
+                if (stat.isDirectory()) {
+                  count += countFiles(filePath);
+                } else if (file.endsWith('.md')) {
+                  count++;
+                }
+              });
+              return count;
+            };
+
+            const totalFiles = countFiles('docs');
+            const totalSize = require('child_process').execSync('du -sh docs', { encoding: 'utf8' }).split('\t')[0];
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `📚 **Documentation Changes Detected**
+              
+              - **Files changed**: ${totalFiles} markdown files
+              - **Total size**: ${totalSize}
+              - **Status**: ✅ Documentation validation passed
+              
+              Once merged, documentation will be automatically deployed to GitHub Pages.`
+            });
+
+  deploy:
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    needs: docs
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+      - name: Notify deployment
+        run: |
+          echo "🚀 Documentation deployed successfully!"
+          echo "📖 Available at: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}"

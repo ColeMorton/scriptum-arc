@@ -1,3 +1,7 @@
+---
+**← [System Architecture](../architecture/system-architecture.md)** | **[Back to Documentation Index](../index.md)** | **[Sales Strategy](../sales/sales-deck-demo-script.md)** →
+---
+
 # Scriptum Arc - Financial Projections & Unit Economics
 
 **3-Year Financial Model for Premium BI SaaS Platform**

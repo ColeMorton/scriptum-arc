@@ -1,3 +1,7 @@
+---
+**← [Back to Documentation Index](../index.md)** | **[System Architecture](../architecture/system-architecture.md)** →
+---
+
 # Scriptum Arc - Product Requirements Document (PRD)
 
 **Version**: 1.0
