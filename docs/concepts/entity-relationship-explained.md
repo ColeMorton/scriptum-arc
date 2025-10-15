@@ -21,6 +21,7 @@
 ## Quick Summary
 
 **Three-Second Version**:
+
 - **TENANT** = A company that subscribes to Scriptum Arc (your customer)
 - **USER** = An employee of that company who logs into the platform
 - **CLIENT** = A business entity or project that the company tracks metrics for
@@ -36,20 +37,24 @@
 **Definition**: A **Tenant** is a company or organization that subscribes to Scriptum Arc.
 
 **Business Context**:
+
 - This is **Scriptum Arc's customer** (the entity that pays the subscription fee)
 - Each tenant has their own **isolated data environment** (multi-tenant architecture)
 - Tenants cannot see each other's data (enforced by Row-Level Security)
 
 **Database Entity**: `Tenant` table
+
 - Fields: `id`, `name`, `industry`, `createdAt`, `updatedAt`
 - Root entity for all tenant-scoped data
 
 **Examples**:
+
 - ABC Construction Pty Ltd (tenant_id: `tenant_001`)
 - Sydney Property Group (tenant_id: `tenant_002`)
 - Melbourne Marketing Agency (tenant_id: `tenant_003`)
 
 **Lifecycle**:
+
 - Created when a company signs up for Scriptum Arc
 - Cannot be deleted while active users or data exist (cascade protection)
 - Deactivation triggers data retention policies
@@ -61,26 +66,31 @@
 **Definition**: A **User** is an individual employee of a tenant company who has access to the Scriptum Arc platform.
 
 **Business Context**:
+
 - This is **NOT** Scriptum Arc's customer (the tenant is the customer)
 - This is an **employee** of the tenant company
 - Users belong to exactly one tenant (no cross-tenant user accounts)
 - Users have role-based permissions: ADMIN, EDITOR, VIEWER
 
 **Database Entity**: `User` table
+
 - Fields: `id`, `tenantId`, `email`, `role`, `createdAt`, `updatedAt`
 - Each user is scoped to a single tenant via `tenantId` foreign key
 
 **Examples** (within ABC Construction):
+
 - Sarah Chen (sarah@abcconstruction.com.au) - Role: ADMIN
 - John Smith (john@abcconstruction.com.au) - Role: EDITOR
 - Emma Brown (emma@abcconstruction.com.au) - Role: VIEWER
 
 **User Roles**:
+
 - **ADMIN**: Full access (manage users, integrations, data)
 - **EDITOR**: Can modify data, view reports, but cannot manage users
 - **VIEWER**: Read-only access to dashboards and reports
 
 **Lifecycle**:
+
 - Created when a tenant ADMIN invites a new team member
 - Authentication via email/password (Supabase Auth)
 - Deletion cascades: User deleted → all their audit logs archived
@@ -92,26 +102,31 @@
 **Definition**: A **Client** (technically `ClientKPI` in the database) is a business entity, customer, or project that the tenant company is tracking performance metrics for.
 
 **Business Context**:
+
 - This is **NOT** Scriptum Arc's customer (Scriptum Arc's customer is the Tenant)
 - This is the **tenant's customer or project**
 - A tenant can have multiple clients (1:N relationship)
 - Each client has time-series data: financials, lead events, custom metrics
 
 **Database Entity**: `ClientKPI` table
+
 - Fields: `id`, `tenantId`, `clientId`, `clientName`, `industry`, `currency`, `createdAt`, `updatedAt`
 - Each client belongs to exactly one tenant via `tenantId` foreign key
 
 **Examples** (within ABC Construction's account):
+
 - Harbor Bridge Renovation Project (clientKPI_id: `ckpi_001`)
 - Bondi Residential Development (clientKPI_id: `ckpi_002`)
 - Sydney CBD Office Fit-Out (clientKPI_id: `ckpi_003`)
 
 **Associated Data**:
+
 - **Financials**: Revenue, expenses, profit for each client/project
 - **Lead Events**: Lead generation, conversion events
 - **Custom Metrics**: Project-specific KPIs (e.g., "Construction Milestones Completed")
 
 **Lifecycle**:
+
 - Created when a tenant adds a new client/project to track
 - Updated as financial and lead data is synced from integrations (Xero, HubSpot)
 - Deletion cascades: ClientKPI deleted → all financials, lead events, and custom metrics for that client are also deleted
@@ -163,6 +178,7 @@
 ```
 
 **Cardinalities**:
+
 - Scriptum Arc : Tenant = **1 : N** (one platform, many customers)
 - Tenant : User = **1 : N** (one company, many employees)
 - Tenant : Client = **1 : N** (one company, many clients/projects)
@@ -181,6 +197,7 @@
 **Context**: ABC Construction is a mid-sized Australian construction company that subscribes to Scriptum Arc to track profitability across their multiple projects.
 
 **Tenant Details**:
+
 - **Tenant Name**: ABC Construction Pty Ltd
 - **Industry**: Construction
 - **Subscription Plan**: Professional (50 users, 200 clients)
@@ -191,6 +208,7 @@
 ### Users (Employees at ABC Construction)
 
 **1. Sarah Chen - Operations Director (ADMIN)**
+
 - **Email**: sarah@abcconstruction.com.au
 - **Role**: ADMIN
 - **Permissions**:
@@ -200,6 +218,7 @@
   - View all dashboards and reports
 
 **2. John Smith - Project Manager (EDITOR)**
+
 - **Email**: john@abcconstruction.com.au
 - **Role**: EDITOR
 - **Permissions**:
@@ -210,6 +229,7 @@
   - **CANNOT**: Invite users or configure integrations
 
 **3. Emma Brown - Finance Analyst (VIEWER)**
+
 - **Email**: emma@abcconstruction.com.au
 - **Role**: VIEWER
 - **Permissions**:
@@ -222,6 +242,7 @@
 ### Clients (Projects Being Tracked)
 
 **Client 1: Harbor Bridge Renovation Project**
+
 - **Client ID**: `HBR-2024-001` (external identifier from Xero)
 - **Client Name**: Harbor Bridge Renovation
 - **Industry**: Infrastructure
@@ -235,6 +256,7 @@
     - "Safety Incidents" (0 in past 90 days)
 
 **Client 2: Bondi Residential Development**
+
 - **Client ID**: `BRD-2024-002`
 - **Client Name**: Bondi Residential Development
 - **Industry**: Residential Construction
@@ -248,6 +270,7 @@
     - "Customer Satisfaction Score" (4.7/5.0)
 
 **Client 3: Sydney CBD Office Fit-Out**
+
 - **Client ID**: `SCO-2024-003`
 - **Client Name**: Sydney CBD Office Fit-Out
 - **Industry**: Commercial Construction
@@ -330,10 +353,12 @@
 ### Q1: Is a "Client" the same as a "Customer"?
 
 **Answer**: It depends on context:
+
 - **Scriptum Arc's customer**: The **Tenant** (ABC Construction pays Scriptum Arc subscription fees)
 - **Tenant's customer**: The **Client** (Harbor Bridge Project is ABC Construction's customer/project)
 
 **Best Practice**: Always specify whose customer you're referring to:
+
 - ✅ "Scriptum Arc's customer = Tenant"
 - ✅ "ABC Construction's customer = Client"
 - ❌ "Customer" (ambiguous)
@@ -345,6 +370,7 @@
 **Answer**: **No**. Each user belongs to exactly **one tenant**.
 
 **Rationale**: Multi-tenant SaaS architecture enforces strict data isolation. If someone works for two companies (e.g., consultant), they must have two separate accounts:
+
 - `sarah@abcconstruction.com.au` (Tenant: ABC Construction)
 - `sarah@consultingfirm.com.au` (Tenant: Consulting Firm)
 
@@ -355,6 +381,7 @@
 ### Q3: Why is the table called `ClientKPI` and not just `Client`?
 
 **Answer**: Naming reflects business purpose:
+
 - **ClientKPI**: Emphasizes that this table stores **KPI tracking data** for clients
 - **Semantics**: "We're tracking this client's KPIs" (financials, lead events, custom metrics)
 
@@ -373,6 +400,7 @@
 5. Deletion is **irreversible** (no soft deletes)
 
 **Rationale**: Per [Global Development Standards](~/.claude/CLAUDE.md):
+
 > No backwards compatibility whatsoever, as that is completely out of scope and handled by git.
 
 **Best Practice**: Backups are handled at the infrastructure layer (Supabase daily snapshots). No application-level rollback mechanisms.
@@ -384,6 +412,7 @@
 **Answer**: **No**. Each client belongs to exactly **one tenant**.
 
 **Example**: If ABC Construction and Sydney Property both work on "Harbor Bridge Project", they would each create separate `ClientKPI` records:
+
 - ABC Construction's view: `clientKPIId: "ckpi_001"`, `tenantId: "tenant_001"`, `clientName: "Harbor Bridge Renovation"`
 - Sydney Property's view: `clientKPIId: "ckpi_099"`, `tenantId: "tenant_002"`, `clientName: "Harbor Bridge Renovation"`
 
@@ -394,14 +423,17 @@
 ### Q6: What's the difference between `clientId` and `id` in the ClientKPI table?
 
 **Answer**:
+
 - **`id`**: Scriptum Arc's internal primary key (e.g., `"ckpi_001"`)
 - **`clientId`**: External identifier from integration (e.g., Xero customer ID: `"XERO-12345"`)
 
 **Use Cases**:
+
 - `id`: Used for database relationships (foreign keys in `financials`, `lead_events`)
 - `clientId`: Used for API syncing (matching Xero invoices to Scriptum Arc clients)
 
 **Example**:
+
 ```prisma
 model ClientKPI {
   id       String  @id @default(cuid())        // Internal: "ckpi_001"
@@ -416,6 +448,7 @@ model ClientKPI {
 **Answer**: The **Tenant** owns all data within their account.
 
 **Ownership Hierarchy**:
+
 1. **Tenant** owns:
    - All `User` records (employees they invited)
    - All `ClientKPI` records (clients/projects they added)
@@ -436,11 +469,13 @@ model ClientKPI {
 **Answer**: ADMIN can **deactivate** or **delete** the user:
 
 **Option 1: Soft Deactivation** (Post-MVP):
+
 - Set `user.status = "INACTIVE"`
 - User cannot log in
 - Historical audit logs preserved
 
 **Option 2: Hard Delete** (MVP):
+
 - Delete `User` record
 - Cascade: All audit logs archived to cold storage
 - User's email freed for re-invitation
@@ -532,23 +567,23 @@ SELECT * FROM client_kpis WHERE tenant_id = 'tenant_002';
 // Test: User from Tenant A cannot access Tenant B's data
 describe('Multi-tenant isolation', () => {
   it('prevents cross-tenant data access', async () => {
-    const tenantA = await createTenant({ name: 'ABC Construction' });
-    const tenantB = await createTenant({ name: 'Sydney Property' });
+    const tenantA = await createTenant({ name: 'ABC Construction' })
+    const tenantB = await createTenant({ name: 'Sydney Property' })
 
-    const userA = await createUser({ tenantId: tenantA.id, email: 'sarah@abc.com' });
-    const clientB = await createClient({ tenantId: tenantB.id, clientName: 'Bondi Project' });
+    const userA = await createUser({ tenantId: tenantA.id, email: 'sarah@abc.com' })
+    const clientB = await createClient({ tenantId: tenantB.id, clientName: 'Bondi Project' })
 
     // Authenticate as userA (tenant_001)
-    const session = await authenticate(userA);
+    const session = await authenticate(userA)
 
     // Attempt to access tenant_002's client
     const result = await db.clientKPI.findUnique({
       where: { id: clientB.id },
-    });
+    })
 
-    expect(result).toBeNull();  // RLS blocks access
-  });
-});
+    expect(result).toBeNull() // RLS blocks access
+  })
+})
 ```
 
 ---
@@ -556,15 +591,18 @@ describe('Multi-tenant isolation', () => {
 ## Related Documentation
 
 **Business Context**:
+
 - [Product Requirements Document](../product/product-requirements-document.md) - Business objectives and user stories
 - [Product Specification](../specs/product-specification.md) - Feature definitions
 
 **Technical Schema**:
+
 - [Database Schema Diagram](../architecture/database-schema-diagram.md) - Complete ERD with all 7 tables
 - [System Architecture - Data Architecture](../architecture/system-architecture.md#data-architecture) - PostgreSQL and Prisma setup
 - [Row-Level Security Policies](../architecture/row-level-security-policies.md) - RLS DDL and testing
 
 **Operations**:
+
 - [Database Migrations Strategy](../architecture/database-migrations.md) - Prisma workflow
 - [Phase 1 Implementation Plan](../implementation/phase-1-data-foundation.md) - Schema implementation tasks
 
@@ -575,7 +613,9 @@ describe('Multi-tenant isolation', () => {
 **Review Cycle**: Quarterly or after major schema changes
 **Next Review**: 2025-12-15
 **Change History**:
+
 - 2025-10-15: Initial version (v1.0) - Business-oriented entity relationship guide created
 
 **Approval**:
+
 - Business Architecture: [Founder Name] - Approved 2025-10-15

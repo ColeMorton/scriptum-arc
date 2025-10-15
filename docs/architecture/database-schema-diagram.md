@@ -111,15 +111,16 @@ Legend:
 
 **Purpose**: Root entity for multi-tenant isolation. Every data record traces back to a tenant.
 
-| Column | Type | Constraints | Description |
-|--------|------|-------------|-------------|
-| `id` | `String` (cuid) | PRIMARY KEY | Unique tenant identifier |
-| `name` | `String` | NOT NULL | Company/organization name |
-| `industry` | `String?` | NULLABLE | Business industry (e.g., "Construction", "E-commerce") |
-| `createdAt` | `DateTime` | NOT NULL, DEFAULT now() | Tenant creation timestamp |
-| `updatedAt` | `DateTime` | NOT NULL, auto-updated | Last modification timestamp |
+| Column      | Type            | Constraints             | Description                                            |
+| ----------- | --------------- | ----------------------- | ------------------------------------------------------ |
+| `id`        | `String` (cuid) | PRIMARY KEY             | Unique tenant identifier                               |
+| `name`      | `String`        | NOT NULL                | Company/organization name                              |
+| `industry`  | `String?`       | NULLABLE                | Business industry (e.g., "Construction", "E-commerce") |
+| `createdAt` | `DateTime`      | NOT NULL, DEFAULT now() | Tenant creation timestamp                              |
+| `updatedAt` | `DateTime`      | NOT NULL, auto-updated  | Last modification timestamp                            |
 
 **Indexes**:
+
 - Primary key index on `id` (automatic)
 
 **Row-Level Security**: ❌ Not applicable (root table)
@@ -130,16 +131,17 @@ Legend:
 
 **Purpose**: Application users with role-based access control.
 
-| Column | Type | Constraints | Description |
-|--------|------|-------------|-------------|
-| `id` | `String` (cuid) | PRIMARY KEY | Unique user identifier |
-| `tenantId` | `String` | FOREIGN KEY → tenants.id, NOT NULL | Tenant ownership |
-| `email` | `String` | UNIQUE, NOT NULL | User email (login identifier) |
-| `role` | `UserRole` (ENUM) | NOT NULL, DEFAULT VIEWER | Access level (ADMIN/EDITOR/VIEWER) |
-| `createdAt` | `DateTime` | NOT NULL, DEFAULT now() | User creation timestamp |
-| `updatedAt` | `DateTime` | NOT NULL, auto-updated | Last modification timestamp |
+| Column      | Type              | Constraints                        | Description                        |
+| ----------- | ----------------- | ---------------------------------- | ---------------------------------- |
+| `id`        | `String` (cuid)   | PRIMARY KEY                        | Unique user identifier             |
+| `tenantId`  | `String`          | FOREIGN KEY → tenants.id, NOT NULL | Tenant ownership                   |
+| `email`     | `String`          | UNIQUE, NOT NULL                   | User email (login identifier)      |
+| `role`      | `UserRole` (ENUM) | NOT NULL, DEFAULT VIEWER           | Access level (ADMIN/EDITOR/VIEWER) |
+| `createdAt` | `DateTime`        | NOT NULL, DEFAULT now()            | User creation timestamp            |
+| `updatedAt` | `DateTime`        | NOT NULL, auto-updated             | Last modification timestamp        |
 
 **Indexes**:
+
 - Primary key: `id`
 - Foreign key: `tenantId` (with index for RLS performance)
 - Unique constraint: `email`
@@ -147,6 +149,7 @@ Legend:
 **Row-Level Security**: ✅ Yes — Users filtered by `tenantId`
 
 **Enums**:
+
 ```prisma
 enum UserRole {
   ADMIN   // Full access: manage users, integrations, billing
@@ -161,17 +164,18 @@ enum UserRole {
 
 **Purpose**: Represents a customer's business client (e.g., a construction project, e-commerce store).
 
-| Column | Type | Constraints | Description |
-|--------|------|-------------|-------------|
-| `id` | `String` (cuid) | PRIMARY KEY | Unique identifier |
-| `tenantId` | `String` | FOREIGN KEY → tenants.id, NOT NULL | Tenant ownership |
-| `clientId` | `String` | NOT NULL | External client identifier (from source system) |
-| `clientName` | `String` | NOT NULL | Human-readable client name |
-| `industry` | `String?` | NULLABLE | Client's industry (for segmentation) |
-| `createdAt` | `DateTime` | NOT NULL, DEFAULT now() | Creation timestamp |
-| `updatedAt` | `DateTime` | NOT NULL, auto-updated | Last modification timestamp |
+| Column       | Type            | Constraints                        | Description                                     |
+| ------------ | --------------- | ---------------------------------- | ----------------------------------------------- |
+| `id`         | `String` (cuid) | PRIMARY KEY                        | Unique identifier                               |
+| `tenantId`   | `String`        | FOREIGN KEY → tenants.id, NOT NULL | Tenant ownership                                |
+| `clientId`   | `String`        | NOT NULL                           | External client identifier (from source system) |
+| `clientName` | `String`        | NOT NULL                           | Human-readable client name                      |
+| `industry`   | `String?`       | NULLABLE                           | Client's industry (for segmentation)            |
+| `createdAt`  | `DateTime`      | NOT NULL, DEFAULT now()            | Creation timestamp                              |
+| `updatedAt`  | `DateTime`      | NOT NULL, auto-updated             | Last modification timestamp                     |
 
 **Indexes**:
+
 - Primary key: `id`
 - Foreign key: `tenantId` (critical for RLS)
 - Unique constraint: `(tenantId, clientId)` — Prevents duplicate clients per tenant
@@ -186,22 +190,23 @@ enum UserRole {
 
 **Purpose**: Time-series financial data from accounting systems (Xero, MYOB).
 
-| Column | Type | Constraints | Description |
-|--------|------|-------------|-------------|
-| `id` | `String` (cuid) | PRIMARY KEY | Unique identifier |
-| `clientKPIId` | `String` | FOREIGN KEY → client_kpis.id, NOT NULL | Related business entity |
-| `recordDate` | `Date` | NOT NULL | Date of financial record |
-| `revenue` | `Decimal(12,2)` | NOT NULL | Revenue (AUD) |
-| `expenses` | `Decimal(12,2)` | NOT NULL | Operating expenses (AUD) |
-| `netProfit` | `Decimal(12,2)` | NOT NULL | Net profit (calculated: revenue - expenses) |
-| `cashFlow` | `Decimal(12,2)` | NOT NULL | Cash flow for period (AUD) |
-| `currency` | `String` | NOT NULL, DEFAULT "AUD" | Currency code |
-| `sourceSystem` | `String?` | NULLABLE | Integration source (e.g., "xero", "myob") |
-| `externalId` | `String?` | NULLABLE | External system record ID (for reconciliation) |
-| `metadata` | `JSON?` | NULLABLE | System-specific fields (flexible schema) |
-| `createdAt` | `DateTime` | NOT NULL, DEFAULT now() | ETL ingestion timestamp |
+| Column         | Type            | Constraints                            | Description                                    |
+| -------------- | --------------- | -------------------------------------- | ---------------------------------------------- |
+| `id`           | `String` (cuid) | PRIMARY KEY                            | Unique identifier                              |
+| `clientKPIId`  | `String`        | FOREIGN KEY → client_kpis.id, NOT NULL | Related business entity                        |
+| `recordDate`   | `Date`          | NOT NULL                               | Date of financial record                       |
+| `revenue`      | `Decimal(12,2)` | NOT NULL                               | Revenue (AUD)                                  |
+| `expenses`     | `Decimal(12,2)` | NOT NULL                               | Operating expenses (AUD)                       |
+| `netProfit`    | `Decimal(12,2)` | NOT NULL                               | Net profit (calculated: revenue - expenses)    |
+| `cashFlow`     | `Decimal(12,2)` | NOT NULL                               | Cash flow for period (AUD)                     |
+| `currency`     | `String`        | NOT NULL, DEFAULT "AUD"                | Currency code                                  |
+| `sourceSystem` | `String?`       | NULLABLE                               | Integration source (e.g., "xero", "myob")      |
+| `externalId`   | `String?`       | NULLABLE                               | External system record ID (for reconciliation) |
+| `metadata`     | `JSON?`         | NULLABLE                               | System-specific fields (flexible schema)       |
+| `createdAt`    | `DateTime`      | NOT NULL, DEFAULT now()                | ETL ingestion timestamp                        |
 
 **Indexes**:
+
 - Primary key: `id`
 - Composite: `(clientKPIId, recordDate)` — Optimized for time-range queries
 - Single: `recordDate` — For cross-client analytics
@@ -215,21 +220,22 @@ enum UserRole {
 
 **Purpose**: Tracks sales pipeline events from CRM systems (HubSpot, Pipedrive).
 
-| Column | Type | Constraints | Description |
-|--------|------|-------------|-------------|
-| `id` | `String` (cuid) | PRIMARY KEY | Unique identifier |
-| `clientKPIId` | `String` | FOREIGN KEY → client_kpis.id, NOT NULL | Related business entity |
-| `eventDate` | `DateTime` | NOT NULL | Event timestamp |
-| `leadId` | `String` | NOT NULL | External lead/deal identifier |
-| `stage` | `String` | NOT NULL | Pipeline stage (e.g., "qualified", "proposal") |
-| `value` | `Decimal(12,2)?` | NULLABLE | Deal value (AUD) |
-| `status` | `String` | NOT NULL | Status (e.g., "active", "stale", "lost") |
-| `sourceSystem` | `String?` | NULLABLE | CRM source (e.g., "hubspot", "pipedrive") |
-| `externalId` | `String?` | NULLABLE | External system record ID |
-| `metadata` | `JSON?` | NULLABLE | System-specific fields |
-| `createdAt` | `DateTime` | NOT NULL, DEFAULT now() | ETL ingestion timestamp |
+| Column         | Type             | Constraints                            | Description                                    |
+| -------------- | ---------------- | -------------------------------------- | ---------------------------------------------- |
+| `id`           | `String` (cuid)  | PRIMARY KEY                            | Unique identifier                              |
+| `clientKPIId`  | `String`         | FOREIGN KEY → client_kpis.id, NOT NULL | Related business entity                        |
+| `eventDate`    | `DateTime`       | NOT NULL                               | Event timestamp                                |
+| `leadId`       | `String`         | NOT NULL                               | External lead/deal identifier                  |
+| `stage`        | `String`         | NOT NULL                               | Pipeline stage (e.g., "qualified", "proposal") |
+| `value`        | `Decimal(12,2)?` | NULLABLE                               | Deal value (AUD)                               |
+| `status`       | `String`         | NOT NULL                               | Status (e.g., "active", "stale", "lost")       |
+| `sourceSystem` | `String?`        | NULLABLE                               | CRM source (e.g., "hubspot", "pipedrive")      |
+| `externalId`   | `String?`        | NULLABLE                               | External system record ID                      |
+| `metadata`     | `JSON?`          | NULLABLE                               | System-specific fields                         |
+| `createdAt`    | `DateTime`       | NOT NULL, DEFAULT now()                | ETL ingestion timestamp                        |
 
 **Indexes**:
+
 - Primary key: `id`
 - Composite: `(clientKPIId, eventDate)` — Time-range queries
 - Single: `leadId` — Lookup by external lead ID
@@ -243,20 +249,21 @@ enum UserRole {
 
 **Purpose**: Flexible storage for custom operational metrics and future RAG embeddings.
 
-| Column | Type | Constraints | Description |
-|--------|------|-------------|-------------|
-| `id` | `String` (cuid) | PRIMARY KEY | Unique identifier |
-| `clientKPIId` | `String` | FOREIGN KEY → client_kpis.id, NOT NULL | Related business entity |
-| `metricName` | `String` | NOT NULL | Metric name (e.g., "project_delivery_days") |
-| `metricValue` | `Decimal(12,4)` | NOT NULL | Metric value (4 decimal precision) |
-| `unit` | `String?` | NULLABLE | Unit of measurement (e.g., "days", "percent") |
-| `recordDate` | `DateTime` | NOT NULL | Metric measurement date |
-| `sourceSystem` | `String?` | NULLABLE | Data source (manual upload or integration) |
-| `metadata` | `JSON?` | NULLABLE | Additional context |
-| `embedding` | `vector(1536)?` | NULLABLE | OpenAI embedding for RAG (future) |
-| `createdAt` | `DateTime` | NOT NULL, DEFAULT now() | Creation timestamp |
+| Column         | Type            | Constraints                            | Description                                   |
+| -------------- | --------------- | -------------------------------------- | --------------------------------------------- |
+| `id`           | `String` (cuid) | PRIMARY KEY                            | Unique identifier                             |
+| `clientKPIId`  | `String`        | FOREIGN KEY → client_kpis.id, NOT NULL | Related business entity                       |
+| `metricName`   | `String`        | NOT NULL                               | Metric name (e.g., "project_delivery_days")   |
+| `metricValue`  | `Decimal(12,4)` | NOT NULL                               | Metric value (4 decimal precision)            |
+| `unit`         | `String?`       | NULLABLE                               | Unit of measurement (e.g., "days", "percent") |
+| `recordDate`   | `DateTime`      | NOT NULL                               | Metric measurement date                       |
+| `sourceSystem` | `String?`       | NULLABLE                               | Data source (manual upload or integration)    |
+| `metadata`     | `JSON?`         | NULLABLE                               | Additional context                            |
+| `embedding`    | `vector(1536)?` | NULLABLE                               | OpenAI embedding for RAG (future)             |
+| `createdAt`    | `DateTime`      | NOT NULL, DEFAULT now()                | Creation timestamp                            |
 
 **Indexes**:
+
 - Primary key: `id`
 - Composite: `(clientKPIId, metricName, recordDate)` — Metric time-series queries
 
@@ -270,21 +277,22 @@ enum UserRole {
 
 **Purpose**: Stores encrypted OAuth tokens for external system integrations.
 
-| Column | Type | Constraints | Description |
-|--------|------|-------------|-------------|
-| `id` | `String` (cuid) | PRIMARY KEY | Unique identifier |
-| `tenantId` | `String` | FOREIGN KEY → tenants.id, NOT NULL | Tenant ownership |
-| `provider` | `String` | NOT NULL | Integration provider (e.g., "xero", "hubspot") |
-| `status` | `IntegrationStatus` (ENUM) | NOT NULL, DEFAULT PENDING | Connection status |
-| `accessToken` | `Text` | NOT NULL | **Encrypted** OAuth access token |
-| `refreshToken` | `Text?` | NULLABLE | **Encrypted** OAuth refresh token |
-| `expiresAt` | `DateTime?` | NULLABLE | Token expiration timestamp |
-| `metadata` | `JSON?` | NULLABLE | Provider-specific configuration |
-| `lastSyncAt` | `DateTime?` | NULLABLE | Last successful data sync timestamp |
-| `createdAt` | `DateTime` | NOT NULL, DEFAULT now() | Connection creation timestamp |
-| `updatedAt` | `DateTime` | NOT NULL, auto-updated | Last modification timestamp |
+| Column         | Type                       | Constraints                        | Description                                    |
+| -------------- | -------------------------- | ---------------------------------- | ---------------------------------------------- |
+| `id`           | `String` (cuid)            | PRIMARY KEY                        | Unique identifier                              |
+| `tenantId`     | `String`                   | FOREIGN KEY → tenants.id, NOT NULL | Tenant ownership                               |
+| `provider`     | `String`                   | NOT NULL                           | Integration provider (e.g., "xero", "hubspot") |
+| `status`       | `IntegrationStatus` (ENUM) | NOT NULL, DEFAULT PENDING          | Connection status                              |
+| `accessToken`  | `Text`                     | NOT NULL                           | **Encrypted** OAuth access token               |
+| `refreshToken` | `Text?`                    | NULLABLE                           | **Encrypted** OAuth refresh token              |
+| `expiresAt`    | `DateTime?`                | NULLABLE                           | Token expiration timestamp                     |
+| `metadata`     | `JSON?`                    | NULLABLE                           | Provider-specific configuration                |
+| `lastSyncAt`   | `DateTime?`                | NULLABLE                           | Last successful data sync timestamp            |
+| `createdAt`    | `DateTime`                 | NOT NULL, DEFAULT now()            | Connection creation timestamp                  |
+| `updatedAt`    | `DateTime`                 | NOT NULL, auto-updated             | Last modification timestamp                    |
 
 **Indexes**:
+
 - Primary key: `id`
 - Unique constraint: `(tenantId, provider)` — One integration per provider per tenant
 - Foreign key: `tenantId` (for RLS)
@@ -292,6 +300,7 @@ enum UserRole {
 **Row-Level Security**: ✅ Yes — Filtered by `tenantId`
 
 **Enums**:
+
 ```prisma
 enum IntegrationStatus {
   PENDING   // Initial state, not yet authorized
@@ -344,17 +353,18 @@ ClientKPI (1) ─────────────── (N) CustomMetric
 
 ### Index Types
 
-| Index Type | Purpose | Example |
-|------------|---------|---------|
-| **Primary Key** | Unique row identifier | `id` on all tables |
-| **Foreign Key** | Relationship joins, RLS | `tenantId`, `clientKPIId` |
-| **Unique Constraint** | Business rule enforcement | `(tenantId, provider)` on integrations |
-| **Composite** | Multi-column queries | `(clientKPIId, recordDate)` on financials |
-| **Single Column** | High-cardinality lookups | `email` on users |
+| Index Type            | Purpose                   | Example                                   |
+| --------------------- | ------------------------- | ----------------------------------------- |
+| **Primary Key**       | Unique row identifier     | `id` on all tables                        |
+| **Foreign Key**       | Relationship joins, RLS   | `tenantId`, `clientKPIId`                 |
+| **Unique Constraint** | Business rule enforcement | `(tenantId, provider)` on integrations    |
+| **Composite**         | Multi-column queries      | `(clientKPIId, recordDate)` on financials |
+| **Single Column**     | High-cardinality lookups  | `email` on users                          |
 
 ### Query-Driven Index Design
 
 **Financial Time-Range Query**:
+
 ```sql
 -- Query pattern: Dashboard fetching last 90 days of financial data
 SELECT * FROM financials
@@ -365,6 +375,7 @@ WHERE client_kpi_id = 'client_123'
 ```
 
 **Sales Funnel Analysis**:
+
 ```sql
 -- Query pattern: Count deals by stage and status
 SELECT stage, status, COUNT(*), SUM(value)
@@ -376,6 +387,7 @@ GROUP BY stage, status;
 ```
 
 **Custom Metric Lookup**:
+
 ```sql
 -- Query pattern: Fetch specific metric over time
 SELECT * FROM custom_metrics
@@ -418,6 +430,7 @@ ORDER BY record_date;
 ```
 
 **Key Steps**:
+
 1. **Extract**: n8n scheduled workflows pull data from external APIs (OAuth authenticated)
 2. **Transform**: Custom TypeScript nodes normalize dates, convert currencies, calculate derived metrics
 3. **Load**: Upsert into PostgreSQL using unique constraints to prevent duplicates
@@ -434,13 +447,13 @@ ORDER BY record_date;
 
 **Future Enhancements** (Post-MVP):
 
-| Version | Changes | Rationale | Phase |
-|---------|---------|-----------|-------|
-| **1.1** | Add `audit_logs` table | Track user actions for compliance | Phase 4 (Operationalization) |
-| **1.2** | Add `alerts` table | Store alert history and configuration | Phase 3 (Visualization) |
-| **1.3** | Add `dashboards` table | Support multiple custom dashboards per tenant | Post-MVP (Month 6) |
-| **1.4** | Partition `financials` by month | Optimize query performance at 500+ customers | Year 2 (Scale) |
-| **2.0** | Add `vector_index` on `custom_metrics.embedding` | Enable RAG semantic search | Year 2 (RAG feature) |
+| Version | Changes                                          | Rationale                                     | Phase                        |
+| ------- | ------------------------------------------------ | --------------------------------------------- | ---------------------------- |
+| **1.1** | Add `audit_logs` table                           | Track user actions for compliance             | Phase 4 (Operationalization) |
+| **1.2** | Add `alerts` table                               | Store alert history and configuration         | Phase 3 (Visualization)      |
+| **1.3** | Add `dashboards` table                           | Support multiple custom dashboards per tenant | Post-MVP (Month 6)           |
+| **1.4** | Partition `financials` by month                  | Optimize query performance at 500+ customers  | Year 2 (Scale)               |
+| **2.0** | Add `vector_index` on `custom_metrics.embedding` | Enable RAG semantic search                    | Year 2 (RAG feature)         |
 
 ### Backward Compatibility
 
@@ -468,7 +481,9 @@ See [Database Migrations Strategy](./database-migrations.md) for detailed migrat
 **Review Cycle**: After each schema change or migration
 **Next Review**: 2025-11-15 (Post-Phase 1 completion)
 **Change History**:
+
 - 2025-10-15: Initial version (v1.0) - MVP schema documented
 
 **Approval**:
+
 - Database Architect: [Founder Name] - Approved 2025-10-15

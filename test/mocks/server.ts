@@ -15,9 +15,9 @@ export const server = setupServer(
         email: 'test@example.com',
         user_metadata: {
           tenant_id: 'mock-tenant-id',
-          role: 'ADMIN'
-        }
-      }
+          role: 'ADMIN',
+        },
+      },
     })
   }),
 
@@ -29,8 +29,8 @@ export const server = setupServer(
         name: 'Test Tenant',
         industry: 'Technology',
         createdAt: '2024-01-01T00:00:00Z',
-        updatedAt: '2024-01-01T00:00:00Z'
-      }
+        updatedAt: '2024-01-01T00:00:00Z',
+      },
     ])
   }),
 
@@ -42,8 +42,8 @@ export const server = setupServer(
       timestamp: new Date().toISOString(),
       supabase: {
         url: 'https://test.supabase.co',
-        hasConnection: true
-      }
+        hasConnection: true,
+      },
     })
   })
 )

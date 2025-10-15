@@ -25,6 +25,7 @@ test/
 ## Running Tests
 
 ### All Tests
+
 ```bash
 npm test                    # Run tests in watch mode
 npm run test:run           # Run tests once
@@ -32,6 +33,7 @@ npm run test:ui            # Run tests with UI
 ```
 
 ### Specific Test Suites
+
 ```bash
 npm run test:api           # API endpoint tests
 npm run test:database      # Database integration tests
@@ -39,6 +41,7 @@ npm run test:auth          # Authentication tests
 ```
 
 ### Coverage
+
 ```bash
 npm run test:coverage      # Generate coverage report
 ```
@@ -46,10 +49,12 @@ npm run test:coverage      # Generate coverage report
 ## Test Categories
 
 ### 1. API Tests (`test/api/`)
+
 - **Health Check**: Tests the `/api/health` endpoint
 - **Tenants API**: Tests the `/api/tenants` endpoint with authentication
 
 ### 2. Database Tests (`test/database/`)
+
 - **Schema Tests**: Validates all Prisma models and relationships
 - **RLS Tests**: Comprehensive Row-Level Security testing
   - Tenant data isolation
@@ -57,17 +62,20 @@ npm run test:coverage      # Generate coverage report
   - Data integrity across tenants
 
 ### 3. Authentication Tests (`test/auth/`)
+
 - **Auth Utilities**: Tests `getCurrentUser()` and `requireAuth()`
 - **Middleware**: Tests Supabase middleware functionality
 
 ## Test Environment
 
 ### Mocking Strategy
+
 - **Supabase API**: Mocked using MSW (Mock Service Worker)
 - **Database**: Uses test database with cleanup between tests
 - **Authentication**: Mocked Supabase auth responses
 
 ### Test Data Management
+
 - Automatic cleanup between tests
 - Isolated test data creation
 - Tenant context management for RLS testing
@@ -75,16 +83,19 @@ npm run test:coverage      # Generate coverage report
 ## Key Testing Features
 
 ### Multi-tenant Testing
+
 - Tests tenant data isolation
 - Validates RLS policies
 - Ensures cross-tenant access prevention
 
 ### Authentication Flow
+
 - Tests authenticated and unauthenticated scenarios
 - Validates user metadata handling
 - Tests tenant association requirements
 
 ### Database Operations
+
 - CRUD operations for all models
 - Relationship integrity
 - Constraint validation
@@ -92,6 +103,7 @@ npm run test:coverage      # Generate coverage report
 ## Test Utilities
 
 ### Database Helpers (`test/database/setup.ts`)
+
 ```typescript
 // Clean up test data
 await cleanupTestData()
@@ -106,6 +118,7 @@ await setTenantContext(tenant.id)
 ```
 
 ### Mock Configuration (`test/mocks/server.ts`)
+
 - Mock Supabase Auth endpoints
 - Mock REST API responses
 - Mock health check responses
@@ -128,6 +141,7 @@ await setTenantContext(tenant.id)
 4. **Cleanup**: Ensure test data is properly cleaned up
 
 ### Debug Mode
+
 ```bash
 # Run specific test with verbose output
 npm test -- --reporter=verbose test/api/health.test.ts
@@ -136,6 +150,7 @@ npm test -- --reporter=verbose test/api/health.test.ts
 ## Continuous Integration
 
 These tests are designed to run in CI/CD pipelines:
+
 - No external dependencies
 - Deterministic results
 - Fast execution

@@ -44,13 +44,13 @@ Scriptum Arc is a bespoke Business Intelligence platform for Australian SMEs, co
 
 ### Key Architectural Decisions
 
-| Decision | Rationale | Trade-offs |
-|----------|-----------|------------|
-| **Next.js (App Router)** for frontend + API | Unified codebase, Vercel hosting, serverless functions | Vendor lock-in to Vercel ecosystem |
-| **Prisma ORM** for data access | Type safety, migration management, developer velocity | Abstraction overhead for complex queries |
-| **Supabase PostgreSQL** for data warehouse | Managed PostgreSQL, pgvector support, AU region | Cost scales with data volume |
-| **Self-hosted n8n** for ETL | No per-task fees, custom code nodes, full control | Requires VPS management |
-| **Visx** for visualizations | D3-based custom charts, React-native | Steeper learning curve than Chart.js |
+| Decision                                    | Rationale                                              | Trade-offs                               |
+| ------------------------------------------- | ------------------------------------------------------ | ---------------------------------------- |
+| **Next.js (App Router)** for frontend + API | Unified codebase, Vercel hosting, serverless functions | Vendor lock-in to Vercel ecosystem       |
+| **Prisma ORM** for data access              | Type safety, migration management, developer velocity  | Abstraction overhead for complex queries |
+| **Supabase PostgreSQL** for data warehouse  | Managed PostgreSQL, pgvector support, AU region        | Cost scales with data volume             |
+| **Self-hosted n8n** for ETL                 | No per-task fees, custom code nodes, full control      | Requires VPS management                  |
+| **Visx** for visualizations                 | D3-based custom charts, React-native                   | Steeper learning curve than Chart.js     |
 
 ---
 
@@ -100,11 +100,13 @@ Scriptum Arc is a bespoke Business Intelligence platform for Australian SMEs, co
 ### Level 1: System Context Diagram
 
 **Actors**:
+
 - **SME Business Owner**: Primary user, consumes dashboards for decision-making
 - **Accountant/Bookkeeper**: Secondary user, validates financial data accuracy
 - **System Administrator**: Configures integrations, manages users (typically founder/IT)
 
 **External Systems**:
+
 - **Accounting Systems**: Xero, MYOB, QuickBooks (financial data source)
 - **CRM Systems**: HubSpot, Salesforce, Pipedrive (sales pipeline data)
 - **Project Management**: Asana, ClickUp, Jira (operational metrics)
@@ -248,39 +250,42 @@ Scriptum Arc is a bespoke Business Intelligence platform for Australian SMEs, co
 ```typescript
 // Middleware: Authentication guard
 export async function middleware(request: NextRequest) {
-  const token = request.headers.get('Authorization')?.replace('Bearer ', '');
-  const { data: { user }, error } = await supabase.auth.getUser(token);
+  const token = request.headers.get('Authorization')?.replace('Bearer ', '')
+  const {
+    data: { user },
+    error,
+  } = await supabase.auth.getUser(token)
 
   if (error || !user) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
   // Attach tenant ID from user metadata
-  request.headers.set('X-Tenant-ID', user.user_metadata.tenant_id);
+  request.headers.set('X-Tenant-ID', user.user_metadata.tenant_id)
 }
 
 // Route handler
 export async function GET(request: NextRequest) {
-  const tenantId = request.headers.get('X-Tenant-ID');
-  const { searchParams } = new URL(request.url);
+  const tenantId = request.headers.get('X-Tenant-ID')
+  const { searchParams } = new URL(request.url)
 
   // Validation with Zod
   const querySchema = z.object({
     startDate: z.string().datetime(),
     endDate: z.string().datetime(),
     clientId: z.string().optional(),
-  });
+  })
 
   const params = querySchema.parse({
     startDate: searchParams.get('startDate'),
     endDate: searchParams.get('endDate'),
     clientId: searchParams.get('clientId'),
-  });
+  })
 
   // Service layer call
-  const financials = await FinancialService.getTimeSeries(tenantId, params);
+  const financials = await FinancialService.getTimeSeries(tenantId, params)
 
-  return NextResponse.json({ data: financials, count: financials.length });
+  return NextResponse.json({ data: financials, count: financials.length })
 }
 ```
 
@@ -303,7 +308,7 @@ export class FinancialService {
       },
       include: { clientKPI: true },
       orderBy: { recordDate: 'asc' },
-    });
+    })
   }
 }
 ```
@@ -314,49 +319,49 @@ export class FinancialService {
 
 ### Frontend Stack
 
-| Layer | Technology | Version | Purpose |
-|-------|-----------|---------|---------|
-| **Framework** | Next.js | 15.5.5 | React framework with SSR, App Router, serverless API |
-| **UI Library** | React | 19.1.0 | Component-based UI development |
-| **Styling** | Tailwind CSS | 4.x | Utility-first CSS framework |
-| **Charts** | Visx | 3.x | D3-based React chart library |
-| **Data Fetching** | React Query | 5.x | Client-side data caching and state management |
-| **Forms** | React Hook Form | 7.x | Form validation and state management |
-| **Validation** | Zod | 3.x | TypeScript-first schema validation |
-| **Date Handling** | date-fns | 3.x | Date manipulation and formatting |
+| Layer             | Technology      | Version | Purpose                                              |
+| ----------------- | --------------- | ------- | ---------------------------------------------------- |
+| **Framework**     | Next.js         | 15.5.5  | React framework with SSR, App Router, serverless API |
+| **UI Library**    | React           | 19.1.0  | Component-based UI development                       |
+| **Styling**       | Tailwind CSS    | 4.x     | Utility-first CSS framework                          |
+| **Charts**        | Visx            | 3.x     | D3-based React chart library                         |
+| **Data Fetching** | React Query     | 5.x     | Client-side data caching and state management        |
+| **Forms**         | React Hook Form | 7.x     | Form validation and state management                 |
+| **Validation**    | Zod             | 3.x     | TypeScript-first schema validation                   |
+| **Date Handling** | date-fns        | 3.x     | Date manipulation and formatting                     |
 
 ### Backend Stack
 
-| Layer | Technology | Version | Purpose |
-|-------|-----------|---------|---------|
-| **Runtime** | Node.js | 20 LTS | JavaScript runtime for serverless functions |
-| **Language** | TypeScript | 5.x | Type-safe development |
-| **ORM** | Prisma | 5.x | Type-safe database client and migrations |
-| **Database** | PostgreSQL | 15.x | Relational database with pgvector extension |
-| **Auth** | Supabase Auth | Latest | JWT-based authentication and session management |
-| **API Framework** | Next.js API Routes | 15.5.5 | Serverless API endpoints |
+| Layer             | Technology         | Version | Purpose                                         |
+| ----------------- | ------------------ | ------- | ----------------------------------------------- |
+| **Runtime**       | Node.js            | 20 LTS  | JavaScript runtime for serverless functions     |
+| **Language**      | TypeScript         | 5.x     | Type-safe development                           |
+| **ORM**           | Prisma             | 5.x     | Type-safe database client and migrations        |
+| **Database**      | PostgreSQL         | 15.x    | Relational database with pgvector extension     |
+| **Auth**          | Supabase Auth      | Latest  | JWT-based authentication and session management |
+| **API Framework** | Next.js API Routes | 15.5.5  | Serverless API endpoints                        |
 
 ### ETL Stack
 
-| Layer | Technology | Version | Purpose |
-|-------|-----------|---------|---------|
-| **Orchestrator** | n8n | 1.x | Workflow automation and ETL pipeline management |
-| **Runtime** | Docker | 24.x | Containerization for consistent deployment |
-| **Language** | TypeScript/JavaScript | ES2022 | Custom code nodes for data transformation |
-| **HTTP Client** | Axios | 1.x | API requests to external systems |
+| Layer            | Technology            | Version | Purpose                                         |
+| ---------------- | --------------------- | ------- | ----------------------------------------------- |
+| **Orchestrator** | n8n                   | 1.x     | Workflow automation and ETL pipeline management |
+| **Runtime**      | Docker                | 24.x    | Containerization for consistent deployment      |
+| **Language**     | TypeScript/JavaScript | ES2022  | Custom code nodes for data transformation       |
+| **HTTP Client**  | Axios                 | 1.x     | API requests to external systems                |
 
 ### Infrastructure & DevOps
 
-| Layer | Technology | Purpose |
-|-------|-----------|---------|
-| **Hosting (Frontend/API)** | Vercel | Next.js deployment, edge network, auto-scaling |
-| **Database Hosting** | Supabase | Managed PostgreSQL, Sydney region |
-| **ETL Hosting** | DigitalOcean Droplet | Docker container for n8n |
-| **Monitoring** | DataDog | APM, logs, error tracking |
-| **Error Tracking** | Sentry | Frontend/backend exception monitoring |
-| **CDN** | Cloudflare | DDoS protection, caching |
-| **Email** | SendGrid | Transactional emails, alerts |
-| **Payment** | Stripe | Subscription billing |
+| Layer                      | Technology           | Purpose                                        |
+| -------------------------- | -------------------- | ---------------------------------------------- |
+| **Hosting (Frontend/API)** | Vercel               | Next.js deployment, edge network, auto-scaling |
+| **Database Hosting**       | Supabase             | Managed PostgreSQL, Sydney region              |
+| **ETL Hosting**            | DigitalOcean Droplet | Docker container for n8n                       |
+| **Monitoring**             | DataDog              | APM, logs, error tracking                      |
+| **Error Tracking**         | Sentry               | Frontend/backend exception monitoring          |
+| **CDN**                    | Cloudflare           | DDoS protection, caching                       |
+| **Email**                  | SendGrid             | Transactional emails, alerts                   |
+| **Payment**                | Stripe               | Subscription billing                           |
 
 ---
 
@@ -543,13 +548,13 @@ Example: Xero Financial Data Flow
 
 ### Data Retention & Archival
 
-| Data Type | Retention Period | Archival Strategy |
-|-----------|------------------|-------------------|
-| **Transactional Data** (Financials, Leads) | 7 years (AU tax compliance) | Annual export to S3, compress with gzip |
-| **Custom Metrics** | 3 years | Aggregate to monthly averages after 1 year |
-| **Audit Logs** | 2 years | Archive to cold storage (Glacier) after 6 months |
-| **User Sessions** | 90 days | Auto-delete via Supabase auth config |
-| **Integration Tokens** | Until revoked | Rotate every 6 months (forced re-auth) |
+| Data Type                                  | Retention Period            | Archival Strategy                                |
+| ------------------------------------------ | --------------------------- | ------------------------------------------------ |
+| **Transactional Data** (Financials, Leads) | 7 years (AU tax compliance) | Annual export to S3, compress with gzip          |
+| **Custom Metrics**                         | 3 years                     | Aggregate to monthly averages after 1 year       |
+| **Audit Logs**                             | 2 years                     | Archive to cold storage (Glacier) after 6 months |
+| **User Sessions**                          | 90 days                     | Auto-delete via Supabase auth config             |
+| **Integration Tokens**                     | Until revoked               | Rotate every 6 months (forced re-auth)           |
 
 ---
 
@@ -614,7 +619,7 @@ export const INTEGRATION_REGISTRY = {
     dataSources: ['leads', 'contacts', 'deals'],
   },
   // ... 50+ integrations
-};
+}
 ```
 
 ### n8n Workflow Template (Xero Financials)
@@ -690,45 +695,50 @@ export const INTEGRATION_REGISTRY = {
 ```typescript
 // Middleware: app/middleware.ts
 export async function middleware(request: NextRequest) {
-  const token = request.cookies.get('sb-access-token')?.value;
+  const token = request.cookies.get('sb-access-token')?.value
 
   if (!token) {
-    return NextResponse.redirect(new URL('/login', request.url));
+    return NextResponse.redirect(new URL('/login', request.url))
   }
 
-  const { data: { user }, error } = await supabase.auth.getUser(token);
+  const {
+    data: { user },
+    error,
+  } = await supabase.auth.getUser(token)
 
   if (error || !user) {
-    return NextResponse.redirect(new URL('/login', request.url));
+    return NextResponse.redirect(new URL('/login', request.url))
   }
 
   // Attach user context to request headers
-  const requestHeaders = new Headers(request.headers);
-  requestHeaders.set('x-user-id', user.id);
-  requestHeaders.set('x-tenant-id', user.user_metadata.tenant_id);
+  const requestHeaders = new Headers(request.headers)
+  requestHeaders.set('x-user-id', user.id)
+  requestHeaders.set('x-tenant-id', user.user_metadata.tenant_id)
 
   return NextResponse.next({
-    request: { headers: requestHeaders }
-  });
+    request: { headers: requestHeaders },
+  })
 }
 ```
 
 **Authorization**: Role-Based Access Control (RBAC)
 
-| Role | Permissions |
-|------|-------------|
-| **ADMIN** | Full access: manage integrations, users, billing, view all data |
-| **EDITOR** | Edit dashboards, view all data, cannot manage users or billing |
-| **VIEWER** | Read-only access to dashboards |
+| Role       | Permissions                                                     |
+| ---------- | --------------------------------------------------------------- |
+| **ADMIN**  | Full access: manage integrations, users, billing, view all data |
+| **EDITOR** | Edit dashboards, view all data, cannot manage users or billing  |
+| **VIEWER** | Read-only access to dashboards                                  |
 
 ### Data Encryption
 
 **At Rest**:
+
 - PostgreSQL: AES-256 encryption enabled via Supabase
 - OAuth tokens: Encrypted with AES-256-GCM before storage (application-level)
 - Backups: Encrypted with AWS S3 server-side encryption (SSE-KMS)
 
 **In Transit**:
+
 - All API communication: TLS 1.3
 - Database connections: SSL enforced (Supabase requires SSL)
 - n8n webhooks: HTTPS only, verify TLS certificates
@@ -737,37 +747,37 @@ export async function middleware(request: NextRequest) {
 
 ```typescript
 // lib/crypto/encryption.ts
-import { createCipheriv, createDecipheriv, randomBytes } from 'crypto';
+import { createCipheriv, createDecipheriv, randomBytes } from 'crypto'
 
-const ALGORITHM = 'aes-256-gcm';
-const KEY = Buffer.from(process.env.ENCRYPTION_KEY!, 'hex'); // 32-byte key
+const ALGORITHM = 'aes-256-gcm'
+const KEY = Buffer.from(process.env.ENCRYPTION_KEY!, 'hex') // 32-byte key
 
 export function encrypt(plaintext: string): string {
-  const iv = randomBytes(16);
-  const cipher = createCipheriv(ALGORITHM, KEY, iv);
+  const iv = randomBytes(16)
+  const cipher = createCipheriv(ALGORITHM, KEY, iv)
 
-  let encrypted = cipher.update(plaintext, 'utf8', 'hex');
-  encrypted += cipher.final('hex');
+  let encrypted = cipher.update(plaintext, 'utf8', 'hex')
+  encrypted += cipher.final('hex')
 
-  const authTag = cipher.getAuthTag();
+  const authTag = cipher.getAuthTag()
 
   // Format: iv:authTag:ciphertext
-  return `${iv.toString('hex')}:${authTag.toString('hex')}:${encrypted}`;
+  return `${iv.toString('hex')}:${authTag.toString('hex')}:${encrypted}`
 }
 
 export function decrypt(encryptedData: string): string {
-  const [ivHex, authTagHex, encrypted] = encryptedData.split(':');
+  const [ivHex, authTagHex, encrypted] = encryptedData.split(':')
 
-  const iv = Buffer.from(ivHex, 'hex');
-  const authTag = Buffer.from(authTagHex, 'hex');
+  const iv = Buffer.from(ivHex, 'hex')
+  const authTag = Buffer.from(authTagHex, 'hex')
 
-  const decipher = createDecipheriv(ALGORITHM, KEY, iv);
-  decipher.setAuthTag(authTag);
+  const decipher = createDecipheriv(ALGORITHM, KEY, iv)
+  decipher.setAuthTag(authTag)
 
-  let decrypted = decipher.update(encrypted, 'hex', 'utf8');
-  decrypted += decipher.final('utf8');
+  let decrypted = decipher.update(encrypted, 'hex', 'utf8')
+  decrypted += decipher.final('utf8')
 
-  return decrypted;
+  return decrypted
 }
 ```
 
@@ -803,11 +813,11 @@ SET app.tenant_id = 'tenant_xyz123';
 const financials = await prisma.financial.findMany({
   where: {
     clientKPI: {
-      tenantId: request.headers.get('x-tenant-id')!
+      tenantId: request.headers.get('x-tenant-id')!,
     },
-    recordDate: { gte: startDate }
-  }
-});
+    recordDate: { gte: startDate },
+  },
+})
 ```
 
 ### API Security
@@ -816,26 +826,26 @@ const financials = await prisma.financial.findMany({
 
 ```typescript
 // lib/middleware/rate-limit.ts
-import { Ratelimit } from '@upstash/ratelimit';
-import { Redis } from '@upstash/redis';
+import { Ratelimit } from '@upstash/ratelimit'
+import { Redis } from '@upstash/redis'
 
 const ratelimit = new Ratelimit({
   redis: Redis.fromEnv(),
   limiter: Ratelimit.slidingWindow(100, '1 m'),
-});
+})
 
 export async function rateLimitMiddleware(request: NextRequest) {
-  const tenantId = request.headers.get('x-tenant-id')!;
-  const { success, limit, remaining } = await ratelimit.limit(tenantId);
+  const tenantId = request.headers.get('x-tenant-id')!
+  const { success, limit, remaining } = await ratelimit.limit(tenantId)
 
   if (!success) {
     return NextResponse.json(
       { error: 'Rate limit exceeded' },
       { status: 429, headers: { 'X-RateLimit-Remaining': '0' } }
-    );
+    )
   }
 
-  return NextResponse.next();
+  return NextResponse.next()
 }
 ```
 
@@ -847,11 +857,11 @@ const querySchema = z.object({
   startDate: z.string().datetime(),
   endDate: z.string().datetime(),
   metric: z.enum(['revenue', 'profit', 'cashflow']),
-});
+})
 
-const validated = querySchema.safeParse(request.query);
+const validated = querySchema.safeParse(request.query)
 if (!validated.success) {
-  throw new ValidationError(validated.error);
+  throw new ValidationError(validated.error)
 }
 ```
 
@@ -869,9 +879,9 @@ module.exports = {
           { key: 'Access-Control-Allow-Methods', value: 'GET,POST,PUT,DELETE' },
         ],
       },
-    ];
+    ]
   },
-};
+}
 ```
 
 ---
@@ -953,7 +963,7 @@ services:
   n8n:
     image: n8nio/n8n:latest
     ports:
-      - "5678:5678"
+      - '5678:5678'
     environment:
       - N8N_BASIC_AUTH_ACTIVE=true
       - N8N_BASIC_AUTH_USER=${N8N_USER}
@@ -1025,13 +1035,13 @@ jobs:
 
 ### Performance Targets
 
-| Metric | Target | Current (MVP) | Measurement |
-|--------|--------|---------------|-------------|
-| **Dashboard Load Time (LCP)** | <2.5s | 1.8s | Core Web Vitals |
-| **API Response Time (p95)** | <500ms | 320ms | DataDog APM |
-| **Database Query Time (p95)** | <100ms | 65ms | Prisma metrics |
-| **Time to Interactive (TTI)** | <3.5s | 2.9s | Lighthouse |
-| **First Contentful Paint (FCP)** | <1.8s | 1.2s | Core Web Vitals |
+| Metric                           | Target | Current (MVP) | Measurement     |
+| -------------------------------- | ------ | ------------- | --------------- |
+| **Dashboard Load Time (LCP)**    | <2.5s  | 1.8s          | Core Web Vitals |
+| **API Response Time (p95)**      | <500ms | 320ms         | DataDog APM     |
+| **Database Query Time (p95)**    | <100ms | 65ms          | Prisma metrics  |
+| **Time to Interactive (TTI)**    | <3.5s  | 2.9s          | Lighthouse      |
+| **First Contentful Paint (FCP)** | <1.8s  | 1.2s          | Core Web Vitals |
 
 ### Scalability Strategy
 
@@ -1053,11 +1063,13 @@ jobs:
    - Archived data moved to cold storage (S3)
 
 **API Scaling**:
+
 - Vercel serverless functions auto-scale (no manual intervention)
 - Edge caching for static dashboard assets (Vercel Edge Network)
 - React Query client-side caching reduces API calls by ~60%
 
 **ETL Scaling**:
+
 - n8n: Upgrade to 8GB Droplet at 50 customers
 - Parallelize workflows (separate containers for different integrations)
 - At 200+ customers, migrate to n8n Cloud or Kubernetes cluster
@@ -1073,27 +1085,28 @@ const { data: kpis } = useQuery({
   queryFn: () => fetchKPIs(tenantId),
   staleTime: 5 * 60 * 1000, // 5 minutes
   cacheTime: 10 * 60 * 1000, // 10 minutes
-});
+})
 ```
 
 **Server-Side** (Redis via Upstash):
 
 ```typescript
 // Cache expensive aggregations
-const cacheKey = `financials:${tenantId}:${startDate}:${endDate}`;
-const cached = await redis.get(cacheKey);
+const cacheKey = `financials:${tenantId}:${startDate}:${endDate}`
+const cached = await redis.get(cacheKey)
 
 if (cached) {
-  return JSON.parse(cached);
+  return JSON.parse(cached)
 }
 
-const data = await computeExpensiveAggregation();
-await redis.set(cacheKey, JSON.stringify(data), { ex: 3600 }); // 1 hour TTL
+const data = await computeExpensiveAggregation()
+await redis.set(cacheKey, JSON.stringify(data), { ex: 3600 }) // 1 hour TTL
 
-return data;
+return data
 ```
 
 **CDN** (Vercel Edge):
+
 - Static assets: Cached indefinitely (immutable filenames)
 - API routes: No caching (always fresh data)
 - Dashboard HTML: Cached for 60s (ISR - Incremental Static Regeneration)
@@ -1104,27 +1117,30 @@ return data;
 
 ### Availability Targets
 
-| Component | SLA | Uptime Target | Downtime/Year |
-|-----------|-----|---------------|---------------|
-| **Dashboard** | 99.9% | 3 nines | 8.76 hours |
-| **API** | 99.9% | 3 nines | 8.76 hours |
-| **Database** | 99.95% | 3.5 nines | 4.38 hours |
-| **ETL (n8n)** | 99.5% | 2.5 nines | 43.8 hours |
+| Component     | SLA    | Uptime Target | Downtime/Year |
+| ------------- | ------ | ------------- | ------------- |
+| **Dashboard** | 99.9%  | 3 nines       | 8.76 hours    |
+| **API**       | 99.9%  | 3 nines       | 8.76 hours    |
+| **Database**  | 99.95% | 3.5 nines     | 4.38 hours    |
+| **ETL (n8n)** | 99.5%  | 2.5 nines     | 43.8 hours    |
 
 ### Backup Strategy
 
 **Database Backups** (Supabase Automated):
+
 - **Frequency**: Daily at 3am AEST
 - **Retention**: 30 days (Point-in-Time Recovery available)
 - **Location**: S3-compatible storage (Sydney region)
 - **Testing**: Monthly restore test to staging environment
 
 **Application Backups** (Git + Vercel):
+
 - **Code**: GitHub repository (main branch = production)
 - **Deployments**: Vercel maintains deployment history (instant rollback)
 - **Environment Variables**: Encrypted backup in 1Password
 
 **n8n Workflow Backups**:
+
 - **Frequency**: Weekly export of all workflows (JSON)
 - **Storage**: GitHub private repository (`n8n-workflows/`)
 - **Versioning**: Git history tracks workflow changes
@@ -1167,12 +1183,12 @@ return data;
 
 **Recovery Time Objectives (RTO) / Recovery Point Objectives (RPO)**:
 
-| Scenario | RTO | RPO |
-|----------|-----|-----|
-| Database failure | 30 seconds (auto-failover) | 5 minutes (replication lag) |
-| Application deployment rollback | 2 minutes | 0 (instant rollback) |
-| Complete data center loss | 2 hours (backup restore) | 24 hours (daily backups) |
-| Data corruption | 4 hours (manual intervention) | Varies (depends on detection time) |
+| Scenario                        | RTO                           | RPO                                |
+| ------------------------------- | ----------------------------- | ---------------------------------- |
+| Database failure                | 30 seconds (auto-failover)    | 5 minutes (replication lag)        |
+| Application deployment rollback | 2 minutes                     | 0 (instant rollback)               |
+| Complete data center loss       | 2 hours (backup restore)      | 24 hours (daily backups)           |
+| Data corruption                 | 4 hours (manual intervention) | Varies (depends on detection time) |
 
 ---
 
@@ -1180,25 +1196,27 @@ return data;
 
 ### Monitoring Stack
 
-| Layer | Tool | Purpose |
-|-------|------|---------|
-| **Application Performance Monitoring (APM)** | DataDog | Request tracing, performance metrics, error rates |
-| **Error Tracking** | Sentry | Exception monitoring, stack traces, release tracking |
-| **Uptime Monitoring** | Checkly | Synthetic monitoring, API health checks (5-min intervals) |
-| **Infrastructure Monitoring** | DigitalOcean Metrics + DataDog | CPU, memory, disk, network for n8n Droplet |
-| **Log Aggregation** | DataDog Logs | Centralized logging from Vercel + n8n + Supabase |
+| Layer                                        | Tool                           | Purpose                                                   |
+| -------------------------------------------- | ------------------------------ | --------------------------------------------------------- |
+| **Application Performance Monitoring (APM)** | DataDog                        | Request tracing, performance metrics, error rates         |
+| **Error Tracking**                           | Sentry                         | Exception monitoring, stack traces, release tracking      |
+| **Uptime Monitoring**                        | Checkly                        | Synthetic monitoring, API health checks (5-min intervals) |
+| **Infrastructure Monitoring**                | DigitalOcean Metrics + DataDog | CPU, memory, disk, network for n8n Droplet                |
+| **Log Aggregation**                          | DataDog Logs                   | Centralized logging from Vercel + n8n + Supabase          |
 
 ### Key Metrics Dashboard
 
 **DataDog Dashboard**: "Scriptum Arc Production Overview"
 
 **System Health**:
+
 - Request rate (requests/min)
 - Error rate (% of requests with 5xx)
 - Latency (p50, p95, p99)
 - Database connection pool utilization
 
 **Business Metrics**:
+
 - Active tenants (daily active users)
 - API calls per tenant (usage tracking)
 - ETL workflow success rate (%)
@@ -1208,29 +1226,29 @@ return data;
 
 ```yaml
 # datadog-alerts.yml
-- name: "High API Error Rate"
-  query: "avg(last_5m):sum:api.errors{env:production} > 10"
-  message: "API error rate exceeded 10 errors/5min. Investigate immediately."
+- name: 'High API Error Rate'
+  query: 'avg(last_5m):sum:api.errors{env:production} > 10'
+  message: 'API error rate exceeded 10 errors/5min. Investigate immediately.'
   priority: P1
-  notify: ["pagerduty", "slack"]
+  notify: ['pagerduty', 'slack']
 
-- name: "Database Connection Pool Exhausted"
-  query: "avg(last_5m):max:postgres.connections.active{} / max:postgres.connections.max{} > 0.9"
-  message: "Database connection pool at 90% capacity. Consider scaling."
+- name: 'Database Connection Pool Exhausted'
+  query: 'avg(last_5m):max:postgres.connections.active{} / max:postgres.connections.max{} > 0.9'
+  message: 'Database connection pool at 90% capacity. Consider scaling.'
   priority: P2
-  notify: ["slack"]
+  notify: ['slack']
 
-- name: "ETL Workflow Failure"
-  query: "sum(last_1h):n8n.workflow.failed{workflow:xero-financials} > 3"
-  message: "Xero financials workflow failed 3+ times in 1 hour. Check n8n logs."
+- name: 'ETL Workflow Failure'
+  query: 'sum(last_1h):n8n.workflow.failed{workflow:xero-financials} > 3'
+  message: 'Xero financials workflow failed 3+ times in 1 hour. Check n8n logs.'
   priority: P2
-  notify: ["email", "slack"]
+  notify: ['email', 'slack']
 
-- name: "Dashboard Load Time Regression"
-  query: "avg(last_15m):p95:browser.page.load_time{page:dashboard} > 3000"
-  message: "Dashboard load time (p95) exceeded 3s. Performance degradation."
+- name: 'Dashboard Load Time Regression'
+  query: 'avg(last_15m):p95:browser.page.load_time{page:dashboard} > 3000'
+  message: 'Dashboard load time (p95) exceeded 3s. Performance degradation.'
   priority: P3
-  notify: ["slack"]
+  notify: ['slack']
 ```
 
 ### Structured Logging
@@ -1239,7 +1257,7 @@ return data;
 
 ```typescript
 // lib/logger.ts
-import winston from 'winston';
+import winston from 'winston'
 
 export const logger = winston.createLogger({
   level: 'info',
@@ -1253,7 +1271,7 @@ export const logger = winston.createLogger({
     new winston.transports.Console(),
     new DatadogTransport({ apiKey: process.env.DATADOG_API_KEY }),
   ],
-});
+})
 
 // Usage in API route
 logger.info('Financial data fetched', {
@@ -1262,10 +1280,11 @@ logger.info('Financial data fetched', {
   startDate,
   endDate,
   duration: Date.now() - startTime,
-});
+})
 ```
 
 **Log Retention**:
+
 - Info/Debug logs: 7 days
 - Warning logs: 30 days
 - Error logs: 90 days
@@ -1328,13 +1347,8 @@ chore(deps): upgrade Next.js to 15.5.5
 // .husky/pre-commit
 {
   "lint-staged": {
-    "*.{ts,tsx}": [
-      "eslint --fix",
-      "prettier --write"
-    ],
-    "*.prisma": [
-      "prisma format"
-    ]
+    "*.{ts,tsx}": ["eslint --fix", "prettier --write"],
+    "*.prisma": ["prisma format"]
   }
 }
 ```
@@ -1344,11 +1358,7 @@ chore(deps): upgrade Next.js to 15.5.5
 ```json
 // .eslintrc.json
 {
-  "extends": [
-    "next/core-web-vitals",
-    "plugin:@typescript-eslint/recommended",
-    "prettier"
-  ],
+  "extends": ["next/core-web-vitals", "plugin:@typescript-eslint/recommended", "prettier"],
   "rules": {
     "@typescript-eslint/no-unused-vars": "error",
     "@typescript-eslint/explicit-function-return-type": "warn",
@@ -1384,16 +1394,17 @@ chore(deps): upgrade Next.js to 15.5.5
 
 The implementation follows a 4-phase approach optimized for solo senior full-stack developer velocity, spanning 18 weeks total.
 
-| Phase | Duration | Focus Area | Key Deliverables | Success Gate |
-|-------|----------|------------|------------------|--------------|
-| **Phase 1: Data Foundation** | 4 weeks | Backend infrastructure & data layer | Supabase setup, Prisma schema, secure API routes, JWT auth | All 4 core API endpoints functional with authentication |
-| **Phase 2: ETL & Orchestration** | 6 weeks | Data ingestion pipelines | n8n workflows, 3 core integrations (Xero, HubSpot, Asana), automated sync | Daily sync operational for all P1 integrations |
-| **Phase 3: Visualization** | 5 weeks | Dashboard UI & charts | Next.js dashboard, 4 Visx charts, interactivity, filtering | <2.5s dashboard load time achieved |
-| **Phase 4: Operationalization** | 3 weeks | Production readiness | Performance tuning, security audit, testing, monitoring | 99.9% uptime SLA met, compliance validated |
+| Phase                            | Duration | Focus Area                          | Key Deliverables                                                          | Success Gate                                            |
+| -------------------------------- | -------- | ----------------------------------- | ------------------------------------------------------------------------- | ------------------------------------------------------- |
+| **Phase 1: Data Foundation**     | 4 weeks  | Backend infrastructure & data layer | Supabase setup, Prisma schema, secure API routes, JWT auth                | All 4 core API endpoints functional with authentication |
+| **Phase 2: ETL & Orchestration** | 6 weeks  | Data ingestion pipelines            | n8n workflows, 3 core integrations (Xero, HubSpot, Asana), automated sync | Daily sync operational for all P1 integrations          |
+| **Phase 3: Visualization**       | 5 weeks  | Dashboard UI & charts               | Next.js dashboard, 4 Visx charts, interactivity, filtering                | <2.5s dashboard load time achieved                      |
+| **Phase 4: Operationalization**  | 3 weeks  | Production readiness                | Performance tuning, security audit, testing, monitoring                   | 99.9% uptime SLA met, compliance validated              |
 
 **Total MVP Timeline**: 18 weeks (4.5 months)
 
 **Related Documentation**:
+
 - Detailed phase plans: [Implementation Directory](../implementation/)
 - Product requirements: [Product Requirements Document](../product/product-requirements-document.md)
 - Product vision: [Product Specification](../specs/product-specification.md)
@@ -1431,6 +1442,7 @@ The implementation follows a 4-phase approach optimized for solo senior full-sta
    - Implement error handling utilities
 
 **Success Criteria**:
+
 - ✅ Supabase operational with pgvector enabled
 - ✅ All core tables migrated with proper indexes
 - ✅ Prisma Client generating type-safe queries
@@ -1473,6 +1485,7 @@ The implementation follows a 4-phase approach optimized for solo senior full-sta
    - Error notification (email + Slack on 3+ consecutive failures)
 
 **Success Criteria**:
+
 - ✅ n8n operational on DigitalOcean with 99.5%+ uptime
 - ✅ Xero, HubSpot, Asana workflows running daily without manual intervention
 - ✅ < 1% error rate across all ETL workflows
@@ -1511,6 +1524,7 @@ The implementation follows a 4-phase approach optimized for solo senior full-sta
    - Responsive design (1024px+, tablet support 768px+)
 
 **Success Criteria**:
+
 - ✅ Dashboard Largest Contentful Paint (LCP) < 2.5 seconds
 - ✅ All 4 core charts rendering with real customer data
 - ✅ Interactive filtering functional without performance degradation
@@ -1552,6 +1566,7 @@ The implementation follows a 4-phase approach optimized for solo senior full-sta
    - Developer onboarding guide (README, local setup instructions)
 
 **Success Criteria**:
+
 - ✅ 99.9% uptime SLA achieved in staging environment (7-day observation)
 - ✅ All performance targets met (API <500ms p95, Dashboard <2.5s LCP)
 - ✅ Security audit passing with zero critical/high vulnerabilities
@@ -1563,18 +1578,21 @@ The implementation follows a 4-phase approach optimized for solo senior full-sta
 ### Post-MVP Roadmap (Months 5-12)
 
 **Months 5-7: Customer Acquisition**
+
 - Onboard first 5 paying customers
 - Refine sales process based on pilot feedback
 - Develop 1-2 customer case studies
 - Implement customer feedback loop (NPS surveys, feature requests)
 
 **Months 8-10: Feature Expansion**
+
 - Priority 2 integrations (Shopify, MYOB, Pipedrive)
 - Advanced alerting (Slack notifications, threshold-based triggers)
 - Dashboard sharing (read-only public links, PDF export)
 - Mobile web optimization (responsive <768px)
 
 **Months 11-12: Scale Preparation**
+
 - Automated customer onboarding workflow
 - Self-service integration configuration UI
 - Enterprise tier launch (dedicated support, custom SLA)
@@ -1586,27 +1604,30 @@ The implementation follows a 4-phase approach optimized for solo senior full-sta
 
 ### Known Technical Debt
 
-| Item | Impact | Effort | Priority | Mitigation Plan |
-|------|--------|--------|----------|----------------|
-| **No automated E2E tests** | High | Medium | P1 | Implement Playwright tests for critical flows (Q2 2026) |
-| **n8n manual deployment** | Medium | Low | P2 | Create Terraform config for IaC (Q3 2026) |
-| **No feature flags system** | Medium | Medium | P2 | Integrate LaunchDarkly (Q4 2026) |
-| **Hard-coded integration configs** | Low | Low | P3 | Move to database-backed registry (Q1 2027) |
-| **Single n8n instance** | High | High | P1 | Implement n8n clustering at 100 customers |
+| Item                               | Impact | Effort | Priority | Mitigation Plan                                         |
+| ---------------------------------- | ------ | ------ | -------- | ------------------------------------------------------- |
+| **No automated E2E tests**         | High   | Medium | P1       | Implement Playwright tests for critical flows (Q2 2026) |
+| **n8n manual deployment**          | Medium | Low    | P2       | Create Terraform config for IaC (Q3 2026)               |
+| **No feature flags system**        | Medium | Medium | P2       | Integrate LaunchDarkly (Q4 2026)                        |
+| **Hard-coded integration configs** | Low    | Low    | P3       | Move to database-backed registry (Q1 2027)              |
+| **Single n8n instance**            | High   | High   | P1       | Implement n8n clustering at 100 customers               |
 
 ### Future Architecture Enhancements
 
 **Phase 2 (Months 7-12)**:
+
 - **Real-time Data**: Implement WebSocket connections for live dashboard updates
 - **Advanced Analytics**: Add predictive models (forecasting, anomaly detection) via Python microservice
 - **White-Label**: Multi-domain support for agency partners
 
 **Phase 3 (Year 2)**:
+
 - **RAG Implementation**: Vector search on unstructured data (invoices, emails) using OpenAI embeddings
 - **Mobile App**: React Native app with offline-first architecture
 - **Advanced Alerting**: AI-powered insight generation (e.g., "Revenue 15% below forecast, investigate X")
 
 **Phase 4 (Year 3+)**:
+
 - **Multi-Region**: Deploy to US + EU regions for international expansion
 - **Enterprise SSO**: SAML/OIDC integration for enterprise customers
 - **Data Mesh**: Federated data architecture for customers with complex org structures
@@ -1624,12 +1645,14 @@ The implementation follows a 4-phase approach optimized for solo senior full-sta
 **Decision**: Next.js App Router
 
 **Rationale**:
+
 - Vercel hosting provides best-in-class developer experience (zero-config deployments)
 - Largest ecosystem and community support
 - Built-in image optimization, edge runtime support
 - Team already familiar with React paradigm
 
 **Trade-offs**:
+
 - Vendor lock-in to Vercel (mitigation: can self-host on Node.js)
 - Framework complexity (App Router learning curve)
 
@@ -1642,11 +1665,13 @@ The implementation follows a 4-phase approach optimized for solo senior full-sta
 **Decision**: Self-hosted n8n on DigitalOcean
 
 **Rationale**:
+
 - Cost: Zapier charges per task ($0.01-0.03/task) = $500-1500/month at scale. n8n = $40/month VPS.
 - Flexibility: Custom TypeScript code nodes for complex transformations
 - Data residency: Data never leaves our infrastructure (compliance requirement)
 
 **Trade-offs**:
+
 - Infrastructure management overhead (mitigation: Docker simplifies deployment)
 - Less polished UI than Zapier (acceptable for solo operator)
 
@@ -1659,12 +1684,14 @@ The implementation follows a 4-phase approach optimized for solo senior full-sta
 **Decision**: Supabase PostgreSQL (Sydney region)
 
 **Rationale**:
+
 - Zero-config pgvector support (required for future RAG features)
 - Built-in auth system (saves development time)
 - Superior developer experience (dashboard, migrations, backups)
 - Competitive pricing ($25/month startup vs $50+/month AWS RDS)
 
 **Trade-offs**:
+
 - Smaller company (vs AWS stability) - mitigation: export backups to S3
 - Limited customization of PostgreSQL config - acceptable for MVP
 
@@ -1696,14 +1723,17 @@ The implementation follows a 4-phase approach optimized for solo senior full-sta
 For detailed database-specific documentation, see:
 
 **Schema & Design**:
+
 - [Database Schema Diagram](./database-schema-diagram.md) - Complete ERD with tables, relationships, indexes
 - [Row-Level Security Policies](./row-level-security-policies.md) - PostgreSQL RLS DDL for multi-tenant isolation
 
 **Operations & Maintenance**:
+
 - [Database Migrations Strategy](./database-migrations.md) - Prisma migration workflow, testing, rollback procedures
 - [Database Monitoring](./database-monitoring.md) - DataDog queries, alerts, performance troubleshooting
 
 **Advanced Features**:
+
 - [RAG Strategy](./rag-strategy.md) - pgvector configuration, embedding generation, similarity search
 
 **Schema Version**: 1.0 (MVP)
@@ -1716,5 +1746,6 @@ For detailed database-specific documentation, see:
 **Review Cycle**: Quarterly or after major architecture changes
 **Next Review**: 2026-01-15
 **Change History**:
+
 - 2025-10-15: Initial version (v1.0) - MVP architecture documented
 - 2025-10-15: Added database documentation cross-references

@@ -1,9 +1,10 @@
 import { createClient } from '@/lib/supabase/server'
 import { NextRequest } from 'next/server'
 
-export async function getCurrentUser(request?: NextRequest) { // eslint-disable-line @typescript-eslint/no-unused-vars
+export async function getCurrentUser(request?: NextRequest) {
+   
   const supabase = await createClient()
-  
+
   const {
     data: { user },
     error,
@@ -23,7 +24,7 @@ export async function getCurrentUser(request?: NextRequest) { // eslint-disable-
 
 export async function requireAuth(request?: NextRequest) {
   const user = await getCurrentUser(request)
-  
+
   if (!user) {
     throw new Error('Authentication required')
   }
@@ -31,9 +32,12 @@ export async function requireAuth(request?: NextRequest) {
   return user
 }
 
-export async function requireRole(requiredRole: 'ADMIN' | 'EDITOR' | 'VIEWER', request?: NextRequest) {
+export async function requireRole(
+  requiredRole: 'ADMIN' | 'EDITOR' | 'VIEWER',
+  request?: NextRequest
+) {
   const user = await requireAuth(request)
-  
+
   const roleHierarchy = {
     VIEWER: 0,
     EDITOR: 1,

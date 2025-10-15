@@ -36,6 +36,7 @@ This document defines the **authoritative migration strategy** for Scriptum Arc'
 ### Migration Tools
 
 **Prisma Migrate**: Primary tool for schema migrations
+
 - Generates SQL migrations from Prisma schema changes
 - Maintains migration history in `prisma/migrations/` directory
 - Tracks applied migrations in `_prisma_migrations` table
@@ -51,6 +52,7 @@ Per [Global Development Standards](~/.claude/CLAUDE.md):
 > Do not use fallback mechanisms, instead take a fail fast approach and throw meaningful exceptions.
 
 **Applied to Migrations**:
+
 - ❌ **No automatic rollback on failure** — Migrations fail loudly, require manual intervention
 - ✅ **Validate before apply** — Test migrations in staging, never deploy untested migrations
 - ✅ **Explicit error messages** — Failed migrations must log clear cause (constraint violation, syntax error, etc.)
@@ -62,6 +64,7 @@ Per [Global Development Standards](~/.claude/CLAUDE.md):
 > No backwards compatibility whatsoever, as that is completely out of scope and handled by git.
 
 **Applied to Migrations**:
+
 - ❌ **No dual-write patterns** — Schema changes are immediate and forward-only
 - ❌ **No feature flags for schema** — Database schema matches code version in `main` branch
 - ✅ **Git history is truth** — Rollback = restore from backup + re-deploy previous commit
@@ -91,6 +94,7 @@ npx prisma migrate dev --name add_company_size_to_client_kpi
 ```
 
 **Prisma Actions**:
+
 1. Generates SQL migration file in `prisma/migrations/YYYYMMDDHHMMSS_add_company_size_to_client_kpi/migration.sql`
 2. Applies migration to development database
 3. Regenerates Prisma Client with new field
@@ -102,12 +106,14 @@ cat prisma/migrations/20251015093045_add_company_size_to_client_kpi/migration.sq
 ```
 
 **Example Output**:
+
 ```sql
 -- AlterTable
 ALTER TABLE "client_kpis" ADD COLUMN "company_size" TEXT;
 ```
 
 **Validation**:
+
 - ✅ SQL syntax is correct
 - ✅ No destructive operations (e.g., DROP COLUMN) without backups
 - ✅ Indexes are created CONCURRENTLY (non-blocking)
@@ -158,6 +164,7 @@ npx prisma migrate deploy --schema=./prisma/schema.prisma
 ```
 
 **Prisma Actions**:
+
 1. Connects to production database (uses `DATABASE_URL` from env)
 2. Checks `_prisma_migrations` table for unapplied migrations
 3. Applies migrations in chronological order
@@ -197,25 +204,27 @@ npx prisma migrate dev --name <action>_<entity>_<reason>
 
 ### Naming Patterns
 
-| Pattern | Example | When to Use |
-|---------|---------|-------------|
-| `add_<field>_to_<table>` | `add_company_size_to_client_kpi` | Adding new column |
-| `remove_<field>_from_<table>` | `remove_deprecated_field_from_users` | Dropping column |
-| `rename_<old>_to_<new>_in_<table>` | `rename_client_id_to_external_id_in_integrations` | Renaming column |
-| `create_<table>` | `create_audit_logs` | Adding new table |
-| `drop_<table>` | `drop_deprecated_logs` | Removing table |
-| `add_index_<column>_<table>` | `add_index_tenant_id_client_kpis` | Adding index |
-| `enable_rls_<table>` | `enable_rls_financials` | RLS policy changes |
-| `migrate_<description>` | `migrate_currency_to_uppercase` | Data transformations |
+| Pattern                            | Example                                           | When to Use          |
+| ---------------------------------- | ------------------------------------------------- | -------------------- |
+| `add_<field>_to_<table>`           | `add_company_size_to_client_kpi`                  | Adding new column    |
+| `remove_<field>_from_<table>`      | `remove_deprecated_field_from_users`              | Dropping column      |
+| `rename_<old>_to_<new>_in_<table>` | `rename_client_id_to_external_id_in_integrations` | Renaming column      |
+| `create_<table>`                   | `create_audit_logs`                               | Adding new table     |
+| `drop_<table>`                     | `drop_deprecated_logs`                            | Removing table       |
+| `add_index_<column>_<table>`       | `add_index_tenant_id_client_kpis`                 | Adding index         |
+| `enable_rls_<table>`               | `enable_rls_financials`                           | RLS policy changes   |
+| `migrate_<description>`            | `migrate_currency_to_uppercase`                   | Data transformations |
 
 ### Examples
 
 ✅ **Good**:
+
 - `add_embedding_to_custom_metrics`
 - `enable_rls_all_tables`
 - `migrate_financial_dates_to_utc`
 
 ❌ **Bad**:
+
 - `update_schema` (too vague)
 - `fix` (no context)
 - `2025-10-15-changes` (use Prisma's timestamp prefix)
@@ -274,6 +283,7 @@ WHERE tablename = 'client_kpis';
 ### Pre-Deployment Steps
 
 1. **Announce Maintenance Window** (if downtime expected):
+
    ```
    Subject: Scheduled Database Maintenance - 15 Oct 2025 10:00 PM AEST
    Duration: 10 minutes
@@ -281,6 +291,7 @@ WHERE tablename = 'client_kpis';
    ```
 
 2. **Create Database Backup**:
+
    ```bash
    # Supabase automatic daily backups retained for 30 days
    # Manual snapshot for critical migrations:
@@ -342,6 +353,7 @@ echo "🎉 Migration complete!"
 ### When to Use Data Migrations
 
 **Scenarios**:
+
 1. **Schema change requires data transformation** (e.g., split `full_name` into `first_name` + `last_name`)
 2. **Backfill new columns** (e.g., populate `currency` field with "AUD" for existing records)
 3. **Data cleanup** (e.g., remove duplicate records before adding unique constraint)
@@ -367,6 +379,7 @@ ALTER TABLE "financials" ALTER COLUMN "currency_code" SET NOT NULL;
 ```
 
 **Performance Consideration**:
+
 - Large data migrations (>1M rows) should use batching:
 
 ```sql
@@ -401,6 +414,7 @@ END $$;
 ### Automatic Rollback (NOT SUPPORTED)
 
 Per fail-fast principle:
+
 - ❌ Prisma does **NOT** support automatic migration rollback
 - ❌ No `prisma migrate rollback` command exists
 
@@ -455,6 +469,7 @@ vercel env rm MAINTENANCE_MODE production
 **Step 6: Post-Mortem**
 
 Document failure in `docs/postmortems/YYYY-MM-DD-migration-failure.md`:
+
 - Root cause
 - Impact (downtime, data loss)
 - Resolution steps
@@ -480,6 +495,7 @@ model ClientKPI {
 ```
 
 Migration SQL:
+
 ```sql
 ALTER TABLE "client_kpis" ADD COLUMN "external_client_id" TEXT;
 UPDATE "client_kpis" SET "external_client_id" = "client_id";
@@ -493,10 +509,10 @@ Update application code to read from `externalClientId`:
 
 ```typescript
 // Before
-const clientId = clientKPI.clientId;
+const clientId = clientKPI.clientId
 
 // After
-const externalClientId = clientKPI.externalClientId || clientKPI.clientId;
+const externalClientId = clientKPI.externalClientId || clientKPI.clientId
 ```
 
 Deploy updated code (no migration required).
@@ -512,6 +528,7 @@ model ClientKPI {
 ```
 
 Migration SQL:
+
 ```sql
 ALTER TABLE "client_kpis" DROP COLUMN "client_id";
 ```
@@ -552,7 +569,9 @@ CREATE INDEX CONCURRENTLY "client_kpis_tenant_id_idx" ON "client_kpis"("tenant_i
 **Review Cycle**: After each production migration or schema change
 **Next Review**: 2025-11-15 (Post-Phase 1 completion)
 **Change History**:
+
 - 2025-10-15: Initial version (v1.0) - Migration strategy defined for MVP
 
 **Approval**:
+
 - Database Architect: [Founder Name] - Approved 2025-10-15

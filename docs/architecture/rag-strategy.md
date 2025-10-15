@@ -29,22 +29,24 @@ This document outlines the **Retrieval-Augmented Generation (RAG)** strategy for
 ### Use Cases
 
 **Phase 1 (Post-MVP)**:
+
 - Semantic search on custom metrics (find similar operational patterns)
 - Natural language querying of business data ("Show me projects over budget in Q3")
 
 **Phase 2 (Year 2)**:
+
 - Document intelligence (extract insights from uploaded PDFs, emails)
 - Predictive analytics (forecast cash flow using historical embeddings)
 - Automated report generation (summarize financial trends in plain English)
 
 ### Technology Stack
 
-| Component | Technology | Purpose |
-|-----------|-----------|---------|
-| **Vector Database** | PostgreSQL + pgvector | Store and query embeddings |
-| **Embedding Model** | OpenAI `text-embedding-3-small` (1536 dimensions) | Convert text → vectors |
-| **Distance Metric** | Cosine similarity | Measure vector closeness (range: -1 to 1) |
-| **Query Interface** | Raw SQL (Prisma doesn't support pgvector natively) | Execute vector operations |
+| Component           | Technology                                         | Purpose                                   |
+| ------------------- | -------------------------------------------------- | ----------------------------------------- |
+| **Vector Database** | PostgreSQL + pgvector                              | Store and query embeddings                |
+| **Embedding Model** | OpenAI `text-embedding-3-small` (1536 dimensions)  | Convert text → vectors                    |
+| **Distance Metric** | Cosine similarity                                  | Measure vector closeness (range: -1 to 1) |
+| **Query Interface** | Raw SQL (Prisma doesn't support pgvector natively) | Execute vector operations                 |
 
 ---
 
@@ -102,6 +104,7 @@ ALTER TABLE "custom_metrics" ADD COLUMN "embedding" vector(1536);
 **Model**: `text-embedding-3-small` (1536 dimensions, $0.02/1M tokens)
 
 **Why this model**:
+
 - ✅ Latest OpenAI embedding model (released Jan 2024)
 - ✅ 1536 dimensions (balance between quality and storage)
 - ✅ 8191 token context window (handles long custom metric descriptions)
@@ -109,49 +112,49 @@ ALTER TABLE "custom_metrics" ADD COLUMN "embedding" vector(1536);
 **Implementation** (`lib/ai/embeddings.ts`):
 
 ```typescript
-import OpenAI from 'openai';
+import OpenAI from 'openai'
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
-});
+})
 
 export async function generateEmbedding(text: string): Promise<number[]> {
   // Validate input
   if (!text || text.trim().length === 0) {
-    throw new Error('Embedding text cannot be empty');
+    throw new Error('Embedding text cannot be empty')
   }
 
   // Truncate to 8191 tokens (model limit)
-  const truncated = text.slice(0, 32000); // ~8k tokens approx
+  const truncated = text.slice(0, 32000) // ~8k tokens approx
 
   // Generate embedding
   const response = await openai.embeddings.create({
     model: 'text-embedding-3-small',
     input: truncated,
     encoding_format: 'float',
-  });
+  })
 
   if (response.data.length === 0) {
-    throw new Error('OpenAI returned empty embedding');
+    throw new Error('OpenAI returned empty embedding')
   }
 
-  return response.data[0].embedding;
+  return response.data[0].embedding
 }
 ```
 
 **Usage Example**:
 
 ```typescript
-import { generateEmbedding } from '@/lib/ai/embeddings';
+import { generateEmbedding } from '@/lib/ai/embeddings'
 
 // Generate embedding for custom metric
 const metricDescription = `
   Project Delivery Time: Average days from project kickoff to completion.
   Target: 30 days. Current: 42 days.
   Industry: Construction. Department: Operations.
-`;
+`
 
-const embedding = await generateEmbedding(metricDescription);
+const embedding = await generateEmbedding(metricDescription)
 // Returns: Float32Array of 1536 values
 ```
 
@@ -168,24 +171,24 @@ const embedding = await generateEmbedding(metricDescription);
 **Pattern 1: Insert with Embedding**
 
 ```typescript
-import prisma from '@/lib/prisma';
-import { generateEmbedding } from '@/lib/ai/embeddings';
+import prisma from '@/lib/prisma'
+import { generateEmbedding } from '@/lib/ai/embeddings'
 
 async function createCustomMetricWithEmbedding(data: {
-  clientKPIId: string;
-  metricName: string;
-  metricValue: number;
-  unit: string;
-  recordDate: Date;
-  description: string; // For embedding generation
+  clientKPIId: string
+  metricName: string
+  metricValue: number
+  unit: string
+  recordDate: Date
+  description: string // For embedding generation
 }) {
   // Generate embedding from description
   const embedding = await generateEmbedding(
     `${data.metricName}: ${data.description}. Value: ${data.metricValue} ${data.unit}`
-  );
+  )
 
   // Convert embedding to PostgreSQL vector format
-  const vectorString = `[${embedding.join(',')}]`;
+  const vectorString = `[${embedding.join(',')}]`
 
   // Insert with raw SQL (Prisma limitation)
   await prisma.$executeRawUnsafe(
@@ -204,7 +207,7 @@ async function createCustomMetricWithEmbedding(data: {
     data.recordDate,
     vectorString, // Cast to vector type
     new Date()
-  );
+  )
 }
 ```
 
@@ -212,14 +215,14 @@ async function createCustomMetricWithEmbedding(data: {
 
 ```typescript
 async function addEmbeddingToExistingMetric(metricId: string, description: string) {
-  const embedding = await generateEmbedding(description);
-  const vectorString = `[${embedding.join(',')}]`;
+  const embedding = await generateEmbedding(description)
+  const vectorString = `[${embedding.join(',')}]`
 
   await prisma.$executeRawUnsafe(
     `UPDATE custom_metrics SET embedding = $1::vector WHERE id = $2`,
     vectorString,
     metricId
-  );
+  )
 }
 ```
 
@@ -234,16 +237,18 @@ async function addEmbeddingToExistingMetric(metricId: string, description: strin
 ```typescript
 async function findSimilarMetrics(query: string, topK: number = 5) {
   // Generate embedding for query
-  const queryEmbedding = await generateEmbedding(query);
-  const vectorString = `[${queryEmbedding.join(',')}]`;
+  const queryEmbedding = await generateEmbedding(query)
+  const vectorString = `[${queryEmbedding.join(',')}]`
 
   // Execute similarity search
-  const results = await prisma.$queryRawUnsafe<Array<{
-    id: string;
-    metric_name: string;
-    metric_value: number;
-    similarity: number;
-  }>>(
+  const results = await prisma.$queryRawUnsafe<
+    Array<{
+      id: string
+      metric_name: string
+      metric_value: number
+      similarity: number
+    }>
+  >(
     `
     SELECT
       id,
@@ -257,9 +262,9 @@ async function findSimilarMetrics(query: string, topK: number = 5) {
     `,
     vectorString,
     topK
-  );
+  )
 
-  return results;
+  return results
 }
 ```
 
@@ -267,7 +272,7 @@ async function findSimilarMetrics(query: string, topK: number = 5) {
 
 ```typescript
 // User query: "Show me metrics related to customer satisfaction"
-const similar = await findSimilarMetrics('customer satisfaction scores and NPS', 5);
+const similar = await findSimilarMetrics('customer satisfaction scores and NPS', 5)
 
 // Results (ordered by similarity):
 // [
@@ -284,11 +289,11 @@ const similar = await findSimilarMetrics('customer satisfaction scores and NPS',
 
 **pgvector supports 3 distance metrics**:
 
-| Operator | Metric | Range | Use Case |
-|----------|--------|-------|----------|
-| `<->` | Euclidean distance (L2) | 0 to ∞ | Geometric distance |
-| `<=>` | Cosine distance | 0 to 2 | Semantic similarity (recommended) |
-| `<#>` | Inner product | -∞ to ∞ | Dot product (for normalized vectors) |
+| Operator | Metric                  | Range   | Use Case                             |
+| -------- | ----------------------- | ------- | ------------------------------------ |
+| `<->`    | Euclidean distance (L2) | 0 to ∞  | Geometric distance                   |
+| `<=>`    | Cosine distance         | 0 to 2  | Semantic similarity (recommended)    |
+| `<#>`    | Inner product           | -∞ to ∞ | Dot product (for normalized vectors) |
 
 **Cosine Similarity Conversion**:
 
@@ -307,22 +312,20 @@ FROM custom_metrics;
 **Query**: Find similar metrics within a specific tenant (respecting multi-tenancy).
 
 ```typescript
-async function findSimilarMetricsForTenant(
-  query: string,
-  tenantId: string,
-  topK: number = 5
-) {
-  const queryEmbedding = await generateEmbedding(query);
-  const vectorString = `[${queryEmbedding.join(',')}]`;
+async function findSimilarMetricsForTenant(query: string, tenantId: string, topK: number = 5) {
+  const queryEmbedding = await generateEmbedding(query)
+  const vectorString = `[${queryEmbedding.join(',')}]`
 
   // Set tenant context for RLS
-  await prisma.$executeRawUnsafe(`SET LOCAL app.tenant_id = $1`, tenantId);
+  await prisma.$executeRawUnsafe(`SET LOCAL app.tenant_id = $1`, tenantId)
 
-  const results = await prisma.$queryRawUnsafe<Array<{
-    id: string;
-    metric_name: string;
-    similarity: number;
-  }>>(
+  const results = await prisma.$queryRawUnsafe<
+    Array<{
+      id: string
+      metric_name: string
+      similarity: number
+    }>
+  >(
     `
     SELECT
       cm.id,
@@ -338,9 +341,9 @@ async function findSimilarMetricsForTenant(
     vectorString,
     tenantId,
     topK
-  );
+  )
 
-  return results;
+  return results
 }
 ```
 
@@ -352,10 +355,10 @@ async function findSimilarMetricsForTenant(
 
 **pgvector supports 2 index types**:
 
-| Index Type | Algorithm | Build Time | Query Speed | Accuracy |
-|------------|-----------|------------|-------------|----------|
-| **IVFFlat** | Inverted File + Flat | Fast | Medium | ~95-99% |
-| **HNSW** | Hierarchical Navigable Small World | Slow | Very Fast | ~99%+ |
+| Index Type  | Algorithm                          | Build Time | Query Speed | Accuracy |
+| ----------- | ---------------------------------- | ---------- | ----------- | -------- |
+| **IVFFlat** | Inverted File + Flat               | Fast       | Medium      | ~95-99%  |
+| **HNSW**    | Hierarchical Navigable Small World | Slow       | Very Fast   | ~99%+    |
 
 **Recommendation**: Start with **IVFFlat** for MVP (simpler), migrate to **HNSW** at scale (500+ customers).
 
@@ -466,24 +469,24 @@ END $$;
 
 ```typescript
 // app/api/ai/query/route.ts
-import { NextRequest, NextResponse } from 'next/server';
-import { generateEmbedding } from '@/lib/ai/embeddings';
-import { findSimilarMetricsForTenant } from '@/lib/ai/vector-search';
-import OpenAI from 'openai';
+import { NextRequest, NextResponse } from 'next/server'
+import { generateEmbedding } from '@/lib/ai/embeddings'
+import { findSimilarMetricsForTenant } from '@/lib/ai/vector-search'
+import OpenAI from 'openai'
 
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
 
 export async function POST(request: NextRequest) {
-  const { query } = await request.json();
-  const tenantId = request.headers.get('x-tenant-id')!;
+  const { query } = await request.json()
+  const tenantId = request.headers.get('x-tenant-id')!
 
   // Step 1: Find relevant metrics via vector search
-  const relevantMetrics = await findSimilarMetricsForTenant(query, tenantId, 5);
+  const relevantMetrics = await findSimilarMetricsForTenant(query, tenantId, 5)
 
   // Step 2: Construct augmented prompt
   const context = relevantMetrics
-    .map(m => `- ${m.metric_name}: ${m.metric_value} (similarity: ${m.similarity.toFixed(2)})`)
-    .join('\n');
+    .map((m) => `- ${m.metric_name}: ${m.metric_value} (similarity: ${m.similarity.toFixed(2)})`)
+    .join('\n')
 
   const prompt = `
     You are a business intelligence assistant for Scriptum Arc.
@@ -494,19 +497,19 @@ export async function POST(request: NextRequest) {
     Answer this question: ${query}
 
     Provide a concise, data-driven response with specific numbers.
-  `;
+  `
 
   // Step 3: Generate response with GPT-4
   const completion = await openai.chat.completions.create({
     model: 'gpt-4-turbo-preview',
     messages: [{ role: 'user', content: prompt }],
     temperature: 0.3, // Low temperature for factual responses
-  });
+  })
 
   return NextResponse.json({
     answer: completion.choices[0].message.content,
-    sources: relevantMetrics.map(m => ({ id: m.id, name: m.metric_name })),
-  });
+    sources: relevantMetrics.map((m) => ({ id: m.id, name: m.metric_name })),
+  })
 }
 ```
 
@@ -516,11 +519,11 @@ export async function POST(request: NextRequest) {
 
 ### Embedding Generation Cost
 
-| Operation | Cost (OpenAI) | Latency |
-|-----------|---------------|---------|
-| Generate 1 embedding (1536 dim) | $0.00002 | ~200ms |
-| Batch 100 embeddings | $0.002 | ~2s |
-| Monthly (10,000 new metrics) | $0.20 | N/A |
+| Operation                       | Cost (OpenAI) | Latency |
+| ------------------------------- | ------------- | ------- |
+| Generate 1 embedding (1536 dim) | $0.00002      | ~200ms  |
+| Batch 100 embeddings            | $0.002        | ~2s     |
+| Monthly (10,000 new metrics)    | $0.20         | N/A     |
 
 **Optimization**: Batch embed multiple metrics in single API call (OpenAI supports up to 2,048 inputs per request).
 
@@ -528,12 +531,12 @@ export async function POST(request: NextRequest) {
 
 ### Vector Search Performance
 
-| Dataset Size | Sequential Scan | IVFFlat Index | HNSW Index |
-|--------------|----------------|---------------|------------|
-| 1,000 vectors | 10ms | 15ms (overhead) | 20ms (overhead) |
-| 10,000 vectors | 100ms | 15ms | 10ms |
-| 100,000 vectors | 1,000ms | 50ms | 15ms |
-| 1,000,000 vectors | 10,000ms | 200ms | 30ms |
+| Dataset Size      | Sequential Scan | IVFFlat Index   | HNSW Index      |
+| ----------------- | --------------- | --------------- | --------------- |
+| 1,000 vectors     | 10ms            | 15ms (overhead) | 20ms (overhead) |
+| 10,000 vectors    | 100ms           | 15ms            | 10ms            |
+| 100,000 vectors   | 1,000ms         | 50ms            | 15ms            |
+| 1,000,000 vectors | 10,000ms        | 200ms           | 30ms            |
 
 **Threshold**: Create index after 1,000 vectors to avoid sequential scan penalty.
 
@@ -541,11 +544,11 @@ export async function POST(request: NextRequest) {
 
 ### Storage Requirements
 
-| Component | Size per Row | 1M Rows |
-|-----------|--------------|---------|
-| Vector (1536 float32) | 6 KB | 6 GB |
-| IVFFlat index | ~10 KB | ~10 GB |
-| HNSW index | ~15 KB | ~15 GB |
+| Component             | Size per Row | 1M Rows |
+| --------------------- | ------------ | ------- |
+| Vector (1536 float32) | 6 KB         | 6 GB    |
+| IVFFlat index         | ~10 KB       | ~10 GB  |
+| HNSW index            | ~15 KB       | ~15 GB  |
 
 **Total**: ~20-30 KB per custom metric with embedding + index.
 
@@ -564,7 +567,9 @@ export async function POST(request: NextRequest) {
 **Review Cycle**: Before RAG feature development (Post-MVP, Year 2)
 **Next Review**: 2026-06-01 (RAG feature scoping)
 **Change History**:
+
 - 2025-10-15: Initial version (v1.0) - RAG strategy outlined for future implementation
 
 **Approval**:
+
 - AI/ML Lead: [Founder Name] - Approved 2025-10-15

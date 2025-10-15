@@ -19,7 +19,11 @@ export function createTenantScopedClient(tenantId: string) {
         async $allOperations({ model, operation, args, query }) {
           // Add tenant filter to all queries except on tenants table
           if (model !== 'Tenant') {
-            if (operation === 'findMany' || operation === 'findFirst' || operation === 'findUnique') {
+            if (
+              operation === 'findMany' ||
+              operation === 'findFirst' ||
+              operation === 'findUnique'
+            ) {
               if (args.where) {
                 args.where = {
                   ...args.where,
@@ -30,7 +34,7 @@ export function createTenantScopedClient(tenantId: string) {
               }
             }
           }
-          
+
           return query(args)
         },
       },
@@ -41,7 +45,11 @@ export function createTenantScopedClient(tenantId: string) {
 /**
  * Helper function to ensure tenant isolation in raw queries
  */
-export async function executeTenantScopedQuery(tenantId: string, query: string, params: unknown[] = []) {
+export async function executeTenantScopedQuery(
+  tenantId: string,
+  query: string,
+  params: unknown[] = []
+) {
   await setTenantContext(tenantId)
   return prisma.$queryRawUnsafe(query, ...params)
 }

@@ -5,7 +5,7 @@ import { NextResponse } from 'next/server'
 export async function GET() {
   try {
     const supabase = await createClient()
-    
+
     // Get current user
     const {
       data: { user },
@@ -13,20 +13,14 @@ export async function GET() {
     } = await supabase.auth.getUser()
 
     if (authError || !user) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      )
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
     // Get tenant ID from user metadata
     const tenantId = user.user_metadata?.tenant_id
 
     if (!tenantId) {
-      return NextResponse.json(
-        { error: 'No tenant associated with user' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'No tenant associated with user' }, { status: 400 })
     }
 
     // Fetch tenant data (RLS will automatically filter)
@@ -59,10 +53,7 @@ export async function GET() {
     })
 
     if (!tenant) {
-      return NextResponse.json(
-        { error: 'Tenant not found' },
-        { status: 404 }
-      )
+      return NextResponse.json({ error: 'Tenant not found' }, { status: 404 })
     }
 
     return NextResponse.json({
@@ -78,9 +69,6 @@ export async function GET() {
     })
   } catch (error) {
     console.error('Tenant API error:', error)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }

@@ -69,15 +69,15 @@ SET LOCAL app.tenant_id = 'tenant_xyz123';
 
 ### Tables with RLS
 
-| Table | RLS Enabled | Policy Type | Rationale |
-|-------|-------------|-------------|-----------|
-| `tenants` | ❌ No | N/A | Root table, not tenant-scoped |
-| `users` | ✅ Yes | Tenant isolation | Users belong to exactly one tenant |
-| `client_kpis` | ✅ Yes | Tenant isolation | Business entities scoped to tenant |
-| `financials` | ✅ Yes | Transitive via ClientKPI | Time-series data linked to tenant's clients |
-| `lead_events` | ✅ Yes | Transitive via ClientKPI | CRM data linked to tenant's clients |
-| `custom_metrics` | ✅ Yes | Transitive via ClientKPI | Custom KPIs linked to tenant's clients |
-| `integrations` | ✅ Yes | Tenant isolation | OAuth tokens scoped to tenant |
+| Table            | RLS Enabled | Policy Type              | Rationale                                   |
+| ---------------- | ----------- | ------------------------ | ------------------------------------------- |
+| `tenants`        | ❌ No       | N/A                      | Root table, not tenant-scoped               |
+| `users`          | ✅ Yes      | Tenant isolation         | Users belong to exactly one tenant          |
+| `client_kpis`    | ✅ Yes      | Tenant isolation         | Business entities scoped to tenant          |
+| `financials`     | ✅ Yes      | Transitive via ClientKPI | Time-series data linked to tenant's clients |
+| `lead_events`    | ✅ Yes      | Transitive via ClientKPI | CRM data linked to tenant's clients         |
+| `custom_metrics` | ✅ Yes      | Transitive via ClientKPI | Custom KPIs linked to tenant's clients      |
+| `integrations`   | ✅ Yes      | Tenant isolation         | OAuth tokens scoped to tenant               |
 
 ---
 
@@ -108,11 +108,13 @@ CREATE POLICY tenant_isolation_users ON users
 ```
 
 **Explanation**:
+
 - `USING`: Applies to SELECT, UPDATE, DELETE operations
 - `current_setting('app.tenant_id', true)`: Reads session variable (true = don't error if not set)
 - `::text`: Cast to match tenant_id column type
 
 **Test Query**:
+
 ```sql
 -- Set tenant context
 SET app.tenant_id = 'tenant_123';
@@ -134,6 +136,7 @@ CREATE POLICY tenant_isolation_client_kpis ON client_kpis
 ```
 
 **Index Requirement**: Ensure index exists for performance:
+
 ```sql
 -- Already defined in Prisma schema: @@index([tenantId])
 -- Verifies efficient policy enforcement
@@ -157,10 +160,12 @@ CREATE POLICY tenant_isolation_financials ON financials
 ```
 
 **Explanation**:
+
 - **Transitive Isolation**: Financials don't have direct `tenant_id`, so we join to `client_kpis`
 - **Subquery**: PostgreSQL optimizer will use indexes on `client_kpis(tenant_id)`
 
 **Performance Note**: This pattern requires indexes on both:
+
 1. `client_kpis(tenant_id)` — for subquery
 2. `financials(client_kpi_id)` — for join
 
@@ -259,6 +264,7 @@ CREATE POLICY tenant_isolation_integrations ON integrations
 ```
 
 **Run Migration**:
+
 ```bash
 npx prisma migrate dev --name enable_rls
 ```
@@ -270,13 +276,11 @@ npx prisma migrate dev --name enable_rls
 **File**: `lib/prisma-middleware.ts`
 
 ```typescript
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from '@prisma/client'
 
 export function configureTenantIsolation(prisma: PrismaClient, tenantId: string) {
   // Set tenant context for all queries in this Prisma instance
-  return prisma.$executeRawUnsafe(
-    `SET LOCAL app.tenant_id = '${tenantId.replace(/'/g, "''")}'`
-  );
+  return prisma.$executeRawUnsafe(`SET LOCAL app.tenant_id = '${tenantId.replace(/'/g, "''")}'`)
 }
 ```
 
@@ -284,29 +288,29 @@ export function configureTenantIsolation(prisma: PrismaClient, tenantId: string)
 
 ```typescript
 // app/api/financials/route.ts
-import { NextRequest, NextResponse } from 'next/server';
-import { configureTenantIsolation } from '@/lib/prisma-middleware';
-import prisma from '@/lib/prisma';
+import { NextRequest, NextResponse } from 'next/server'
+import { configureTenantIsolation } from '@/lib/prisma-middleware'
+import prisma from '@/lib/prisma'
 
 export async function GET(request: NextRequest) {
   // Extract tenantId from JWT (set by auth middleware)
-  const tenantId = request.headers.get('x-tenant-id');
+  const tenantId = request.headers.get('x-tenant-id')
 
   if (!tenantId) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
   // Set tenant context for this request
-  await configureTenantIsolation(prisma, tenantId);
+  await configureTenantIsolation(prisma, tenantId)
 
   // Now all queries are automatically filtered by tenant
   const financials = await prisma.financial.findMany({
     where: {
-      recordDate: { gte: new Date('2025-01-01') }
-    }
-  });
+      recordDate: { gte: new Date('2025-01-01') },
+    },
+  })
 
-  return NextResponse.json({ data: financials });
+  return NextResponse.json({ data: financials })
 }
 ```
 
@@ -317,8 +321,8 @@ export async function GET(request: NextRequest) {
 **File**: `middleware.ts`
 
 ```typescript
-import { NextRequest, NextResponse } from 'next/server';
-import { createServerClient } from '@supabase/ssr';
+import { NextRequest, NextResponse } from 'next/server'
+import { createServerClient } from '@supabase/ssr'
 
 export async function middleware(request: NextRequest) {
   const supabase = createServerClient(
@@ -327,28 +331,31 @@ export async function middleware(request: NextRequest) {
     {
       cookies: {
         get: (name) => request.cookies.get(name)?.value,
-      }
+      },
     }
-  );
+  )
 
-  const { data: { user }, error } = await supabase.auth.getUser();
+  const {
+    data: { user },
+    error,
+  } = await supabase.auth.getUser()
 
   if (error || !user) {
-    return NextResponse.redirect(new URL('/login', request.url));
+    return NextResponse.redirect(new URL('/login', request.url))
   }
 
   // Attach tenant ID from user metadata to request headers
-  const requestHeaders = new Headers(request.headers);
-  requestHeaders.set('x-tenant-id', user.user_metadata.tenant_id);
+  const requestHeaders = new Headers(request.headers)
+  requestHeaders.set('x-tenant-id', user.user_metadata.tenant_id)
 
   return NextResponse.next({
-    request: { headers: requestHeaders }
-  });
+    request: { headers: requestHeaders },
+  })
 }
 
 export const config = {
-  matcher: ['/api/:path*', '/dashboard/:path*']
-};
+  matcher: ['/api/:path*', '/dashboard/:path*'],
+}
 ```
 
 ---
@@ -440,11 +447,13 @@ model CustomMetric {
 ### RLS Overhead
 
 **Performance Impact**:
+
 - **Direct tenant_id policies**: ~5-10µs overhead (negligible)
 - **Transitive policies (subquery)**: ~20-50µs overhead
 - **Total API impact**: <1% increase in p95 latency
 
 **Mitigation**:
+
 - Indexes on `client_kpis(tenant_id)` and `financials(client_kpi_id)` reduce subquery cost
 - Connection pooling (PgBouncer) reduces session setup overhead
 
@@ -477,9 +486,10 @@ SELECT * FROM financials WHERE client_kpi_id IN (
 **Cause**: `app.tenant_id` session variable not set.
 
 **Solution**:
+
 ```typescript
 // Ensure configureTenantIsolation() is called before Prisma queries
-await configureTenantIsolation(prisma, tenantId);
+await configureTenantIsolation(prisma, tenantId)
 ```
 
 ---
@@ -489,6 +499,7 @@ await configureTenantIsolation(prisma, tenantId);
 **Symptom**: Valid queries return 0 rows.
 
 **Diagnosis**:
+
 ```sql
 -- Check if app.tenant_id is set correctly
 SELECT current_setting('app.tenant_id', true);
@@ -507,12 +518,14 @@ SELECT * FROM tenants WHERE id = current_setting('app.tenant_id', true);
 **Symptom**: Queries take >500ms (exceeded performance target).
 
 **Diagnosis**:
+
 ```sql
 EXPLAIN ANALYZE SELECT * FROM financials;
 -- Look for "Seq Scan" (table scan) instead of "Index Scan"
 ```
 
 **Solution**: Add missing indexes:
+
 ```sql
 CREATE INDEX CONCURRENTLY idx_financials_client_kpi_id
   ON financials(client_kpi_id);
@@ -534,8 +547,10 @@ CREATE INDEX CONCURRENTLY idx_financials_client_kpi_id
 **Review Cycle**: After any schema changes or security audits
 **Next Review**: 2026-01-15
 **Change History**:
+
 - 2025-10-15: Initial version (v1.0) - RLS policies defined for MVP
 
 **Approval**:
+
 - Security Lead: [Founder Name] - Approved 2025-10-15
 - Database Architect: [Founder Name] - Approved 2025-10-15

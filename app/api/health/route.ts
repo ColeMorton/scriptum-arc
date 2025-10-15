@@ -4,17 +4,17 @@ import { NextResponse } from 'next/server'
 export async function GET() {
   try {
     const supabase = await createClient()
-    
+
     // Test Supabase connection
     const { error } = await supabase.from('_prisma_migrations').select('*').limit(1)
-    
+
     if (error) {
       console.error('Supabase connection error:', error)
       return NextResponse.json(
-        { 
-          status: 'error', 
+        {
+          status: 'error',
           message: 'Database connection failed',
-          error: error.message 
+          error: error.message,
         },
         { status: 500 }
       )
@@ -26,16 +26,16 @@ export async function GET() {
       timestamp: new Date().toISOString(),
       supabase: {
         url: process.env.NEXT_PUBLIC_SUPABASE_URL,
-        hasConnection: true
-      }
+        hasConnection: true,
+      },
     })
   } catch (error) {
     console.error('Health check error:', error)
     return NextResponse.json(
-      { 
-        status: 'error', 
+      {
+        status: 'error',
         message: 'Health check failed',
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? error.message : 'Unknown error',
       },
       { status: 500 }
     )

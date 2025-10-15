@@ -4,13 +4,13 @@ describe('Database Schema Structure', () => {
   it('should have correct Prisma schema structure', async () => {
     // This test validates that our Prisma schema is properly structured
     // by checking that the generated types exist and have the expected properties
-    
+
     // Import the generated Prisma types
     const { PrismaClient } = await import('@prisma/client')
-    
+
     // Create a new instance to validate schema
     const prisma = new PrismaClient()
-    
+
     // Check that all expected models exist
     expect(prisma.tenant).toBeDefined()
     expect(prisma.user).toBeDefined()
@@ -19,32 +19,32 @@ describe('Database Schema Structure', () => {
     expect(prisma.leadEvent).toBeDefined()
     expect(prisma.customMetric).toBeDefined()
     expect(prisma.integration).toBeDefined()
-    
+
     // Check that models have expected methods
     expect(typeof prisma.tenant.create).toBe('function')
     expect(typeof prisma.tenant.findUnique).toBe('function')
     expect(typeof prisma.tenant.findMany).toBe('function')
-    
+
     expect(typeof prisma.user.create).toBe('function')
     expect(typeof prisma.user.findUnique).toBe('function')
     expect(typeof prisma.user.findMany).toBe('function')
-    
+
     expect(typeof prisma.clientKPI.create).toBe('function')
     expect(typeof prisma.clientKPI.findUnique).toBe('function')
     expect(typeof prisma.clientKPI.findMany).toBe('function')
-    
+
     expect(typeof prisma.financial.create).toBe('function')
     expect(typeof prisma.financial.findUnique).toBe('function')
     expect(typeof prisma.financial.findMany).toBe('function')
-    
+
     expect(typeof prisma.leadEvent.create).toBe('function')
     expect(typeof prisma.leadEvent.findUnique).toBe('function')
     expect(typeof prisma.leadEvent.findMany).toBe('function')
-    
+
     expect(typeof prisma.customMetric.create).toBe('function')
     expect(typeof prisma.customMetric.findUnique).toBe('function')
     expect(typeof prisma.customMetric.findMany).toBe('function')
-    
+
     expect(typeof prisma.integration.create).toBe('function')
     expect(typeof prisma.integration.findUnique).toBe('function')
     expect(typeof prisma.integration.findMany).toBe('function')
@@ -56,7 +56,7 @@ describe('Database Schema Structure', () => {
       name: 'Test Company',
       industry: 'Technology',
     }
-    
+
     // Validate the structure
     expect(tenantData.name).toBe('Test Company')
     expect(tenantData.industry).toBe('Technology')
@@ -71,7 +71,7 @@ describe('Database Schema Structure', () => {
       email: 'test@example.com',
       role: 'ADMIN' as const,
     }
-    
+
     // Validate the structure
     expect(userData.tenantId).toBe('tenant-123')
     expect(userData.email).toBe('test@example.com')
@@ -93,7 +93,7 @@ describe('Database Schema Structure', () => {
       churnRate: 0.05,
       customerAcquisitionCost: 500,
     }
-    
+
     // Validate the structure
     expect(clientData.tenantId).toBe('tenant-123')
     expect(clientData.clientId).toBe('CLIENT-001')
@@ -120,7 +120,7 @@ describe('Database Schema Structure', () => {
       profit: 20000,
       cashFlow: 15000,
     }
-    
+
     // Validate the structure
     expect(financialData.tenantId).toBe('tenant-123')
     expect(financialData.clientId).toBe('client-123')
@@ -146,7 +146,7 @@ describe('Database Schema Structure', () => {
       conversionRate: 0.15,
       source: 'Website',
     }
-    
+
     // Validate the structure
     expect(leadEventData.tenantId).toBe('tenant-123')
     expect(leadEventData.clientId).toBe('client-123')
@@ -173,7 +173,7 @@ describe('Database Schema Structure', () => {
         averageRating: 4.5,
       },
     }
-    
+
     // Validate the structure
     expect(customMetricData.tenantId).toBe('tenant-123')
     expect(customMetricData.metricName).toBe('Customer Satisfaction')
@@ -201,7 +201,7 @@ describe('Database Schema Structure', () => {
       },
       lastSyncAt: new Date(),
     }
-    
+
     // Validate the structure
     expect(integrationData.tenantId).toBe('tenant-123')
     expect(integrationData.name).toBe('Salesforce CRM')

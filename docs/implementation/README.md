@@ -17,6 +17,7 @@ The MVP follows a 4-phase approach spanning 18 weeks, optimized for solo senior 
 **File**: [phase-1-data-foundation.md](./phase-1-data-foundation.md)
 
 **Key Deliverables**:
+
 - ✅ Supabase PostgreSQL setup with pgvector extension
 - ✅ Prisma ORM with complete type-safe schema (7 tables)
 - ✅ Multi-tenancy with Row-Level Security (RLS) policies
@@ -35,6 +36,7 @@ The MVP follows a 4-phase approach spanning 18 weeks, optimized for solo senior 
 **File**: phase-2-etl-orchestration.md (planned)
 
 **Key Deliverables**:
+
 - Self-hosted n8n on DigitalOcean (Docker)
 - 3 core integrations (Xero, HubSpot, Asana)
 - OAuth 2.0 token management
@@ -52,6 +54,7 @@ The MVP follows a 4-phase approach spanning 18 weeks, optimized for solo senior 
 **File**: phase-3-visualization.md (planned)
 
 **Key Deliverables**:
+
 - Responsive dashboard layout (Tailwind CSS)
 - React Query data fetching with caching
 - 4 core Visx charts (Financial, Sales Funnel, Cash Flow, Operations)
@@ -69,6 +72,7 @@ The MVP follows a 4-phase approach spanning 18 weeks, optimized for solo senior 
 **File**: phase-4-operationalization.md (planned)
 
 **Key Deliverables**:
+
 - Performance optimization (API <500ms p95, Dashboard <2.5s LCP)
 - Security audit (Australian Privacy Act compliance)
 - End-to-end testing (Playwright)
@@ -82,14 +86,17 @@ The MVP follows a 4-phase approach spanning 18 weeks, optimized for solo senior 
 ## Related Documentation
 
 **Strategic & Product**:
+
 - [Product Specification](../specs/product-specification.md) - Product vision, MVP scope, competitive positioning
 - [Product Requirements Document](../product/product-requirements-document.md) - 35+ user stories, 38 functional requirements
 
 **Architecture & Technical**:
+
 - [System Architecture](../architecture/system-architecture.md) - C4 diagrams, technology stack, security architecture, implementation roadmap
 - [Integration Registry](../integrations/) - n8n workflows, SME software comparison
 
 **Business & GTM**:
+
 - [Sales Deck & Demo Script](../sales/sales-deck-demo-script.md) - Value proposition, ROI calculator, objection handling
 - [Financial Projections](../financial/financial-projections-unit-economics.md) - 3-year model, unit economics (LTV:CAC 13.6:1)
 
@@ -100,18 +107,21 @@ The MVP follows a 4-phase approach spanning 18 weeks, optimized for solo senior 
 Per [CLAUDE.md](../../.claude/CLAUDE.md) global instructions:
 
 **Code Quality**:
+
 - ✅ **DRY** (Don't Repeat Yourself) - Eliminate duplication through abstractions
 - ✅ **SOLID** - Single Responsibility, Open/Closed, Dependency Injection
 - ✅ **KISS** (Keep It Simple, Stupid) - Prefer simple, elegant solutions
 - ✅ **YAGNI** (You Aren't Gonna Need It) - Implement only what's explicitly required
 
 **Development Standards**:
+
 - ✅ **Fail-Fast** - Throw meaningful exceptions immediately, no fallbacks
 - ✅ **Type Safety** - TypeScript strict mode across entire stack
 - ✅ **Multi-Tenancy** - Enforce tenant_id scoping in all queries
 - ✅ **Security-First** - Encryption at rest/transit, OAuth 2.0, RLS
 
 **Solo-Operator Optimization**:
+
 - ✅ **Unified TypeScript** - No context switching (Next.js, Prisma, n8n code nodes)
 - ✅ **Managed Services** - Zero DevOps overhead (Vercel, Supabase, Docker)
 - ✅ **Automation-First** - n8n workflows reduce manual configuration
@@ -135,6 +145,7 @@ After completing each phase:
 3. **Update Product Documentation**: Ensure [Product Specification](../specs/product-specification.md) and [PRD](../product/product-requirements-document.md) are current
 
 4. **Git Commit**: Commit phase completion with conventional commit message:
+
    ```bash
    feat(phase-1): complete data foundation implementation
 
@@ -157,4 +168,5 @@ After completing each phase:
 **Approval Authority**: Technical Lead (Solo Operator)
 
 **Version History**:
+
 - v1.0 (2025-10-15): Initial implementation directory structure created

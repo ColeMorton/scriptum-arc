@@ -39,6 +39,7 @@ Per [Global Development Standards](~/.claude/CLAUDE.md):
 > Fail-fast is superior to fallbacks because it exposes problems immediately for proper fixing rather than hiding them behind degraded functionality.
 
 **Applied to Monitoring**:
+
 - ✅ **Alert on degradation**, not failure — Catch slow queries before they cause timeouts
 - ✅ **Expose problems loudly** — PagerDuty alerts for P1 issues (connection pool exhaustion)
 - ✅ **No silent failures** — Every failed query logged to Sentry + DataDog
@@ -52,6 +53,7 @@ Per [Global Development Standards](~/.claude/CLAUDE.md):
 **DataDog Agent**: Installed on Supabase infrastructure (automatic for Supabase customers).
 
 **Metrics Collection**:
+
 - PostgreSQL integration (automatic)
 - Custom metrics via Prisma middleware
 - Application-level metrics from Next.js API
@@ -69,17 +71,20 @@ Per [Global Development Standards](~/.claude/CLAUDE.md):
 **Metric 1: Active Connections**
 
 **Query** (DataDog):
+
 ```
 postgres.connections.active{env:production}
 ```
 
 **Thresholds**:
+
 - ⚠️ **Warning**: > 80% of max_connections (e.g., 80/100)
 - 🚨 **Critical**: > 90% of max_connections (e.g., 90/100)
 
 **Why It Matters**: Connection exhaustion causes `FATAL: remaining connection slots are reserved` errors, preventing new API requests.
 
 **Mitigation**:
+
 - Upgrade Supabase plan (increase connection limit)
 - Enable PgBouncer connection pooling (Supabase built-in)
 
@@ -88,6 +93,7 @@ postgres.connections.active{env:production}
 **Metric 2: Idle Connections**
 
 **Query** (PostgreSQL):
+
 ```sql
 SELECT COUNT(*) AS idle_connections
 FROM pg_stat_activity
@@ -95,11 +101,13 @@ WHERE state = 'idle' AND state_change < NOW() - INTERVAL '5 minutes';
 ```
 
 **Threshold**:
+
 - ⚠️ **Warning**: > 20 connections idle for >5 minutes
 
 **Why It Matters**: Idle connections waste resources. May indicate connection leak in application code.
 
 **Investigation**:
+
 ```sql
 -- Find long-running idle connections
 SELECT pid, usename, application_name, state, state_change, query
@@ -115,12 +123,13 @@ ORDER BY state_change;
 **Metric 3: Slow Query Count**
 
 **Query** (DataDog via Prisma middleware):
+
 ```typescript
 // lib/prisma-middleware.ts
 prisma.$use(async (params, next) => {
-  const start = Date.now();
-  const result = await next(params);
-  const duration = Date.now() - start;
+  const start = Date.now()
+  const result = await next(params)
+  const duration = Date.now() - start
 
   // Log to DataDog if query >100ms
   if (duration > 100) {
@@ -128,14 +137,15 @@ prisma.$use(async (params, next) => {
       model: params.model,
       action: params.action,
       duration: duration.toString(),
-    });
+    })
   }
 
-  return result;
-});
+  return result
+})
 ```
 
 **Threshold**:
+
 - ⚠️ **Warning**: > 10 slow queries/min (p95 > 100ms)
 - 🚨 **Critical**: > 50 slow queries/min (p95 > 500ms)
 
@@ -146,6 +156,7 @@ prisma.$use(async (params, next) => {
 **Metric 4: Query Latency (p95)**
 
 **Query** (DataDog):
+
 ```
 avg:postgres.query.time.p95{env:production}
 ```
@@ -153,10 +164,12 @@ avg:postgres.query.time.p95{env:production}
 **Target**: < 100ms (per [NFR-1.3](../product/product-requirements-document.md#nfr-1-performance))
 
 **Thresholds**:
+
 - ⚠️ **Warning**: > 150ms (p95)
 - 🚨 **Critical**: > 500ms (p95)
 
 **Investigation**:
+
 ```sql
 -- Find slowest queries (requires pg_stat_statements extension)
 SELECT
@@ -178,6 +191,7 @@ LIMIT 10;
 **Metric 5: Table Size Growth Rate**
 
 **Query** (PostgreSQL):
+
 ```sql
 SELECT
   schemaname,
@@ -190,11 +204,13 @@ ORDER BY size_bytes DESC;
 ```
 
 **DataDog Query**:
+
 ```
 sum:postgres.table.size{table:financials,env:production}
 ```
 
 **Thresholds** (for time-series tables):
+
 - ⚠️ **Warning**: `financials` table > 10 GB (plan partitioning)
 - 🚨 **Critical**: `financials` table > 50 GB (implement partitioning immediately)
 
@@ -205,6 +221,7 @@ sum:postgres.table.size{table:financials,env:production}
 **Metric 6: Row Count Growth**
 
 **Query** (PostgreSQL):
+
 ```sql
 SELECT
   schemaname,
@@ -218,6 +235,7 @@ ORDER BY n_live_tup DESC;
 ```
 
 **Threshold**:
+
 - ⚠️ **Warning**: `financials` table > 1M rows (review index efficiency)
 - ⚠️ **Warning**: Dead row percent > 20% (schedule VACUUM ANALYZE)
 
@@ -228,6 +246,7 @@ ORDER BY n_live_tup DESC;
 **Metric 7: Index Usage Rate**
 
 **Query** (PostgreSQL):
+
 ```sql
 SELECT
   schemaname,
@@ -245,6 +264,7 @@ ORDER BY idx_scan ASC;  -- Least used indexes first
 **Action**: Identify unused indexes (idx_scan = 0) and drop to save disk space.
 
 **Example**:
+
 ```sql
 -- If index never used after 30 days, consider dropping
 DROP INDEX CONCURRENTLY idx_unused_example;
@@ -255,6 +275,7 @@ DROP INDEX CONCURRENTLY idx_unused_example;
 **Metric 8: Index Bloat**
 
 **Query** (PostgreSQL):
+
 ```sql
 SELECT
   schemaname,
@@ -268,9 +289,11 @@ ORDER BY pg_relation_size(indexrelid) DESC;
 ```
 
 **Threshold**:
+
 - ⚠️ **Warning**: Index bloat > 30% (schedule REINDEX)
 
 **Remediation**:
+
 ```sql
 REINDEX INDEX CONCURRENTLY idx_bloated_example;
 ```
@@ -282,6 +305,7 @@ REINDEX INDEX CONCURRENTLY idx_bloated_example;
 **Metric 9: Replication Lag** (if read replica configured)
 
 **Query** (PostgreSQL on primary):
+
 ```sql
 SELECT
   client_addr,
@@ -296,6 +320,7 @@ FROM pg_stat_replication;
 ```
 
 **Threshold**:
+
 - ⚠️ **Warning**: Lag > 100 MB
 - 🚨 **Critical**: Lag > 500 MB (replica diverging)
 
@@ -308,22 +333,26 @@ FROM pg_stat_replication;
 **Metric 10: Disk Space Utilization**
 
 **Query** (Supabase Dashboard or PostgreSQL):
+
 ```sql
 SELECT pg_size_pretty(pg_database_size('postgres')) AS database_size;
 ```
 
 **DataDog Query**:
+
 ```
 avg:system.disk.used{env:production} / avg:system.disk.total{env:production} * 100
 ```
 
 **Thresholds**:
+
 - ⚠️ **Warning**: Disk > 70% full
 - 🚨 **Critical**: Disk > 85% full
 
 **Why It Matters**: PostgreSQL requires ~20% free space for VACUUM operations. Disk full = database writes fail.
 
 **Mitigation**:
+
 - Archive old data to S3 (see [Data Retention](./system-architecture.md#data-retention--archival))
 - Upgrade Supabase plan (increase disk capacity)
 
@@ -336,8 +365,8 @@ avg:system.disk.used{env:production} / avg:system.disk.total{env:production} * 1
 **Alert 1: Connection Pool Exhaustion**
 
 ```yaml
-name: "[P1] PostgreSQL Connection Pool Exhausted"
-query: "avg(last_5m):max:postgres.connections.active{env:production} / max:postgres.max_connections{env:production} > 0.9"
+name: '[P1] PostgreSQL Connection Pool Exhausted'
+query: 'avg(last_5m):max:postgres.connections.active{env:production} / max:postgres.max_connections{env:production} > 0.9'
 message: |
   🚨 **Connection pool at 90% capacity!**
 
@@ -360,8 +389,8 @@ notify:
 **Alert 2: Slow Query Spike**
 
 ```yaml
-name: "[P2] Database Query Performance Degradation"
-query: "avg(last_15m):avg:postgres.query.time.p95{env:production} > 500"
+name: '[P2] Database Query Performance Degradation'
+query: 'avg(last_15m):avg:postgres.query.time.p95{env:production} > 500'
 message: |
   ⚠️ **Query latency exceeded 500ms (p95)**
 
@@ -384,8 +413,8 @@ notify:
 **Alert 3: Disk Space Warning**
 
 ```yaml
-name: "[P2] Database Disk Space >80%"
-query: "avg(last_1h):avg:system.disk.used{env:production} / avg:system.disk.total{env:production} * 100 > 80"
+name: '[P2] Database Disk Space >80%'
+query: 'avg(last_1h):avg:system.disk.used{env:production} / avg:system.disk.total{env:production} * 100 > 80'
 message: |
   ⚠️ **Database disk usage exceeded 80%**
 
@@ -425,6 +454,7 @@ ORDER BY query_start;
 ```
 
 **Interpretation**:
+
 - `duration > 10s`: Slow query, investigate
 - `wait_event_type = 'Lock'`: Blocked by another query (deadlock risk)
 
@@ -473,6 +503,7 @@ ORDER BY dead_percent DESC;
 ```
 
 **Action**:
+
 ```sql
 VACUUM ANALYZE financials;  -- Manual vacuum if dead_percent >20%
 ```
@@ -506,10 +537,12 @@ FROM pg_statio_user_tables;
 ### Playbook 1: API Timeout Errors
 
 **Symptoms**:
+
 - Sentry: `PrismaClientKnownRequestError: Query timeout`
 - DataDog: API response time >5s
 
 **Investigation**:
+
 1. Check active queries:
    ```sql
    SELECT * FROM pg_stat_activity WHERE state = 'active' ORDER BY query_start;
@@ -518,6 +551,7 @@ FROM pg_statio_user_tables;
 3. Run `EXPLAIN ANALYZE` on query to find bottleneck
 
 **Resolution**:
+
 - Add missing index
 - Optimize query (reduce joins, add WHERE clauses)
 - Cancel stuck query: `SELECT pg_cancel_backend(<pid>);`
@@ -527,10 +561,12 @@ FROM pg_statio_user_tables;
 ### Playbook 2: Connection Pool Exhausted
 
 **Symptoms**:
+
 - API errors: `FATAL: remaining connection slots are reserved for non-replication superuser connections`
 - DataDog: `postgres.connections.active = 100/100`
 
 **Investigation**:
+
 1. Identify queries holding connections:
    ```sql
    SELECT pid, usename, state, query, state_change
@@ -541,6 +577,7 @@ FROM pg_statio_user_tables;
 2. Check for connection leaks in application code (Prisma client not closed)
 
 **Resolution**:
+
 - Short-term: Restart application (releases connections)
 - Long-term: Fix connection leak + enable PgBouncer
 
@@ -549,10 +586,12 @@ FROM pg_statio_user_tables;
 ### Playbook 3: Slow Dashboard Load Time
 
 **Symptoms**:
+
 - Core Web Vitals: LCP > 2.5s
 - DataDog: `/api/financials` response time > 1s
 
 **Investigation**:
+
 1. Profile slow API route:
    ```sql
    EXPLAIN ANALYZE
@@ -563,6 +602,7 @@ FROM pg_statio_user_tables;
 2. Check if index used (should see "Index Scan" not "Seq Scan")
 
 **Resolution**:
+
 - Add missing composite index
 - Cache frequently accessed data (Redis)
 
@@ -572,21 +612,21 @@ FROM pg_statio_user_tables;
 
 ### Growth Projections
 
-| Metric | Current (MVP) | 100 Customers | 500 Customers | 1,000 Customers |
-|--------|---------------|---------------|---------------|-----------------|
-| **Financials rows** | 10K | 1M | 5M | 10M |
-| **Database size** | 100 MB | 10 GB | 50 GB | 100 GB |
-| **Daily queries** | 10K | 1M | 5M | 10M |
-| **Connections (avg)** | 10 | 50 | 200 | 500 |
+| Metric                | Current (MVP) | 100 Customers | 500 Customers | 1,000 Customers |
+| --------------------- | ------------- | ------------- | ------------- | --------------- |
+| **Financials rows**   | 10K           | 1M            | 5M            | 10M             |
+| **Database size**     | 100 MB        | 10 GB         | 50 GB         | 100 GB          |
+| **Daily queries**     | 10K           | 1M            | 5M            | 10M             |
+| **Connections (avg)** | 10            | 50            | 200           | 500             |
 
 ### Upgrade Triggers
 
-| Threshold | Action |
-|-----------|--------|
-| **Disk > 70% full** | Archive old data + upgrade Supabase plan |
-| **Connections > 80%** | Enable PgBouncer + upgrade connection limit |
+| Threshold                 | Action                                                                                                 |
+| ------------------------- | ------------------------------------------------------------------------------------------------------ |
+| **Disk > 70% full**       | Archive old data + upgrade Supabase plan                                                               |
+| **Connections > 80%**     | Enable PgBouncer + upgrade connection limit                                                            |
 | **Financials > 10M rows** | Implement monthly partitioning (see [Schema Evolution](./database-schema-diagram.md#schema-evolution)) |
-| **Query p95 > 500ms** | Add read replica for dashboard queries |
+| **Query p95 > 500ms**     | Add read replica for dashboard queries                                                                 |
 
 ---
 
@@ -604,7 +644,9 @@ FROM pg_statio_user_tables;
 **Review Cycle**: Monthly (review metrics dashboard, adjust thresholds)
 **Next Review**: 2025-11-15
 **Change History**:
+
 - 2025-10-15: Initial version (v1.0) - Production monitoring standards defined
 
 **Approval**:
+
 - Database Operations: [Founder Name] - Approved 2025-10-15

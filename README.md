@@ -15,7 +15,7 @@
 **"Bespoke Business Intelligence at SaaS Pricing"**
 
 - **Automated Data Consolidation**: Nightly syncs from 50+ business systems via OAuth integrations
-- **Bespoke Dashboards**: Custom-designed visualizations tailored to each customer's industry and KPIs  
+- **Bespoke Dashboards**: Custom-designed visualizations tailored to each customer's industry and KPIs
 - **Zero Maintenance**: Fully managed platform with included support and ongoing optimization
 - **Australian-Focused**: AU data residency, Privacy Act compliance, integrations with AU-specific tools (Xero, MYOB, Employment Hero)
 
@@ -23,17 +23,17 @@
 
 ### Technology Stack
 
-| Layer | Technology | Purpose |
-|-------|------------|---------|
-| **Frontend** | Next.js 15.5.5 + React 19 | SSR dashboard with App Router |
-| **Styling** | Tailwind CSS 4.x | Utility-first responsive design |
-| **Charts** | Visx | D3-based custom visualizations |
-| **Backend** | Next.js API Routes | Serverless functions |
-| **Database** | PostgreSQL (Supabase) | Multi-tenant data warehouse |
-| **ORM** | Prisma 6.x | Type-safe database access |
-| **Auth** | Supabase Auth | JWT-based authentication |
-| **ETL** | n8n (Docker) | Workflow automation & data pipelines |
-| **Hosting** | Vercel | Edge network deployment |
+| Layer        | Technology                | Purpose                              |
+| ------------ | ------------------------- | ------------------------------------ |
+| **Frontend** | Next.js 15.5.5 + React 19 | SSR dashboard with App Router        |
+| **Styling**  | Tailwind CSS 4.x          | Utility-first responsive design      |
+| **Charts**   | Visx                      | D3-based custom visualizations       |
+| **Backend**  | Next.js API Routes        | Serverless functions                 |
+| **Database** | PostgreSQL (Supabase)     | Multi-tenant data warehouse          |
+| **ORM**      | Prisma 6.x                | Type-safe database access            |
+| **Auth**     | Supabase Auth             | JWT-based authentication             |
+| **ETL**      | n8n (Docker)              | Workflow automation & data pipelines |
+| **Hosting**  | Vercel                    | Edge network deployment              |
 
 ### System Architecture
 
@@ -74,32 +74,37 @@
 ### Installation
 
 1. **Clone the repository**
+
    ```bash
    git clone https://github.com/scriptumarc/platform.git
    cd platform
    ```
 
 2. **Install dependencies**
+
    ```bash
    npm install
    ```
 
 3. **Environment setup**
+
    ```bash
    cp .env.example .env.local
    # Edit .env.local with your Supabase credentials
    ```
 
 4. **Database setup**
+
    ```bash
    # Run migrations
    npm run db:migrate
-   
+
    # Seed development data
    npm run db:seed
    ```
 
 5. **Start development server**
+
    ```bash
    npm run dev
    ```
@@ -138,24 +143,26 @@ npm run db:reset         # Reset database (WARNING: destroys data)
 
 ### Integration Ecosystem
 
-| Priority | Integration | Category | Data Synced |
-|----------|-------------|----------|-------------|
-| **P1** | Xero | Accounting | P&L, Balance Sheet, Invoices |
-| **P1** | HubSpot | CRM | Deals, Contacts, Companies |
-| **P1** | Asana | Project Mgmt | Tasks, Projects, Time Tracking |
-| **P2** | Shopify | E-Commerce | Orders, Products, Customers |
-| **P2** | MYOB | Accounting | Same as Xero |
-| **P2** | Pipedrive | CRM | Deals, Contacts, Activities |
+| Priority | Integration | Category     | Data Synced                    |
+| -------- | ----------- | ------------ | ------------------------------ |
+| **P1**   | Xero        | Accounting   | P&L, Balance Sheet, Invoices   |
+| **P1**   | HubSpot     | CRM          | Deals, Contacts, Companies     |
+| **P1**   | Asana       | Project Mgmt | Tasks, Projects, Time Tracking |
+| **P2**   | Shopify     | E-Commerce   | Orders, Products, Customers    |
+| **P2**   | MYOB        | Accounting   | Same as Xero                   |
+| **P2**   | Pipedrive   | CRM          | Deals, Contacts, Activities    |
 
 ## 🎨 Dashboard Preview
 
 ### Financial Performance Dashboard
+
 - **KPI Cards**: Revenue (MTD), Net Profit, Cash Flow, Accounts Receivable
 - **Trend Charts**: Revenue, Expenses, Net Profit over time
 - **Cash Flow Waterfall**: Inflows and outflows visualization
 - **P&L Table**: Period comparison with drill-down capability
 
 ### Sales Pipeline Funnel
+
 - **Funnel Visualization**: Lead → Qualified → Proposal → Closed Won
 - **Conversion Metrics**: Stage-by-stage breakdown with conversion rates
 - **Deal List**: Drill-down to individual deals with CRM integration
@@ -173,13 +180,14 @@ npm run db:reset         # Reset database (WARNING: destroys data)
 
 ### Pricing Tiers
 
-| Tier | Monthly Price | Setup Fee | Target Customer |
-|------|---------------|------------|-----------------|
-| **Starter** | $1,200 | $2,500 | $1-2M revenue, 3 integrations |
-| **Professional** | $1,800 | $2,500 | $2-5M revenue, 8 integrations |
-| **Enterprise** | $3,500 | $4,000 | $5M+ revenue, unlimited integrations |
+| Tier             | Monthly Price | Setup Fee | Target Customer                      |
+| ---------------- | ------------- | --------- | ------------------------------------ |
+| **Starter**      | $1,200        | $2,500    | $1-2M revenue, 3 integrations        |
+| **Professional** | $1,800        | $2,500    | $2-5M revenue, 8 integrations        |
+| **Enterprise**   | $3,500        | $4,000    | $5M+ revenue, unlimited integrations |
 
 ### Target Market
+
 - **Primary**: Australian SMEs ($1-10M annual revenue)
 - **Industries**: Construction, Professional Services, E-commerce
 - **Personas**: Business Owners, COOs, Accountants/Bookkeepers
@@ -248,12 +256,12 @@ Comprehensive documentation is available in the `/docs` directory:
 
 ## 📊 Performance Targets
 
-| Metric | Target | Current |
-|--------|--------|---------|
-| **Dashboard Load Time (LCP)** | <2.5s | 1.8s |
-| **API Response Time (p95)** | <500ms | 320ms |
-| **Database Query Time (p95)** | <100ms | 65ms |
-| **System Uptime** | 99.9% | 99.95% |
+| Metric                        | Target | Current |
+| ----------------------------- | ------ | ------- |
+| **Dashboard Load Time (LCP)** | <2.5s  | 1.8s    |
+| **API Response Time (p95)**   | <500ms | 320ms   |
+| **Database Query Time (p95)** | <100ms | 65ms    |
+| **System Uptime**             | 99.9%  | 99.95%  |
 
 ## 🤝 Contributing
 

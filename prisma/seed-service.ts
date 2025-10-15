@@ -4,9 +4,9 @@ import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient({
   datasources: {
     db: {
-      url: process.env.DIRECT_URL // Use direct URL for seeding
-    }
-  }
+      url: process.env.DIRECT_URL, // Use direct URL for seeding
+    },
+  },
 })
 
 async function main() {
@@ -67,10 +67,10 @@ async function main() {
     data: {
       clientKPIId: client1.id,
       recordDate: new Date('2024-01-01'),
-      revenue: 2500000.00,
-      expenses: 1800000.00,
-      netProfit: 700000.00,
-      cashFlow: 650000.00,
+      revenue: 2500000.0,
+      expenses: 1800000.0,
+      netProfit: 700000.0,
+      cashFlow: 650000.0,
       currency: 'AUD',
       sourceSystem: 'xero',
     },
@@ -80,10 +80,10 @@ async function main() {
     data: {
       clientKPIId: client2.id,
       recordDate: new Date('2024-01-01'),
-      revenue: 1200000.00,
-      expenses: 950000.00,
-      netProfit: 250000.00,
-      cashFlow: 200000.00,
+      revenue: 1200000.0,
+      expenses: 950000.0,
+      netProfit: 250000.0,
+      cashFlow: 200000.0,
       currency: 'AUD',
       sourceSystem: 'xero',
     },
@@ -98,7 +98,7 @@ async function main() {
       eventDate: new Date('2024-01-15'),
       leadId: 'LEAD-001',
       stage: 'qualified',
-      value: 2500000.00,
+      value: 2500000.0,
       status: 'active',
       sourceSystem: 'hubspot',
     },
@@ -110,7 +110,7 @@ async function main() {
       eventDate: new Date('2024-03-01'),
       leadId: 'LEAD-002',
       stage: 'proposal',
-      value: 1200000.00,
+      value: 1200000.0,
       status: 'active',
       sourceSystem: 'hubspot',
     },
@@ -123,7 +123,7 @@ async function main() {
     data: {
       clientKPIId: client1.id,
       metricName: 'construction_milestones_completed',
-      metricValue: 15.00,
+      metricValue: 15.0,
       unit: 'count',
       recordDate: new Date('2024-01-31'),
       sourceSystem: 'manual',
@@ -134,7 +134,7 @@ async function main() {
     data: {
       clientKPIId: client2.id,
       metricName: 'units_sold',
-      metricValue: 8.00,
+      metricValue: 8.0,
       unit: 'count',
       recordDate: new Date('2024-03-31'),
       sourceSystem: 'manual',

@@ -65,16 +65,19 @@ Your data flows automatically from all your business systems into one secure dat
 ### Three Steps to Data Clarity
 
 **1. Connect** (Week 1)
+
 - Secure OAuth integration with your existing tools
 - One-time configuration, no ongoing maintenance
 - Australian-based data storage (Supabase Sydney region)
 
 **2. Customize** (Week 2-3)
+
 - We design your dashboard based on your KPIs
 - Bespoke visualizations built specifically for your industry
 - Unlimited revisions until it's perfect
 
 **3. Operate** (Ongoing)
+
 - Data syncs automatically (nightly/hourly)
 - Email alerts for anomalies or thresholds
 - Monthly performance reviews included
@@ -95,12 +98,12 @@ Then it just runs. Data updates automatically. You check your dashboard like you
 
 ### Built With Enterprise-Grade Technology
 
-| Component | Technology | Why It Matters |
-|-----------|-----------|----------------|
-| **Database** | PostgreSQL (Supabase) | Bank-grade security, unlimited scalability |
-| **ETL/Automation** | n8n (Self-hosted) | No per-task fees, unlimited workflows |
-| **Visualization** | Visx (D3-based) | Custom, publication-quality charts |
-| **API/Frontend** | Next.js + TypeScript | Fast, secure, type-safe |
+| Component          | Technology            | Why It Matters                             |
+| ------------------ | --------------------- | ------------------------------------------ |
+| **Database**       | PostgreSQL (Supabase) | Bank-grade security, unlimited scalability |
+| **ETL/Automation** | n8n (Self-hosted)     | No per-task fees, unlimited workflows      |
+| **Visualization**  | Visx (D3-based)       | Custom, publication-quality charts         |
+| **API/Frontend**   | Next.js + TypeScript  | Fast, secure, type-safe                    |
 
 ### The Solo Operator Advantage
 
@@ -122,15 +125,15 @@ And unlike SaaS platforms like Klipfolio that charge per user or per integration
 
 ### Typical Customer ROI (First Year)
 
-| Cost Category | Before Scriptum Arc | With Scriptum Arc | Annual Savings |
-|---------------|---------------------|-------------------|----------------|
-| **Manual Reporting** | 10 hrs/week @ $75/hr | 0 hrs | **$39,000** |
-| **Accountant Ad-Hoc Reports** | $2,500/quarter | $0 | **$10,000** |
-| **Data Entry Errors** | ~$8,000/year | ~$500/year | **$7,500** |
-| **Delayed Decisions** | Opportunity cost ~$15k | $0 | **$15,000** |
-| **Total Annual Benefit** | | | **$71,500** |
-| **Scriptum Arc Cost** | | | **$18,000** |
-| **Net ROI** | | | **$53,500 (297%)** |
+| Cost Category                 | Before Scriptum Arc    | With Scriptum Arc | Annual Savings     |
+| ----------------------------- | ---------------------- | ----------------- | ------------------ |
+| **Manual Reporting**          | 10 hrs/week @ $75/hr   | 0 hrs             | **$39,000**        |
+| **Accountant Ad-Hoc Reports** | $2,500/quarter         | $0                | **$10,000**        |
+| **Data Entry Errors**         | ~$8,000/year           | ~$500/year        | **$7,500**         |
+| **Delayed Decisions**         | Opportunity cost ~$15k | $0                | **$15,000**        |
+| **Total Annual Benefit**      |                        |                   | **$71,500**        |
+| **Scriptum Arc Cost**         |                        |                   | **$18,000**        |
+| **Net ROI**                   |                        |                   | **$53,500 (297%)** |
 
 ### Script
 
@@ -153,18 +156,21 @@ Conservative estimate: $71,500 in annual benefits. Scriptum Arc costs $1,500/mon
 ### Built for Your Industry
 
 **Professional Services** (Legal, Accounting, Consulting)
+
 - Matter/project profitability tracking
 - Utilization rates and billable hours analysis
 - Client lifetime value and retention metrics
 - Work-in-progress (WIP) aging
 
 **Trades & Construction**
+
 - Job costing and materials tracking
 - Equipment utilization and maintenance schedules
 - Quote-to-completion cycle time
 - Subcontractor performance metrics
 
 **E-Commerce & Retail**
+
 - Inventory turnover and stock forecasting
 - Cart abandonment and conversion funnels
 - Customer acquisition cost by channel
@@ -189,6 +195,7 @@ E-commerce? We sync Shopify order data, calculate true COGS including shipping a
 **Profile**: 25-person commercial construction company, $4.5M annual revenue
 
 **Challenge**:
+
 - Job profitability unknown until 30-60 days after completion
 - Manual spreadsheet tracking taking 15 hours/week
 - Lost $85,000 on a project due to materials cost overruns not visible until invoicing
@@ -196,12 +203,13 @@ E-commerce? We sync Shopify order data, calculate true COGS including shipping a
 **Solution**: Scriptum Arc dashboard with real-time job costing
 
 **Results (6 months)**:
+
 - Job profitability visible within 24 hours of expense entry
 - Reporting time reduced from 15 hrs/week to 30 min/week (96% reduction)
 - Identified underperforming project manager, reassigned projects, recovered 12% margin
 - Caught materials overrun early on $320k project, saved $28,000
 
-**Quote**: *"We were flying blind. Now I know every Monday morning exactly where we stand on every active job. It's transformed how we operate."* - Operations Director
+**Quote**: _"We were flying blind. Now I know every Monday morning exactly where we stand on every active job. It's transformed how we operate."_ - Operations Director
 
 ### Script
 
@@ -220,18 +228,21 @@ Six months in, they'd saved the 15 hours a week previously spent on spreadsheets
 ### Australian-Based, Bank-Grade Security
 
 **Data Protection**
+
 - Australian data residency (Supabase Sydney region)
 - Australian Privacy Act 1988 compliant
 - SOC 2 Type II compliance roadmap (Q3 2025)
 - Encryption at rest and in transit (AES-256, TLS 1.3)
 
 **Access Control**
+
 - OAuth 2.0 authentication (no password storage)
 - Role-based access control (RBAC)
 - Audit logging for all data access
 - SSO integration available (enterprise tier)
 
 **Reliability**
+
 - 99.9% uptime SLA
 - Automated daily backups (30-day retention)
 - Disaster recovery procedures tested quarterly
@@ -253,11 +264,11 @@ Uptime is guaranteed at 99.9%. We back up your data daily with 30-day retention.
 
 ### Transparent, Predictable Pricing
 
-| Tier | Monthly Cost | Included | Best For |
-|------|--------------|----------|----------|
-| **Starter** | $1,200/month | - 3 data source integrations<br>- 1 custom dashboard<br>- 5 users<br>- Email support<br>- Monthly sync (data refreshes nightly) | Single-entity businesses $1-2M revenue |
-| **Professional** | $1,800/month | - 8 data source integrations<br>- 2 custom dashboards<br>- Unlimited users<br>- Priority email + Slack support<br>- Hourly sync<br>- Monthly strategy review | Growing businesses $2-5M revenue |
-| **Enterprise** | $3,500/month | - Unlimited integrations<br>- Unlimited dashboards<br>- Unlimited users<br>- Dedicated Slack channel<br>- Real-time sync<br>- Weekly strategy reviews<br>- Custom workflow automation | Multi-entity or complex businesses $5M+ revenue |
+| Tier             | Monthly Cost | Included                                                                                                                                                                              | Best For                                        |
+| ---------------- | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------- |
+| **Starter**      | $1,200/month | - 3 data source integrations<br>- 1 custom dashboard<br>- 5 users<br>- Email support<br>- Monthly sync (data refreshes nightly)                                                       | Single-entity businesses $1-2M revenue          |
+| **Professional** | $1,800/month | - 8 data source integrations<br>- 2 custom dashboards<br>- Unlimited users<br>- Priority email + Slack support<br>- Hourly sync<br>- Monthly strategy review                          | Growing businesses $2-5M revenue                |
+| **Enterprise**   | $3,500/month | - Unlimited integrations<br>- Unlimited dashboards<br>- Unlimited users<br>- Dedicated Slack channel<br>- Real-time sync<br>- Weekly strategy reviews<br>- Custom workflow automation | Multi-entity or complex businesses $5M+ revenue |
 
 **Setup Fee**: $2,500 (one-time, covers initial integration and dashboard build)
 
@@ -285,16 +296,16 @@ Compare that to a traditional BI consultant: $15-25k setup, then $2-5k monthly r
 
 ### Scriptum Arc vs. Alternatives
 
-| Feature | Scriptum Arc | Power BI + Consultant | Klipfolio/Databox | Excel Spreadsheets |
-|---------|--------------|----------------------|-------------------|-------------------|
-| **Setup Time** | 2-3 weeks | 2-3 months | 1-2 months | Ongoing |
-| **Custom Dashboards** | ✅ Bespoke | ✅ (extra cost) | ❌ Templates only | ✅ (manual) |
-| **Australian Focus** | ✅ Built for AU SMEs | ⚠️ Generic | ⚠️ US-focused | N/A |
-| **Ongoing Maintenance** | ✅ Included | ❌ Retainer required | ⚠️ DIY | ❌ Manual |
-| **Total Year 1 Cost** | $20,500 | $45,000-$80,000 | $12,000-$18,000 | Staff time ($30k+) |
-| **Technical Skill Required** | None | Medium-High | Medium | Medium |
-| **Data Flexibility** | Unlimited sources | Unlimited sources | Limited by plan | Manual only |
-| **Support Quality** | Direct to developer | Depends on firm | Ticket system | N/A |
+| Feature                      | Scriptum Arc         | Power BI + Consultant | Klipfolio/Databox | Excel Spreadsheets |
+| ---------------------------- | -------------------- | --------------------- | ----------------- | ------------------ |
+| **Setup Time**               | 2-3 weeks            | 2-3 months            | 1-2 months        | Ongoing            |
+| **Custom Dashboards**        | ✅ Bespoke           | ✅ (extra cost)       | ❌ Templates only | ✅ (manual)        |
+| **Australian Focus**         | ✅ Built for AU SMEs | ⚠️ Generic            | ⚠️ US-focused     | N/A                |
+| **Ongoing Maintenance**      | ✅ Included          | ❌ Retainer required  | ⚠️ DIY            | ❌ Manual          |
+| **Total Year 1 Cost**        | $20,500              | $45,000-$80,000       | $12,000-$18,000   | Staff time ($30k+) |
+| **Technical Skill Required** | None                 | Medium-High           | Medium            | Medium             |
+| **Data Flexibility**         | Unlimited sources    | Unlimited sources     | Limited by plan   | Manual only        |
+| **Support Quality**          | Direct to developer  | Depends on firm       | Ticket system     | N/A                |
 
 ### Script
 
@@ -347,21 +358,25 @@ Scriptum Arc is the sweet spot: bespoke quality at SaaS pricing, with included o
 ### From Signup to Insights: 3-Week Journey
 
 **Week 1: Integration & Data Foundation**
+
 - Day 1-2: Kickoff call, requirements gathering, system access provisioning
 - Day 3-5: OAuth connections to data sources, initial data extraction
 - Day 6-7: Data validation and quality checks
 
 **Week 2: Dashboard Design & Build**
+
 - Day 8-10: KPI definition workshop, wireframe approval
 - Day 11-13: Custom visualization development
 - Day 14: First dashboard preview and feedback session
 
 **Week 3: Refinement & Launch**
+
 - Day 15-17: Revisions based on feedback
 - Day 18-19: User training and documentation
 - Day 20-21: Production launch and first daily sync
 
 **Ongoing**
+
 - Weekly check-ins (first month)
 - Monthly strategy reviews
 - Quarterly optimization sessions
@@ -389,12 +404,14 @@ After launch, you're not on your own. Weekly check-ins for the first month, then
 **Three Ways to Get Started:**
 
 **1. Discovery Call** (30 minutes)
+
 - Review your current reporting process
 - Identify quick-win KPIs
 - Assess integration complexity
 - No obligation, no sales pitch
 
 **2. Pilot Project** (30 days, $2,500)
+
 - Build one core dashboard
 - Connect 2-3 systems
 - See the platform in action
@@ -402,10 +419,12 @@ After launch, you're not on your own. Weekly check-ins for the first month, then
 - Credit toward full subscription if you proceed
 
 **3. Full Implementation** (Standard 3-week deployment)
+
 - Jump straight to Starter/Professional tier
 - Setup fee waived for commitments made this quarter
 
 **Contact**
+
 - Email: hello@scriptumarc.com.au
 - Phone: [Your Number]
 - Calendar: [Calendly Link]
@@ -429,6 +448,7 @@ What makes sense for you?"
 ## Demo Script: Live Walkthrough
 
 ### Pre-Demo Checklist
+
 - [ ] Confirm demo environment is loaded with realistic sample data
 - [ ] Test all interactive filters and drill-downs
 - [ ] Prepare 2-3 "aha moment" insights to highlight
@@ -572,26 +592,34 @@ We've worked with customers who tried both those paths first. They all say the s
 ## Post-Demo Follow-Up Sequence
 
 ### Day 1 (Immediately After Demo)
+
 **Email**: Summary and next steps
+
 - Thank you for your time
 - Recap key points discussed
 - Attach: Pricing sheet, case studies, technical FAQ
 - CTA: Book follow-up call or start pilot
 
 ### Day 3 (If No Response)
+
 **Email**: Additional value-add
+
 - "Thought you might find this useful" + industry-specific resource (e.g., "5 KPIs Every Construction Business Should Track")
 - Subtle reminder of demo discussion
 - CTA: "Any questions I can answer?"
 
 ### Day 7 (If No Response)
+
 **Email**: Soft check-in
+
 - "Wanted to check if you had a chance to review the proposal"
 - Offer to address specific concerns
 - CTA: "Should I follow up next month, or is now not the right time?"
 
 ### Day 14 (If No Response)
+
 **Email**: Breakup email
+
 - "I'll assume this isn't a priority right now"
 - Leave door open: "Feel free to reach out when timing is better"
 - Often triggers response from procrastinators
@@ -603,26 +631,31 @@ We've worked with customers who tried both those paths first. They all say the s
 Before investing heavy demo time, qualify the prospect:
 
 **Budget**
+
 - [ ] Annual revenue >$1M (minimum for value alignment)
 - [ ] Has budget authority or can influence budget decision
 - [ ] Currently spending on accounting/reporting/software (not purely bootstrap)
 
 **Authority**
+
 - [ ] Decision-maker on call (owner, CFO, COO)
 - [ ] If not, decision-maker will attend next meeting
 - [ ] No more than 2 stakeholder meetings required to close
 
 **Need**
+
 - [ ] Experiencing reporting pain (time waste or data inaccuracy)
 - [ ] Using 3+ disconnected business systems
 - [ ] Making financial/strategic decisions at least monthly
 
 **Timeline**
+
 - [ ] Has specific reason to move now (tax time, growth phase, investor requirements)
 - [ ] Can implement within 30-60 days
 - [ ] Not in "just browsing" mode
 
 **Technical Fit**
+
 - [ ] Uses supported integrations (Xero/MYOB + CRM + PM tool)
 - [ ] Data is relatively clean (not 5 years of mess to untangle)
 - [ ] Has basic internet infrastructure (cloud software, decent bandwidth)

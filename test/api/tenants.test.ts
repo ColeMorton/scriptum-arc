@@ -13,7 +13,7 @@ describe('Tenants API Logic', () => {
 
   it('should validate authenticated user access', async () => {
     const { getCurrentUser } = await import('@/lib/auth')
-    
+
     const mockUser = {
       id: 'user-123',
       email: 'test@example.com',
@@ -32,7 +32,7 @@ describe('Tenants API Logic', () => {
 
   it('should handle unauthenticated user', async () => {
     const { getCurrentUser } = await import('@/lib/auth')
-    
+
     vi.mocked(getCurrentUser).mockResolvedValue(null)
 
     const result = await getCurrentUser()
@@ -42,7 +42,10 @@ describe('Tenants API Logic', () => {
 
   it('should validate tenant data structure', () => {
     // Test tenant data structure validation
-    const createTenantData = (tenant: { id: string; name: string; industry: string }, user: { id: string }) => {
+    const createTenantData = (
+      tenant: { id: string; name: string; industry: string },
+      user: { id: string }
+    ) => {
       return {
         id: tenant.id,
         name: tenant.name,
@@ -121,7 +124,11 @@ describe('Tenants API Logic', () => {
 
   it('should validate tenant filtering logic', () => {
     // Test tenant data filtering
-    const filterTenantData = (tenant: { id: string; name: string; industry: string; createdAt: Date }, includeUsers = true, includeClients = true) => {
+    const filterTenantData = (
+      tenant: { id: string; name: string; industry: string; createdAt: Date },
+      includeUsers = true,
+      includeClients = true
+    ) => {
       const baseData: Record<string, unknown> = {
         id: tenant.id,
         name: tenant.name,
@@ -156,9 +163,7 @@ describe('Tenants API Logic', () => {
         { id: 'user-1', email: 'user1@test.com', role: 'ADMIN' },
         { id: 'user-2', email: 'user2@test.com', role: 'EDITOR' },
       ],
-      clientKPIs: [
-        { id: 'client-1', name: 'Client 1' },
-      ],
+      clientKPIs: [{ id: 'client-1', name: 'Client 1' }],
     }
 
     // Test with all data included
@@ -192,8 +197,10 @@ describe('Tenants API Logic', () => {
         ADMIN: 2,
       }
 
-      return roleHierarchy[userRole as keyof typeof roleHierarchy] >= 
-             roleHierarchy[requiredRole as keyof typeof roleHierarchy]
+      return (
+        roleHierarchy[userRole as keyof typeof roleHierarchy] >=
+        roleHierarchy[requiredRole as keyof typeof roleHierarchy]
+      )
     }
 
     // Test admin access

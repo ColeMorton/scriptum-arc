@@ -4,9 +4,12 @@ import { PrismaClient } from '@prisma/client'
 export const testPrisma = new PrismaClient({
   datasources: {
     db: {
-      url: process.env.TEST_DATABASE_URL || process.env.DIRECT_URL || 'postgresql://mock:mock@mock:5432/mock'
-    }
-  }
+      url:
+        process.env.TEST_DATABASE_URL ||
+        process.env.DIRECT_URL ||
+        'postgresql://mock:mock@mock:5432/mock',
+    },
+  },
 })
 
 // Clean up test data
@@ -32,7 +35,10 @@ export async function createTestTenant() {
 }
 
 // Create test user
-export async function createTestUser(tenantId: string, role: 'ADMIN' | 'EDITOR' | 'VIEWER' = 'ADMIN') {
+export async function createTestUser(
+  tenantId: string,
+  role: 'ADMIN' | 'EDITOR' | 'VIEWER' = 'ADMIN'
+) {
   return await testPrisma.user.create({
     data: {
       tenantId,

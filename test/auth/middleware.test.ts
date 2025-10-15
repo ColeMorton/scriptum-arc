@@ -34,7 +34,10 @@ describe('Supabase Middleware Logic', () => {
       user: mockUser,
     }
 
-    const addUserHeaders = (session: { user?: { id: string; user_metadata?: { tenant_id?: string } } }, headers: { set: (key: string, value: string) => void }) => {
+    const addUserHeaders = (
+      session: { user?: { id: string; user_metadata?: { tenant_id?: string } } },
+      headers: { set: (key: string, value: string) => void }
+    ) => {
       if (session?.user) {
         headers.set('x-user-id', session.user.id)
         headers.set('x-tenant-id', session.user.user_metadata?.tenant_id || '')
@@ -57,7 +60,10 @@ describe('Supabase Middleware Logic', () => {
     // Test the logic for not adding user headers
     const mockSession = null
 
-    const addUserHeaders = (session: { user?: { id: string; user_metadata?: { tenant_id?: string } } }, headers: { set: (key: string, value: string) => void }) => {
+    const addUserHeaders = (
+      session: { user?: { id: string; user_metadata?: { tenant_id?: string } } },
+      headers: { set: (key: string, value: string) => void }
+    ) => {
       if (session?.user) {
         headers.set('x-user-id', session.user.id)
         headers.set('x-tenant-id', session.user.user_metadata?.tenant_id || '')
@@ -88,7 +94,10 @@ describe('Supabase Middleware Logic', () => {
       user: mockUser,
     }
 
-    const addUserHeaders = (session: { user?: { id: string; user_metadata?: { tenant_id?: string } } }, headers: { set: (key: string, value: string) => void }) => {
+    const addUserHeaders = (
+      session: { user?: { id: string; user_metadata?: { tenant_id?: string } } },
+      headers: { set: (key: string, value: string) => void }
+    ) => {
       if (session?.user) {
         headers.set('x-user-id', session.user.id)
         headers.set('x-tenant-id', session.user.user_metadata?.tenant_id || '')
@@ -124,7 +133,8 @@ describe('Supabase Middleware Logic', () => {
 
   it('should validate request path matching', () => {
     // Test request path matching logic
-    const matcher = /^((?!_next\/static|_next\/image|favicon\.ico|.*\.(?:svg|png|jpg|jpeg|gif|webp)$).*)$/
+    const matcher =
+      /^((?!_next\/static|_next\/image|favicon\.ico|.*\.(?:svg|png|jpg|jpeg|gif|webp)$).*)$/
 
     // Should match API routes
     expect(matcher.test('/api/health')).toBe(true)
@@ -146,7 +156,9 @@ describe('Supabase Middleware Logic', () => {
 
   it('should validate session handling logic', () => {
     // Test session handling logic
-    const handleSession = (session: { user?: { id: string; user_metadata?: { tenant_id?: string } } } | null) => {
+    const handleSession = (
+      session: { user?: { id: string; user_metadata?: { tenant_id?: string } } } | null
+    ) => {
       if (!session) {
         return { user: null, tenant: null }
       }
