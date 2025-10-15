@@ -34,7 +34,7 @@ describe('Supabase Middleware Logic', () => {
       user: mockUser,
     }
 
-    const addUserHeaders = (session: any, headers: any) => {
+    const addUserHeaders = (session: { user?: { id: string; user_metadata?: { tenant_id?: string } } }, headers: { set: (key: string, value: string) => void }) => {
       if (session?.user) {
         headers.set('x-user-id', session.user.id)
         headers.set('x-tenant-id', session.user.user_metadata?.tenant_id || '')
@@ -57,7 +57,7 @@ describe('Supabase Middleware Logic', () => {
     // Test the logic for not adding user headers
     const mockSession = null
 
-    const addUserHeaders = (session: any, headers: any) => {
+    const addUserHeaders = (session: { user?: { id: string; user_metadata?: { tenant_id?: string } } }, headers: { set: (key: string, value: string) => void }) => {
       if (session?.user) {
         headers.set('x-user-id', session.user.id)
         headers.set('x-tenant-id', session.user.user_metadata?.tenant_id || '')
@@ -88,7 +88,7 @@ describe('Supabase Middleware Logic', () => {
       user: mockUser,
     }
 
-    const addUserHeaders = (session: any, headers: any) => {
+    const addUserHeaders = (session: { user?: { id: string; user_metadata?: { tenant_id?: string } } }, headers: { set: (key: string, value: string) => void }) => {
       if (session?.user) {
         headers.set('x-user-id', session.user.id)
         headers.set('x-tenant-id', session.user.user_metadata?.tenant_id || '')
@@ -146,7 +146,7 @@ describe('Supabase Middleware Logic', () => {
 
   it('should validate session handling logic', () => {
     // Test session handling logic
-    const handleSession = (session: any) => {
+    const handleSession = (session: { user?: { id: string; user_metadata?: { tenant_id?: string } } } | null) => {
       if (!session) {
         return { user: null, tenant: null }
       }

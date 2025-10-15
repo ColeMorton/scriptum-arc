@@ -42,7 +42,7 @@ describe('Tenants API Logic', () => {
 
   it('should validate tenant data structure', () => {
     // Test tenant data structure validation
-    const createTenantData = (tenant: any, user: any) => {
+    const createTenantData = (tenant: { id: string; name: string; industry: string }, user: { id: string }) => {
       return {
         id: tenant.id,
         name: tenant.name,
@@ -121,8 +121,8 @@ describe('Tenants API Logic', () => {
 
   it('should validate tenant filtering logic', () => {
     // Test tenant data filtering
-    const filterTenantData = (tenant: any, includeUsers = true, includeClients = true) => {
-      const baseData: any = {
+    const filterTenantData = (tenant: { id: string; name: string; industry: string; createdAt: Date }, includeUsers = true, includeClients = true) => {
+      const baseData: Record<string, unknown> = {
         id: tenant.id,
         name: tenant.name,
         industry: tenant.industry,

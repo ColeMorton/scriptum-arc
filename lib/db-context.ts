@@ -41,7 +41,7 @@ export function createTenantScopedClient(tenantId: string) {
 /**
  * Helper function to ensure tenant isolation in raw queries
  */
-export async function executeTenantScopedQuery(tenantId: string, query: string, params: any[] = []) {
+export async function executeTenantScopedQuery(tenantId: string, query: string, params: unknown[] = []) {
   await setTenantContext(tenantId)
   return prisma.$queryRawUnsafe(query, ...params)
 }

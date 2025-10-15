@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { NextRequest } from 'next/server'
 
-export async function getCurrentUser(request?: NextRequest) {
+export async function getCurrentUser(request?: NextRequest) { // eslint-disable-line @typescript-eslint/no-unused-vars
   const supabase = await createClient()
   
   const {

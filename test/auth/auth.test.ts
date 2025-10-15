@@ -32,7 +32,7 @@ describe('Authentication Utilities', () => {
         },
       }
 
-      vi.mocked(createClient).mockResolvedValue(mockSupabaseClient as any)
+      vi.mocked(createClient).mockResolvedValue(mockSupabaseClient as unknown as ReturnType<typeof createClient>)
 
       const result = await getCurrentUser()
 
@@ -55,7 +55,7 @@ describe('Authentication Utilities', () => {
         },
       }
 
-      vi.mocked(createClient).mockResolvedValue(mockSupabaseClient as any)
+      vi.mocked(createClient).mockResolvedValue(mockSupabaseClient as unknown as ReturnType<typeof createClient>)
 
       const result = await getCurrentUser()
 
@@ -73,7 +73,7 @@ describe('Authentication Utilities', () => {
         },
       }
 
-      vi.mocked(createClient).mockResolvedValue(mockSupabaseClient as any)
+      vi.mocked(createClient).mockResolvedValue(mockSupabaseClient as unknown as ReturnType<typeof createClient>)
 
       const result = await getCurrentUser()
 
@@ -101,7 +101,7 @@ describe('Authentication Utilities', () => {
         },
       }
 
-      vi.mocked(createClient).mockResolvedValue(mockSupabaseClient as any)
+      vi.mocked(createClient).mockResolvedValue(mockSupabaseClient as unknown as ReturnType<typeof createClient>)
 
       const result = await requireAuth()
 
@@ -123,7 +123,7 @@ describe('Authentication Utilities', () => {
         },
       }
 
-      vi.mocked(createClient).mockResolvedValue(mockSupabaseClient as any)
+      vi.mocked(createClient).mockResolvedValue(mockSupabaseClient as unknown as ReturnType<typeof createClient>)
 
       await expect(requireAuth()).rejects.toThrow('Authentication required')
     })
@@ -147,7 +147,7 @@ describe('Authentication Utilities', () => {
         },
       }
 
-      vi.mocked(createClient).mockResolvedValue(mockSupabaseClient as any)
+      vi.mocked(createClient).mockResolvedValue(mockSupabaseClient as unknown as ReturnType<typeof createClient>)
 
       const result = await requireAuth()
 
@@ -167,7 +167,7 @@ describe('Authentication Utilities', () => {
         },
       }
 
-      vi.mocked(createClient).mockResolvedValue(mockSupabaseClient as any)
+      vi.mocked(createClient).mockResolvedValue(mockSupabaseClient as unknown as ReturnType<typeof createClient>)
 
       await expect(requireAuth()).rejects.toThrow('Supabase connection failed')
     })

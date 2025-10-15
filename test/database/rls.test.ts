@@ -51,12 +51,11 @@ describe('Row Level Security (RLS) Logic', () => {
     expect(tenant2View?.clients[0].name).toBe('Tenant 2 Client')
     
     // Validate cross-tenant access prevention
-    const crossTenantAccess = (tenantId: string, targetTenantId: string) => {
+    const crossTenantAccess = (tenantId: string, _targetTenantId: string) => {
       const currentTenant = getTenantData(tenantId)
-      const targetTenant = getTenantData(targetTenantId)
       
       // Should not be able to access other tenant's data
-      if (tenantId !== targetTenantId) {
+      if (tenantId !== _targetTenantId) {
         return null
       }
       
@@ -132,7 +131,7 @@ describe('Row Level Security (RLS) Logic', () => {
       { id: '5', name: 'Item 5', tenantId: 'tenant-1' },
     ]
     
-    const filterByTenant = (data: any[], tenantId: string) => {
+    const filterByTenant = (data: Array<{ id: string; name: string; tenantId: string }>, tenantId: string) => {
       return data.filter(item => item.tenantId === tenantId)
     }
     

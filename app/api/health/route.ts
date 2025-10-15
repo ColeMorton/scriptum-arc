@@ -6,7 +6,7 @@ export async function GET() {
     const supabase = await createClient()
     
     // Test Supabase connection
-    const { data, error } = await supabase.from('_prisma_migrations').select('*').limit(1)
+    const { error } = await supabase.from('_prisma_migrations').select('*').limit(1)
     
     if (error) {
       console.error('Supabase connection error:', error)

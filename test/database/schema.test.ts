@@ -6,7 +6,7 @@ describe('Database Schema Structure', () => {
     // by checking that the generated types exist and have the expected properties
     
     // Import the generated Prisma types
-    const { PrismaClient } = require('@prisma/client')
+    const { PrismaClient } = await import('@prisma/client')
     
     // Create a new instance to validate schema
     const prisma = new PrismaClient()

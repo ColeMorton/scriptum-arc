@@ -63,7 +63,7 @@ async function main() {
   console.log('✅ Created clients:', client1.clientName, client2.clientName)
 
   // Create sample financial data
-  const financial1 = await prisma.financial.create({
+  await prisma.financial.create({
     data: {
       clientKPIId: client1.id,
       recordDate: new Date('2024-01-01'),
@@ -76,7 +76,7 @@ async function main() {
     },
   })
 
-  const financial2 = await prisma.financial.create({
+  await prisma.financial.create({
     data: {
       clientKPIId: client2.id,
       recordDate: new Date('2024-01-01'),
@@ -92,7 +92,7 @@ async function main() {
   console.log('✅ Created financial records')
 
   // Create sample lead events
-  const leadEvent1 = await prisma.leadEvent.create({
+  await prisma.leadEvent.create({
     data: {
       clientKPIId: client1.id,
       eventDate: new Date('2024-01-15'),
@@ -104,7 +104,7 @@ async function main() {
     },
   })
 
-  const leadEvent2 = await prisma.leadEvent.create({
+  await prisma.leadEvent.create({
     data: {
       clientKPIId: client2.id,
       eventDate: new Date('2024-03-01'),
@@ -119,7 +119,7 @@ async function main() {
   console.log('✅ Created lead events')
 
   // Create sample custom metrics
-  const customMetric1 = await prisma.customMetric.create({
+  await prisma.customMetric.create({
     data: {
       clientKPIId: client1.id,
       metricName: 'construction_milestones_completed',
@@ -130,7 +130,7 @@ async function main() {
     },
   })
 
-  const customMetric2 = await prisma.customMetric.create({
+  await prisma.customMetric.create({
     data: {
       clientKPIId: client2.id,
       metricName: 'units_sold',
