@@ -1,18 +1,12 @@
 import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
-  // Disable Next.js telemetry
-  telemetry: false,
-  
-  // Enable experimental features for better performance
-  experimental: {
-    // Enable Turbopack for faster builds
-    turbo: {
-      rules: {
-        '*.svg': {
-          loaders: ['@svgr/webpack'],
-          as: '*.js',
-        },
+  // Enable Turbopack for faster builds
+  turbopack: {
+    rules: {
+      '*.svg': {
+        loaders: ['@svgr/webpack'],
+        as: '*.js',
       },
     },
   },
@@ -70,10 +64,6 @@ const nextConfig: NextConfig = {
     ]
   },
 
-  // Environment variables validation
-  env: {
-    NEXT_TELEMETRY_DISABLED: '1',
-  },
 
   // Output configuration for Vercel
   output: 'standalone',
