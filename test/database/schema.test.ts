@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 
 describe('Database Schema Structure', () => {
-  it('should have correct Prisma schema structure', () => {
+  it('should have correct Prisma schema structure', async () => {
     // This test validates that our Prisma schema is properly structured
     // by checking that the generated types exist and have the expected properties
     
