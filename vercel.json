@@ -28,13 +28,6 @@
       ]
     }
   ],
-  "redirects": [
-    {
-      "source": "/",
-      "destination": "/dashboard",
-      "permanent": false
-    }
-  ],
   "env": {
     "NEXT_TELEMETRY_DISABLED": "1"
   },
