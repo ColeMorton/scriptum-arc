@@ -7,6 +7,7 @@
 [![Prisma](https://img.shields.io/badge/Prisma-6.x-2D3748?style=flat-square&logo=prisma)](https://prisma.io/)
 [![Supabase](https://img.shields.io/badge/Supabase-PostgreSQL-3ECF8E?style=flat-square&logo=supabase)](https://supabase.com/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.x-38B2AC?style=flat-square&logo=tailwind-css)](https://tailwindcss.com/)
+[![Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?style=flat-square&logo=vercel)](https://vercel.com/cole-mortons-projects/scriptum-arc)
 
 **Scriptum Arc** is a premium Business Intelligence platform designed specifically for Australian Small-to-Medium Enterprises (SMEs) with $1-10M annual revenue. The platform consolidates data from disconnected business systems (accounting, CRM, project management, e-commerce) into unified, real-time dashboards, eliminating manual reporting and enabling data-driven decision-making.
 
@@ -277,12 +278,6 @@ This is a solo-operator project optimized for rapid development. The architectur
 ## 📄 License
 
 Private - All rights reserved
-
-## 📞 Contact
-
-- **Website**: [scriptumarc.com.au](https://scriptumarc.com.au)
-- **Email**: hello@scriptumarc.com.au
-- **LinkedIn**: [Scriptum Arc](https://linkedin.com/company/scriptum-arc)
 
 ---
 
