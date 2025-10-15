@@ -57,11 +57,7 @@ const nextConfig: NextConfig = {
   // Redirects for SEO and user experience
   async redirects() {
     return [
-      {
-        source: '/',
-        destination: '/dashboard',
-        permanent: false,
-      },
+      // Removed root redirect to allow landing page at /
     ]
   },
 

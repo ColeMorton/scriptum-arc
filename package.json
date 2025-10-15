@@ -92,6 +92,7 @@
     "lint-staged": "^16.2.4",
     "msw": "^2.11.5",
     "prettier": "^3.6.2",
+    "shadcn": "^3.4.1",
     "supertest": "^7.1.4",
     "tailwindcss": "^4",
     "tsx": "^4.20.6",

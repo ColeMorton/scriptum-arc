@@ -427,12 +427,6 @@ After launch, you're not on your own. Weekly check-ins for the first month, then
 - Jump straight to Starter/Professional tier
 - Setup fee waived for commitments made this quarter
 
-**Contact**
-
-- Email: hello@scriptumarc.com.au
-- Phone: [Your Number]
-- Calendar: [Calendly Link]
-
 ### Script
 
 "If this resonates, here's how we proceed.
