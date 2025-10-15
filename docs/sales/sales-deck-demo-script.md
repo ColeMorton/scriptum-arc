@@ -2,7 +2,7 @@
 **← [Financial Projections](../financial/financial-projections-unit-economics.md)** | **[Back to Documentation Index](../index.md)** | **[Implementation Plan](../implementation/phase-1-data-foundation.md)** →
 ---
 
-# Scriptum Arc - Sales Deck & Demo Script
+# Zixly - Sales Deck & Demo Script
 
 **Premium Automated Business Intelligence for Australian SMEs**
 
@@ -10,7 +10,7 @@
 
 ## Slide 1: Opening Hook
 
-**Visual**: Split screen - cluttered spreadsheets vs. clean Scriptum Arc dashboard
+**Visual**: Split screen - cluttered spreadsheets vs. clean Zixly dashboard
 
 ### Script
 
@@ -18,7 +18,7 @@
 
 **Pause for response**
 
-"Scriptum Arc eliminates that entirely. It's a bespoke business intelligence platform built specifically for Australian SMEs who need enterprise-grade insights without enterprise-grade complexity or cost."
+"Zixly eliminates that entirely. It's a bespoke business intelligence platform built specifically for Australian SMEs who need enterprise-grade insights without enterprise-grade complexity or cost."
 
 ---
 
@@ -43,9 +43,9 @@ Generic BI tools like Power BI or Tableau? They require expensive consultants, w
 
 ## Slide 3: Solution Overview
 
-**Visual**: Scriptum Arc architecture diagram (simplified)
+**Visual**: Zixly architecture diagram (simplified)
 
-### Scriptum Arc: Your Business Intelligence, Automated
+### Zixly: Your Business Intelligence, Automated
 
 **One Unified Dashboard. Zero Manual Work.**
 
@@ -56,7 +56,7 @@ Generic BI tools like Power BI or Tableau? They require expensive consultants, w
 
 ### Script
 
-"Scriptum Arc is different. We built it from the ground up for Australian SMEs using the same technology stack that powers enterprise data warehouses - but without the complexity.
+"Zixly is different. We built it from the ground up for Australian SMEs using the same technology stack that powers enterprise data warehouses - but without the complexity.
 
 Your data flows automatically from all your business systems into one secure database. Every morning, you open one dashboard and see everything: cash flow, sales pipeline, project margins, operational efficiency. All in real-time. All accurate. All without lifting a finger."
 
@@ -115,7 +115,7 @@ Then it just runs. Data updates automatically. You check your dashboard like you
 
 ### Script
 
-"Here's what makes Scriptum Arc technically superior: we use the same database technology that runs Spotify and Instagram. The same automation platform used by BMW and Telstra. The same visualization library Netflix uses for their internal analytics.
+"Here's what makes Zixly technically superior: we use the same database technology that runs Spotify and Instagram. The same automation platform used by BMW and Telstra. The same visualization library Netflix uses for their internal analytics.
 
 But because we're optimized for solo operation - no sales teams, no account managers, no bureaucracy - we deliver this at a fraction of enterprise BI pricing.
 
@@ -129,15 +129,15 @@ And unlike SaaS platforms like Klipfolio that charge per user or per integration
 
 ### Typical Customer ROI (First Year)
 
-| Cost Category                 | Before Scriptum Arc    | With Scriptum Arc | Annual Savings     |
-| ----------------------------- | ---------------------- | ----------------- | ------------------ |
-| **Manual Reporting**          | 10 hrs/week @ $75/hr   | 0 hrs             | **$39,000**        |
-| **Accountant Ad-Hoc Reports** | $2,500/quarter         | $0                | **$10,000**        |
-| **Data Entry Errors**         | ~$8,000/year           | ~$500/year        | **$7,500**         |
-| **Delayed Decisions**         | Opportunity cost ~$15k | $0                | **$15,000**        |
-| **Total Annual Benefit**      |                        |                   | **$71,500**        |
-| **Scriptum Arc Cost**         |                        |                   | **$18,000**        |
-| **Net ROI**                   |                        |                   | **$53,500 (297%)** |
+| Cost Category                 | Before Zixly           | With Zixly | Annual Savings     |
+| ----------------------------- | ---------------------- | ---------- | ------------------ |
+| **Manual Reporting**          | 10 hrs/week @ $75/hr   | 0 hrs      | **$39,000**        |
+| **Accountant Ad-Hoc Reports** | $2,500/quarter         | $0         | **$10,000**        |
+| **Data Entry Errors**         | ~$8,000/year           | ~$500/year | **$7,500**         |
+| **Delayed Decisions**         | Opportunity cost ~$15k | $0         | **$15,000**        |
+| **Total Annual Benefit**      |                        |            | **$71,500**        |
+| **Zixly Cost**                |                        |            | **$18,000**        |
+| **Net ROI**                   |                        |            | **$53,500 (297%)** |
 
 ### Script
 
@@ -149,7 +149,7 @@ Data entry errors? Xero reports the average SME loses $8,000 annually to reconci
 
 And the big one - delayed decisions. How much revenue did you miss because you didn't know your sales pipeline was drying up until it was too late? Or over-ordered inventory because you didn't have real-time stock turnover data?
 
-Conservative estimate: $71,500 in annual benefits. Scriptum Arc costs $1,500/month - $18,000/year. That's a 297% ROI in year one. And it compounds every year after."
+Conservative estimate: $71,500 in annual benefits. Zixly costs $1,500/month - $18,000/year. That's a 297% ROI in year one. And it compounds every year after."
 
 ---
 
@@ -182,7 +182,7 @@ Conservative estimate: $71,500 in annual benefits. Scriptum Arc costs $1,500/mon
 
 ### Script
 
-"We've built Scriptum Arc to understand industry-specific KPIs. If you're a law firm, we track matter profitability and WIP aging automatically - pulling time entries from your practice management software and cross-referencing against billed amounts in Xero.
+"We've built Zixly to understand industry-specific KPIs. If you're a law firm, we track matter profitability and WIP aging automatically - pulling time entries from your practice management software and cross-referencing against billed amounts in Xero.
 
 Construction business? We calculate job profitability by comparing quoted amounts from your CRM against actual costs from Xero and materials tracking in your project management tool.
 
@@ -204,7 +204,7 @@ E-commerce? We sync Shopify order data, calculate true COGS including shipping a
 - Manual spreadsheet tracking taking 15 hours/week
 - Lost $85,000 on a project due to materials cost overruns not visible until invoicing
 
-**Solution**: Scriptum Arc dashboard with real-time job costing
+**Solution**: Zixly dashboard with real-time job costing
 
 **Results (6 months)**:
 
@@ -221,7 +221,7 @@ E-commerce? We sync Shopify order data, calculate true COGS including shipping a
 
 We connected their Xero, Procore, and supplier invoices. Built a real-time job profitability dashboard. Within 24 hours of an expense hitting Xero, it's allocated to the correct job and the margin updates.
 
-Six months in, they'd saved the 15 hours a week previously spent on spreadsheets. But more importantly, they caught a materials cost blowout early on a $320k project and course-corrected before it destroyed the margin. That one catch paid for Scriptum Arc for three years."
+Six months in, they'd saved the 15 hours a week previously spent on spreadsheets. But more importantly, they caught a materials cost blowout early on a $320k project and course-corrected before it destroyed the margin. That one catch paid for Zixly for three years."
 
 ---
 
@@ -298,9 +298,9 @@ Compare that to a traditional BI consultant: $15-25k setup, then $2-5k monthly r
 
 **Visual**: Feature comparison table
 
-### Scriptum Arc vs. Alternatives
+### Zixly vs. Alternatives
 
-| Feature                      | Scriptum Arc         | Power BI + Consultant | Klipfolio/Databox | Excel Spreadsheets |
+| Feature                      | Zixly                | Power BI + Consultant | Klipfolio/Databox | Excel Spreadsheets |
 | ---------------------------- | -------------------- | --------------------- | ----------------- | ------------------ |
 | **Setup Time**               | 2-3 weeks            | 2-3 months            | 1-2 months        | Ongoing            |
 | **Custom Dashboards**        | ✅ Bespoke           | ✅ (extra cost)       | ❌ Templates only | ✅ (manual)        |
@@ -319,7 +319,7 @@ Klipfolio and Databox are cheaper - $1,000-$1,500/month - but they're template-b
 
 Spreadsheets seem free, but someone's spending 10-15 hours a week maintaining them. That's $30-40k in labor annually, plus the error risk and data lag.
 
-Scriptum Arc is the sweet spot: bespoke quality at SaaS pricing, with included ongoing support and optimization."
+Zixly is the sweet spot: bespoke quality at SaaS pricing, with included ongoing support and optimization."
 
 ---
 
@@ -331,11 +331,11 @@ Scriptum Arc is the sweet spot: bespoke quality at SaaS pricing, with included o
 
 **Q: "We're already using [Power BI / Tableau / Spreadsheets]"**
 
-**A**: "That's common. Most of our customers had something in place. The question is: how much time are you spending maintaining it, and how confident are you in the data accuracy? Scriptum Arc clients typically save 80-95% of their reporting time in the first month. We're happy to run a parallel pilot for 30 days so you can compare side-by-side."
+**A**: "That's common. Most of our customers had something in place. The question is: how much time are you spending maintaining it, and how confident are you in the data accuracy? Zixly clients typically save 80-95% of their reporting time in the first month. We're happy to run a parallel pilot for 30 days so you can compare side-by-side."
 
 **Q: "Our business is too unique/complex"**
 
-**A**: "That's exactly why we built Scriptum Arc. Off-the-shelf tools struggle with unique business models because they use generic templates. We design your dashboard from scratch based on your specific KPIs and workflows. The more unique you are, the more value you get from bespoke engineering."
+**A**: "That's exactly why we built Zixly. Off-the-shelf tools struggle with unique business models because they use generic templates. We design your dashboard from scratch based on your specific KPIs and workflows. The more unique you are, the more value you get from bespoke engineering."
 
 **Q: "What if we want to change something later?"**
 
@@ -475,7 +475,7 @@ This chart shows daily cash position over the last 90 days. See this dip here [p
 
 Here's P&L by month, but watch this - [apply filter: by project]. Now we're seeing profitability by job. This construction company is running 6 active projects. Three are healthy [point], one's marginal [point], and this one [point] is losing money.
 
-Without Scriptum Arc, they wouldn't know that until the project closed and the accountant reconciled everything 30-60 days later. Now they know today, and they can course-correct - reduce scope, negotiate variations, or at minimum, don't repeat the mistakes on the next job."
+Without Zixly, they wouldn't know that until the project closed and the accountant reconciled everything 30-60 days later. Now they know today, and they can course-correct - reduce scope, negotiate variations, or at minimum, don't repeat the mistakes on the next job."
 
 **3. Sales Pipeline & Conversion Analysis (4 minutes)**
 
@@ -521,7 +521,7 @@ Not as detailed as desktop, but you can check top-level KPIs from anywhere. Usef
 
 **7. Wrap-Up & Questions (3 minutes)**
 
-"So that's Scriptum Arc. Everything you just saw is custom-built. The charts, the calculations, the alerts - all designed around your specific business.
+"So that's Zixly. Everything you just saw is custom-built. The charts, the calculations, the alerts - all designed around your specific business.
 
 Questions before we discuss next steps?"
 
@@ -537,7 +537,7 @@ For IT, we have a technical FAQ document I can send that covers OAuth security, 
 
 ### "We're planning to hire a financial controller soon"
 
-**Response**: "Perfect timing, actually. A good financial controller costs $120-150k, and they'll spend 30-50% of their time just gathering and reconciling data from disparate systems. Scriptum Arc does that gathering and reconciling automatically, so your controller can spend their time analyzing and strategizing instead of data entry.
+**Response**: "Perfect timing, actually. A good financial controller costs $120-150k, and they'll spend 30-50% of their time just gathering and reconciling data from disparate systems. Zixly does that gathering and reconciling automatically, so your controller can spend their time analyzing and strategizing instead of data entry.
 
 We actually see Controllers as power users. They'll leverage our dashboards for board reports, budget variance analysis, and forecasting. You're not replacing a controller - you're giving them a superpower."
 
@@ -553,7 +553,7 @@ If you're doing a major platform migration - say, moving from MYOB to Xero - we'
 
 First, security: we use the same OAuth authentication your bank uses. We never see your Xero password. Access can be revoked by you at any time. Data is encrypted at rest and in transit, and stored in Australia only. We're pursuing SOC 2 Type II certification, which is the gold standard for SaaS security.
 
-Second, deployment: if security is absolutely paramount, we offer an on-premise deployment option for Enterprise tier customers. We deploy Scriptum Arc on your own infrastructure - your cloud account or your server. You control the data environment completely. We just provide the software and support. Cost is higher - $5,500/month instead of $3,500 - but it's an option."
+Second, deployment: if security is absolutely paramount, we offer an on-premise deployment option for Enterprise tier customers. We deploy Zixly on your own infrastructure - your cloud account or your server. You control the data environment completely. We just provide the software and support. Cost is higher - $5,500/month instead of $3,500 - but it's an option."
 
 ---
 
@@ -575,7 +575,7 @@ Second, deployment: if security is absolutely paramount, we offer an on-premise 
 
 "Let me ask: how much is your team spending on reporting and reconciliation right now? [Wait for answer] And how much revenue have you missed in the past year due to delayed visibility into problems? [Wait for answer]
 
-Even if we're conservative and say Scriptum Arc saves you half of what we estimated, you're still looking at $30-40k in annual value for an $18k investment. And that compounds - year two, year three, the savings continue but the cost stays flat. When do you want to start capturing that value?"
+Even if we're conservative and say Zixly saves you half of what we estimated, you're still looking at $30-40k in annual value for an $18k investment. And that compounds - year two, year three, the savings continue but the cost stays flat. When do you want to start capturing that value?"
 
 ### The Competitive Close
 
@@ -583,7 +583,7 @@ Even if we're conservative and say Scriptum Arc saves you half of what we estima
 
 If you go with Power BI and a consultant, you'll spend 2-3 months and $40-60k before seeing anything. If you try Klipfolio, you'll save money upfront but hit customization limits within 60 days and end up supplementing with spreadsheets anyway.
 
-We've worked with customers who tried both those paths first. They all say the same thing: 'I wish I'd started with Scriptum Arc.' Don't waste 6 months learning that lesson. Let's get you set up properly from day one."
+We've worked with customers who tried both those paths first. They all say the same thing: 'I wish I'd started with Zixly.' Don't waste 6 months learning that lesson. Let's get you set up properly from day one."
 
 ---
 
@@ -677,5 +677,5 @@ If 3+ checkboxes are unchecked, reconsider fit or defer to future quarter.
 
 **Document Version**: 1.0
 **Last Updated**: 2025-10-15
-**Owner**: Scriptum Arc Sales
+**Owner**: Zixly Sales
 **Review Cycle**: Quarterly or after 10 customer demos (whichever comes first)

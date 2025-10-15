@@ -23,7 +23,7 @@
 
 ### Purpose
 
-Row-Level Security (RLS) provides **defense-in-depth** for multi-tenant data isolation in Scriptum Arc. RLS policies enforce tenant boundaries at the **PostgreSQL database level**, ensuring that:
+Row-Level Security (RLS) provides **defense-in-depth** for multi-tenant data isolation in Zixly. RLS policies enforce tenant boundaries at the **PostgreSQL database level**, ensuring that:
 
 1. Application-level bugs cannot leak data across tenants
 2. Direct database access (e.g., via Prisma Studio) respects tenant isolation

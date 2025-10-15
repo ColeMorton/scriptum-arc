@@ -22,11 +22,11 @@
 
 **Three-Second Version**:
 
-- **TENANT** = A company that subscribes to Scriptum Arc (your customer)
+- **TENANT** = A company that subscribes to Zixly (your customer)
 - **USER** = An employee of that company who logs into the platform
 - **CLIENT** = A business entity or project that the company tracks metrics for
 
-**Business Model**: Scriptum Arc is a **B2B SaaS platform**. Each tenant pays for the service and invites their own users to track their own clients' performance.
+**Business Model**: Zixly is a **B2B SaaS platform**. Each tenant pays for the service and invites their own users to track their own clients' performance.
 
 ---
 
@@ -34,11 +34,11 @@
 
 ### 1. Tenant (The Company Account)
 
-**Definition**: A **Tenant** is a company or organization that subscribes to Scriptum Arc.
+**Definition**: A **Tenant** is a company or organization that subscribes to Zixly.
 
 **Business Context**:
 
-- This is **Scriptum Arc's customer** (the entity that pays the subscription fee)
+- This is **Zixly's customer** (the entity that pays the subscription fee)
 - Each tenant has their own **isolated data environment** (multi-tenant architecture)
 - Tenants cannot see each other's data (enforced by Row-Level Security)
 
@@ -55,7 +55,7 @@
 
 **Lifecycle**:
 
-- Created when a company signs up for Scriptum Arc
+- Created when a company signs up for Zixly
 - Cannot be deleted while active users or data exist (cascade protection)
 - Deactivation triggers data retention policies
 
@@ -63,11 +63,11 @@
 
 ### 2. User (The Employee)
 
-**Definition**: A **User** is an individual employee of a tenant company who has access to the Scriptum Arc platform.
+**Definition**: A **User** is an individual employee of a tenant company who has access to the Zixly platform.
 
 **Business Context**:
 
-- This is **NOT** Scriptum Arc's customer (the tenant is the customer)
+- This is **NOT** Zixly's customer (the tenant is the customer)
 - This is an **employee** of the tenant company
 - Users belong to exactly one tenant (no cross-tenant user accounts)
 - Users have role-based permissions: ADMIN, EDITOR, VIEWER
@@ -103,7 +103,7 @@
 
 **Business Context**:
 
-- This is **NOT** Scriptum Arc's customer (Scriptum Arc's customer is the Tenant)
+- This is **NOT** Zixly's customer (Zixly's customer is the Tenant)
 - This is the **tenant's customer or project**
 - A tenant can have multiple clients (1:N relationship)
 - Each client has time-series data: financials, lead events, custom metrics
@@ -179,7 +179,7 @@
 
 **Cardinalities**:
 
-- Scriptum Arc : Tenant = **1 : N** (one platform, many customers)
+- Zixly : Tenant = **1 : N** (one platform, many customers)
 - Tenant : User = **1 : N** (one company, many employees)
 - Tenant : Client = **1 : N** (one company, many clients/projects)
 - Client : Financials = **1 : N** (one client, many time-series financial records)
@@ -194,7 +194,7 @@
 
 ### ABC Construction Pty Ltd (Tenant)
 
-**Context**: ABC Construction is a mid-sized Australian construction company that subscribes to Scriptum Arc to track profitability across their multiple projects.
+**Context**: ABC Construction is a mid-sized Australian construction company that subscribes to Zixly to track profitability across their multiple projects.
 
 **Tenant Details**:
 
@@ -289,7 +289,7 @@
 
 **Workflow 1: Sarah (ADMIN) adds John (EDITOR)**
 
-1. Sarah logs into Scriptum Arc (authenticated as `tenant_001`)
+1. Sarah logs into Zixly (authenticated as `tenant_001`)
 2. Navigates to "Team Management" → "Invite User"
 3. Enters John's email: `john@abcconstruction.com.au`
 4. Assigns role: **EDITOR**
@@ -306,7 +306,7 @@
 
 **Workflow 2: John (EDITOR) adds a new client**
 
-1. John logs into Scriptum Arc (authenticated as `tenant_001`)
+1. John logs into Zixly (authenticated as `tenant_001`)
 2. Navigates to "Clients" → "Add Client"
 3. Enters details:
    - Client Name: "Parramatta Warehouse Conversion"
@@ -328,7 +328,7 @@
 
 **Workflow 3: Emma (VIEWER) generates a profitability report**
 
-1. Emma logs into Scriptum Arc (authenticated as `tenant_001`)
+1. Emma logs into Zixly (authenticated as `tenant_001`)
 2. Navigates to "Reports" → "Client Profitability"
 3. Selects date range: Q1 2024 (Jan 1 - Mar 31)
 4. System queries financials:
@@ -354,12 +354,12 @@
 
 **Answer**: It depends on context:
 
-- **Scriptum Arc's customer**: The **Tenant** (ABC Construction pays Scriptum Arc subscription fees)
+- **Zixly's customer**: The **Tenant** (ABC Construction pays Zixly subscription fees)
 - **Tenant's customer**: The **Client** (Harbor Bridge Project is ABC Construction's customer/project)
 
 **Best Practice**: Always specify whose customer you're referring to:
 
-- ✅ "Scriptum Arc's customer = Tenant"
+- ✅ "Zixly's customer = Tenant"
 - ✅ "ABC Construction's customer = Client"
 - ❌ "Customer" (ambiguous)
 
@@ -424,13 +424,13 @@
 
 **Answer**:
 
-- **`id`**: Scriptum Arc's internal primary key (e.g., `"ckpi_001"`)
+- **`id`**: Zixly's internal primary key (e.g., `"ckpi_001"`)
 - **`clientId`**: External identifier from integration (e.g., Xero customer ID: `"XERO-12345"`)
 
 **Use Cases**:
 
 - `id`: Used for database relationships (foreign keys in `financials`, `lead_events`)
-- `clientId`: Used for API syncing (matching Xero invoices to Scriptum Arc clients)
+- `clientId`: Used for API syncing (matching Xero invoices to Zixly clients)
 
 **Example**:
 
@@ -443,7 +443,7 @@ model ClientKPI {
 
 ---
 
-### Q7: Who is the "owner" of the data in Scriptum Arc?
+### Q7: Who is the "owner" of the data in Zixly?
 
 **Answer**: The **Tenant** owns all data within their account.
 
@@ -455,12 +455,12 @@ model ClientKPI {
    - All time-series data (`Financials`, `LeadEvents`, `CustomMetrics`)
    - All `Integration` credentials (Xero, HubSpot API tokens)
 
-2. **Scriptum Arc** owns:
+2. **Zixly** owns:
    - Platform infrastructure (servers, databases)
    - Application code
    - Aggregated anonymized analytics (for product improvement)
 
-**Data Portability**: Tenants can export all their data via API or CSV. Scriptum Arc cannot access tenant data for commercial purposes without explicit consent.
+**Data Portability**: Tenants can export all their data via API or CSV. Zixly cannot access tenant data for commercial purposes without explicit consent.
 
 ---
 
@@ -489,7 +489,7 @@ model ClientKPI {
 ### Database Schema (Prisma)
 
 ```prisma
-// Root entity: Scriptum Arc's customer
+// Root entity: Zixly's customer
 model Tenant {
   id              String   @id @default(cuid())
   name            String

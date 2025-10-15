@@ -2,7 +2,7 @@
 **← [Product Requirements](../product/product-requirements-document.md)** | **[Back to Documentation Index](../index.md)** | **[Financial Projections](../financial/financial-projections-unit-economics.md)** →
 ---
 
-# Scriptum Arc - System Architecture Document
+# Zixly - System Architecture Document
 
 **Version**: 1.0
 **Last Updated**: 2025-10-15
@@ -34,7 +34,7 @@
 
 ### Purpose
 
-Scriptum Arc is a bespoke Business Intelligence platform for Australian SMEs, consolidating data from multiple business systems (Xero, HubSpot, Asana, etc.) into unified, real-time dashboards with automated ETL pipelines.
+Zixly is a bespoke Business Intelligence platform for Australian SMEs, consolidating data from multiple business systems (Xero, HubSpot, Asana, etc.) into unified, real-time dashboards with automated ETL pipelines.
 
 ### Architecture Philosophy
 
@@ -64,7 +64,7 @@ Scriptum Arc is a bespoke Business Intelligence platform for Australian SMEs, co
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                        Scriptum Arc                              │
+│                        Zixly                              │
 │                  (Business Intelligence Platform)                │
 │                                                                   │
 │  ┌────────────────┐  ┌──────────────┐  ┌────────────────────┐  │
@@ -117,7 +117,7 @@ Scriptum Arc is a bespoke Business Intelligence platform for Australian SMEs, co
 - **E-Commerce**: Shopify, WooCommerce (transaction data)
 - **Communication**: Slack, Microsoft Teams (alert destinations)
 
-**System Boundary**: Scriptum Arc platform (Next.js app + PostgreSQL + n8n)
+**System Boundary**: Zixly platform (Next.js app + PostgreSQL + n8n)
 
 ---
 
@@ -125,7 +125,7 @@ Scriptum Arc is a bespoke Business Intelligence platform for Australian SMEs, co
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                         Scriptum Arc Platform                        │
+│                         Zixly Platform                        │
 │                                                                       │
 │  ┌─────────────────────────────────────────────────────────────┐   │
 │  │  Web Application (Next.js 15 + React 19)                     │   │
@@ -575,7 +575,7 @@ Example: Xero Financial Data Flow
        │ 1. Click "Connect Xero"                           │
        ▼                                                     │
 ┌────────────────────────────────────┐                     │
-│  Scriptum Arc Dashboard            │                     │
+│  Zixly Dashboard            │                     │
 │  /integrations/xero/authorize      │                     │
 └────────────┬───────────────────────┘                     │
              │                                              │
@@ -1210,7 +1210,7 @@ return data
 
 ### Key Metrics Dashboard
 
-**DataDog Dashboard**: "Scriptum Arc Production Overview"
+**DataDog Dashboard**: "Zixly Production Overview"
 
 **System Health**:
 
@@ -1270,7 +1270,7 @@ export const logger = winston.createLogger({
     winston.format.errors({ stack: true }),
     winston.format.json()
   ),
-  defaultMeta: { service: 'scriptum-arc-api' },
+  defaultMeta: { service: 'zixly-api' },
   transports: [
     new winston.transports.Console(),
     new DatadogTransport({ apiKey: process.env.DATADOG_API_KEY }),

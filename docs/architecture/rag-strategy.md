@@ -24,7 +24,7 @@
 
 ### Purpose
 
-This document outlines the **Retrieval-Augmented Generation (RAG)** strategy for Scriptum Arc, enabling AI-powered insights from unstructured business data (invoices, contracts, meeting notes, etc.) via vector similarity search.
+This document outlines the **Retrieval-Augmented Generation (RAG)** strategy for Zixly, enabling AI-powered insights from unstructured business data (invoices, contracts, meeting notes, etc.) via vector similarity search.
 
 ### Use Cases
 
@@ -489,7 +489,7 @@ export async function POST(request: NextRequest) {
     .join('\n')
 
   const prompt = `
-    You are a business intelligence assistant for Scriptum Arc.
+    You are a business intelligence assistant for Zixly.
 
     Based on the following relevant metrics from the customer's data:
     ${context}

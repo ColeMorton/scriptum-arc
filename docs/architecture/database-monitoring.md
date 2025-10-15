@@ -23,7 +23,7 @@
 
 ### Purpose
 
-This document defines **production-grade database monitoring** for Scriptum Arc's PostgreSQL database (Supabase), covering:
+This document defines **production-grade database monitoring** for Zixly's PostgreSQL database (Supabase), covering:
 
 - Connection pool utilization
 - Query performance degradation
@@ -58,7 +58,7 @@ Per [Global Development Standards](~/.claude/CLAUDE.md):
 - Custom metrics via Prisma middleware
 - Application-level metrics from Next.js API
 
-**Dashboard**: `Scriptum Arc - Database Health`
+**Dashboard**: `Zixly - Database Health`
 
 **Retention**: 15 months of metrics (DataDog Pro plan)
 
@@ -374,7 +374,7 @@ message: |
   Impact: New API requests will fail with connection errors
 
   **Actions**:
-  1. Check DataDog APM for connection leak (dashboard: Scriptum Arc - Database Health)
+  1. Check DataDog APM for connection leak (dashboard: Zixly - Database Health)
   2. Identify slow queries holding connections: `SELECT * FROM pg_stat_activity WHERE state = 'active' ORDER BY query_start`
   3. Consider upgrading Supabase plan for more connections
 

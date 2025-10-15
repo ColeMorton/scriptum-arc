@@ -25,7 +25,7 @@
 
 ### Purpose
 
-This document defines the **authoritative migration strategy** for Scriptum Arc's PostgreSQL database, covering:
+This document defines the **authoritative migration strategy** for Zixly's PostgreSQL database, covering:
 
 - Schema migrations (DDL changes)
 - Data migrations (data transformation)

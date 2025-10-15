@@ -2,7 +2,7 @@
 **← [System Architecture](../architecture/system-architecture.md)** | **[Back to Documentation Index](../index.md)** | **[Sales Strategy](../sales/sales-deck-demo-script.md)** →
 ---
 
-# Scriptum Arc - Financial Projections & Unit Economics
+# Zixly - Financial Projections & Unit Economics
 
 **3-Year Financial Model for Premium BI SaaS Platform**
 
@@ -292,7 +292,7 @@
 - 3:1 to 5:1 = Healthy for growth-stage SaaS
 - > 5:1 = Excellent unit economics
 
-**Scriptum Arc**: 8.7:1 to 13.8:1 = **Excellent**
+**Zixly**: 8.7:1 to 13.8:1 = **Excellent**
 
 ### Payback Period
 
@@ -306,7 +306,7 @@
 - 12-18 months = Good
 - > 18 months = Concerning
 
-**Scriptum Arc**: 2.1 months = **Excellent** (immediate cash recovery)
+**Zixly**: 2.1 months = **Excellent** (immediate cash recovery)
 
 ### Monthly Recurring Revenue (MRR) Movements
 
@@ -344,7 +344,7 @@
 
 - SaaS companies with NRR >100% are growing without new customers
 - SME SaaS typically has NRR of 85-95% due to higher churn
-- Scriptum Arc Year 2 NRR of 78.7% is **below target**
+- Zixly Year 2 NRR of 78.7% is **below target**
 
 **Improvement Strategies** (to reach 90%+ NRR):
 
@@ -602,7 +602,7 @@ If pursuing aggressive growth in Year 2-3, consider:
 
 ### Break-Even Analysis
 
-**Question**: At what customer count does Scriptum Arc become profitable?
+**Question**: At what customer count does Zixly become profitable?
 
 **Fixed Costs (Monthly)**:
 
@@ -633,15 +633,15 @@ If pursuing aggressive growth in Year 2-3, consider:
 
 - $17,000 ÷ $1,533 = **11.1 customers**
 
-**Conclusion**: Scriptum Arc becomes operationally profitable at 12 customers (Month 8 in base case projection)
+**Conclusion**: Zixly becomes operationally profitable at 12 customers (Month 8 in base case projection)
 
 ---
 
 ## Benchmarking Against SaaS Industry Standards
 
-### Scriptum Arc vs. SaaS Benchmarks
+### Zixly vs. SaaS Benchmarks
 
-| Metric                    | Scriptum Arc (Year 3)          | SaaS Industry Benchmark  | Assessment      |
+| Metric                    | Zixly (Year 3)                 | SaaS Industry Benchmark  | Assessment      |
 | ------------------------- | ------------------------------ | ------------------------ | --------------- |
 | **Gross Margin**          | 86.6%                          | 70-80%                   | ✅ Excellent    |
 | **EBITDA Margin**         | 57.5%                          | 20-30% (mature SaaS)     | ✅ Excellent    |
@@ -652,7 +652,7 @@ If pursuing aggressive growth in Year 2-3, consider:
 | **Annual Growth Rate**    | 90% (Y2-Y3)                    | 40-60% (growth stage)    | ✅ Excellent    |
 | **Rule of 40**            | 147% (90% growth + 57% margin) | >40% is healthy          | ✅ Exceptional  |
 
-**Overall Assessment**: Scriptum Arc demonstrates **exceptional unit economics** with margins and efficiency metrics significantly above industry benchmarks. The primary area for improvement is **Net Revenue Retention** (target >100% through reduced churn and increased expansion revenue).
+**Overall Assessment**: Zixly demonstrates **exceptional unit economics** with margins and efficiency metrics significantly above industry benchmarks. The primary area for improvement is **Net Revenue Retention** (target >100% through reduced churn and increased expansion revenue).
 
 ---
 
@@ -697,7 +697,7 @@ If pursuing aggressive growth in Year 2-3, consider:
 **Option 1: Strategic Acquisition**
 
 - **Acquirers**: Xero, MYOB, HubSpot, Intuit, or Australian accounting firms (BDO, Grant Thornton)
-- **Rationale**: Scriptum Arc provides complementary BI capabilities to core accounting/CRM products
+- **Rationale**: Zixly provides complementary BI capabilities to core accounting/CRM products
 - **Valuation Multiple**: 4-6x ARR (typical for profitable SaaS with strong unit economics)
 - **Example**: At $2.5M ARR in Year 5, valuation = $10-15M
 

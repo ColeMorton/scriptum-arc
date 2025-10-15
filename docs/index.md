@@ -1,8 +1,8 @@
-# Scriptum Arc Documentation
+# Zixly Documentation
 
 > **Bespoke Business Intelligence for Australian SMEs**
 
-Welcome to the comprehensive documentation for Scriptum Arc, a premium Business Intelligence platform designed specifically for Australian Small-to-Medium Enterprises.
+Welcome to the comprehensive documentation for Zixly, a premium Business Intelligence platform designed specifically for Australian Small-to-Medium Enterprises.
 
 ## 📚 Documentation Sections
 
@@ -98,6 +98,6 @@ Welcome to the comprehensive documentation for Scriptum Arc, a premium Business 
 
 **Last Updated**: 2025-01-27  
 **Documentation Version**: 1.0  
-**Maintained By**: Scriptum Arc Development Team
+**Maintained By**: Zixly Development Team
 
 **🌐 Repository**: [GitHub Repository](https://github.com/colemorton/platform)

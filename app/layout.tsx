@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-  title: 'Scriptum Arc - Business Intelligence Platform',
+  title: 'Zixly - Business Intelligence Platform',
   description: 'Bespoke Business Intelligence for Australian SMEs',
 }
 

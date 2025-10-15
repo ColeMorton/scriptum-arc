@@ -1,10 +1,10 @@
-# Scriptum Arc Documentation
+# Zixly Documentation
 
-This directory contains comprehensive documentation for the Scriptum Arc platform.
+This directory contains comprehensive documentation for the Zixly platform.
 
 ## Quick Links
 
-- **[📖 Main Documentation](https://colemorton.github.io/scriptum-arc/)** - Full documentation site
+- **[📖 Main Documentation](https://colemorton.github.io/zixly/)** - Full documentation site
 - **[Product Requirements](./product/product-requirements-document.md)** - User stories and features
 - **[System Architecture](./architecture/system-architecture.md)** - Technical architecture
 - **[Financial Model](./financial/financial-projections-unit-economics.md)** - Business projections
@@ -87,4 +87,4 @@ docs/
 ---
 
 **Last Updated**: 2025-01-27  
-**Maintained By**: Scriptum Arc Development Team
+**Maintained By**: Zixly Development Team

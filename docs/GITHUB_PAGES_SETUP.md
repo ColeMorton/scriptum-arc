@@ -1,6 +1,6 @@
 # GitHub Pages Setup Guide
 
-This guide will help you enable GitHub Pages for your Scriptum Arc documentation.
+This guide will help you enable GitHub Pages for your Zixly documentation.
 
 ## Prerequisites
 
@@ -29,7 +29,7 @@ This guide will help you enable GitHub Pages for your Scriptum Arc documentation
 1. After enabling Pages, GitHub will build and deploy your documentation
 2. The process typically takes 1-2 minutes
 3. You'll see a green checkmark when deployment is complete
-4. Your documentation will be available at: `https://colemorton.github.io/scriptum-arc/`
+4. Your documentation will be available at: `https://colemorton.github.io/zixly/`
 
 ### 4. Custom Domain (Optional)
 
@@ -121,7 +121,7 @@ markdown-link-check docs/index.md
 Once GitHub Pages is enabled:
 
 1. **Test all links** in your documentation
-2. **Share the URL** with your team: `https://colemorton.github.io/scriptum-arc/`
+2. **Share the URL** with your team: `https://colemorton.github.io/zixly/`
 3. **Update your README** to include the documentation badge
 4. **Set up monitoring** for broken links (optional)
 
@@ -135,5 +135,5 @@ Once GitHub Pages is enabled:
 ---
 
 **Setup Status**: ✅ Ready for GitHub Pages deployment  
-**Documentation URL**: `https://colemorton.github.io/scriptum-arc/`  
+**Documentation URL**: `https://colemorton.github.io/zixly/`  
 **Last Updated**: 2025-01-27

@@ -1,6 +1,6 @@
 # Implementation Plans
 
-This directory contains detailed, phase-by-phase implementation plans for building Scriptum Arc MVP.
+This directory contains detailed, phase-by-phase implementation plans for building Zixly MVP.
 
 ## Overview
 

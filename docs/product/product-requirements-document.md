@@ -2,7 +2,7 @@
 **← [Back to Documentation Index](../index.md)** | **[System Architecture](../architecture/system-architecture.md)** →
 ---
 
-# Scriptum Arc - Product Requirements Document (PRD)
+# Zixly - Product Requirements Document (PRD)
 
 **Version**: 1.0
 **Last Updated**: 2025-10-15
@@ -34,7 +34,7 @@
 
 ### Product Overview
 
-**Scriptum Arc** is a bespoke Business Intelligence platform designed specifically for Australian SMEs (Small-to-Medium Enterprises) with $1-10M annual revenue. The platform consolidates data from disconnected business systems (accounting, CRM, project management, e-commerce) into unified, real-time dashboards, eliminating manual reporting and enabling data-driven decision-making.
+**Zixly** is a bespoke Business Intelligence platform designed specifically for Australian SMEs (Small-to-Medium Enterprises) with $1-10M annual revenue. The platform consolidates data from disconnected business systems (accounting, CRM, project management, e-commerce) into unified, real-time dashboards, eliminating manual reporting and enabling data-driven decision-making.
 
 ### Problem Statement
 
@@ -42,7 +42,7 @@ Australian SME owners and managers spend 5-15 hours weekly on manual reporting, 
 
 ### Solution
 
-Scriptum Arc provides:
+Zixly provides:
 
 - **Automated Data Consolidation**: Nightly (or hourly) syncs from 50+ business systems via OAuth integrations
 - **Bespoke Dashboards**: Custom-designed visualizations tailored to each customer's industry and KPIs
@@ -152,9 +152,9 @@ _"Empower every Australian SME to make data-driven decisions as confidently as e
 - Can't tell which projects are profitable until 30-60 days after completion
 - Accountant charges $800 for ad-hoc reports, takes 5-7 days to deliver
 
-**User Journey with Scriptum Arc**:
+**User Journey with Zixly**:
 
-1. **Discovery**: Googles "construction business dashboard Australia", finds Scriptum Arc
+1. **Discovery**: Googles "construction business dashboard Australia", finds Zixly
 2. **Evaluation**: Books demo, sees job profitability dashboard prototype
 3. **Purchase**: Signs up for Professional tier ($1,800/month), $2,500 setup fee
 4. **Onboarding**: Provides OAuth access to Xero and Procore, 1-hour requirements workshop
@@ -190,16 +190,16 @@ _"Empower every Australian SME to make data-driven decisions as confidently as e
 - Building custom reports in Excel is time-consuming and error-prone
 - Can't scale advisory services without hiring more staff
 
-**User Journey with Scriptum Arc**:
+**User Journey with Zixly**:
 
-1. **Discovery**: Client (Sarah) shares Scriptum Arc dashboard, David sees value
-2. **Adoption**: David recommends Scriptum Arc to 3 other clients
+1. **Discovery**: Client (Sarah) shares Zixly dashboard, David sees value
+2. **Adoption**: David recommends Zixly to 3 other clients
 3. **Partnership**: Becomes referral partner (10% commission on signups)
-4. **Value**: Uses Scriptum Arc dashboards in quarterly business review meetings, clients perceive higher value from accounting relationship
+4. **Value**: Uses Zixly dashboards in quarterly business review meetings, clients perceive higher value from accounting relationship
 
 **Success Criteria**:
 
-- Refers 5+ clients to Scriptum Arc in Year 1
+- Refers 5+ clients to Zixly in Year 1
 - Reduces ad-hoc reporting time by 50%
 - Upsells 2 clients to premium advisory services using dashboard insights
 
@@ -226,7 +226,7 @@ _"Empower every Australian SME to make data-driven decisions as confidently as e
 - Inventory forecasting requires manual spreadsheet with data from 3 systems
 - No visibility into fulfillment speed by warehouse
 
-**User Journey with Scriptum Arc**:
+**User Journey with Zixly**:
 
 1. **Discovery**: Recommended by business coach
 2. **Evaluation**: Tests dashboard with 30-day pilot ($2,500)
@@ -260,7 +260,7 @@ _"Empower every Australian SME to make data-driven decisions as confidently as e
 **Acceptance Criteria**:
 
 - Clicking "Connect Xero" redirects to Xero authorization page
-- After authorization, user is redirected back to Scriptum Arc
+- After authorization, user is redirected back to Zixly
 - Access token is encrypted and stored in database
 - Initial data sync is triggered within 5 minutes
 - User sees "Connected" status with last sync timestamp
@@ -848,7 +848,7 @@ _"Empower every Australian SME to make data-driven decisions as confidently as e
    - Click "Connect Xero"
    - Redirect to Xero authorization page
    - User approves access
-   - Redirect back to Scriptum Arc
+   - Redirect back to Zixly
    - Success message: "Xero connected! Initial sync started."
 
 3. **Integration Detail Page**
@@ -911,7 +911,7 @@ _"Empower every Australian SME to make data-driven decisions as confidently as e
 
 ```
 Top Navigation Bar
-├── Logo (Scriptum Arc)
+├── Logo (Zixly)
 ├── Dashboard (default landing page)
 ├── Integrations
 ├── Settings
@@ -1193,7 +1193,7 @@ The following features are **explicitly excluded** from the MVP to maintain focu
 - ❌ No project management (task assignment, time tracking) - Asana does this
 - ❌ No data entry UI (customers enter data in source systems, we consolidate)
 
-**Philosophy**: Scriptum Arc is a **read-only BI layer**. We aggregate and visualize data from systems of record, but we do not become a system of record ourselves.
+**Philosophy**: Zixly is a **read-only BI layer**. We aggregate and visualize data from systems of record, but we do not become a system of record ourselves.
 
 ---
 
@@ -1264,9 +1264,9 @@ A feature is considered "done" when:
 
 **Business Entities**:
 
-- **Tenant**: A company or organization that subscribes to Scriptum Arc (Scriptum Arc's customer). Each tenant has isolated data and pays subscription fees. Example: ABC Construction Pty Ltd.
+- **Tenant**: A company or organization that subscribes to Zixly (Zixly's customer). Each tenant has isolated data and pays subscription fees. Example: ABC Construction Pty Ltd.
 - **User**: An individual employee of a tenant company who has access to the platform. Users belong to exactly one tenant and have role-based permissions (ADMIN, EDITOR, VIEWER). Example: Sarah Chen (sarah@abcconstruction.com.au).
-- **Client**: A business entity, customer, or project that the tenant company is tracking metrics for (stored as `ClientKPI` in database). This is the tenant's customer, not Scriptum Arc's customer. Example: Harbor Bridge Renovation Project.
+- **Client**: A business entity, customer, or project that the tenant company is tracking metrics for (stored as `ClientKPI` in database). This is the tenant's customer, not Zixly's customer. Example: Harbor Bridge Renovation Project.
 
 For detailed entity relationship explanations with real-world examples, see [Entity Relationship Explained](../concepts/entity-relationship-explained.md).
 

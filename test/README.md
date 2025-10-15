@@ -1,6 +1,6 @@
 # Integration Testing Suite
 
-This directory contains comprehensive integration tests for the Scriptum Arc application, covering API endpoints, database operations, authentication, and Row-Level Security (RLS).
+This directory contains comprehensive integration tests for the Zixly application, covering API endpoints, database operations, authentication, and Row-Level Security (RLS).
 
 ## Test Structure
 

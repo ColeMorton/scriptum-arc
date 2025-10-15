@@ -1,4 +1,4 @@
-# Scriptum Arc: Product Specification
+# Zixly: Product Specification
 
 **Version**: 1.0
 **Last Updated**: 2025-10-15
@@ -8,7 +8,7 @@
 
 ## Product Identity
 
-**Name**: Scriptum Arc
+**Name**: Zixly
 **Category**: Automated Business Intelligence (ABI) Console
 **Target Market**: Small-to-Medium Australian Businesses ($1-10M annual revenue)
 
@@ -22,7 +22,7 @@
 
 **"Bespoke Business Intelligence at SaaS Pricing"**
 
-Scriptum Arc delivers enterprise-grade, custom-built data dashboards at predictable SaaS subscription rates—eliminating the traditional trade-off between generic template solutions (Power BI, Tableau) and expensive bespoke consulting engagements.
+Zixly delivers enterprise-grade, custom-built data dashboards at predictable SaaS subscription rates—eliminating the traditional trade-off between generic template solutions (Power BI, Tableau) and expensive bespoke consulting engagements.
 
 ### Target Customer Profile
 
@@ -49,7 +49,7 @@ Scriptum Arc delivers enterprise-grade, custom-built data dashboards at predicta
 
 ### Differentiation Matrix
 
-| Feature              | Scriptum Arc                       | Power BI / Tableau          | Klipfolio / Databox       | Bespoke Consulting |
+| Feature              | Zixly                              | Power BI / Tableau          | Klipfolio / Databox       | Bespoke Consulting |
 | -------------------- | ---------------------------------- | --------------------------- | ------------------------- | ------------------ |
 | **Customization**    | Fully bespoke per client           | Template-based              | Template-based            | Fully bespoke      |
 | **Pricing**          | $1,200-$3,500/mo                   | $10-70/user/mo + consulting | $90-700/mo                | $50K+ upfront      |
