@@ -8,7 +8,7 @@
 [![Supabase](https://img.shields.io/badge/Supabase-PostgreSQL-3ECF8E?style=flat-square&logo=supabase)](https://supabase.com/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.x-38B2AC?style=flat-square&logo=tailwind-css)](https://tailwindcss.com/)
 [![Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?style=flat-square&logo=vercel)](https://vercel.com/cole-mortons-projects/scriptum-arc)
-[![Documentation](https://img.shields.io/badge/Documentation-GitHub%20Pages-blue?style=flat-square&logo=github)](https://scriptumarc.github.io/scriptum-arc/)
+[![Documentation](https://img.shields.io/badge/Documentation-GitHub%20Pages-blue?style=flat-square&logo=github)](https://colemorton.github.io/scriptum-arc/)
 
 **Scriptum Arc** is a premium Business Intelligence platform designed specifically for Australian Small-to-Medium Enterprises (SMEs) with $1-10M annual revenue. The platform consolidates data from disconnected business systems (accounting, CRM, project management, e-commerce) into unified, real-time dashboards, eliminating manual reporting and enabling data-driven decision-making.
 
@@ -78,7 +78,7 @@
 1. **Clone the repository**
 
    ```bash
-   git clone https://github.com/scriptumarc/platform.git
+   git clone https://github.com/colemorton/platform.git
    cd platform
    ```
 
@@ -230,7 +230,7 @@ scriptum-arc/
 
 Comprehensive documentation is available in the `/docs` directory:
 
-- **[📖 Full Documentation](https://scriptumarc.github.io/scriptum-arc/)** - Complete documentation site
+- **[📖 Full Documentation](https://colemorton.github.io/scriptum-arc/)** - Complete documentation site
 - **[Product Requirements](./docs/product/product-requirements-document.md)** - 35+ user stories, detailed personas
 - **[System Architecture](./docs/architecture/system-architecture.md)** - C4 diagrams, security architecture
 - **[Financial Projections](./docs/financial/financial-projections-unit-economics.md)** - 3-year business model

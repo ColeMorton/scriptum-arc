@@ -100,4 +100,4 @@ Welcome to the comprehensive documentation for Scriptum Arc, a premium Business 
 **Documentation Version**: 1.0  
 **Maintained By**: Scriptum Arc Development Team
 
-**🌐 Repository**: [GitHub Repository](https://github.com/scriptumarc/platform)
+**🌐 Repository**: [GitHub Repository](https://github.com/colemorton/platform)

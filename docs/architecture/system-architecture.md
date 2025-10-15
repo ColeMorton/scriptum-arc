@@ -879,7 +879,7 @@ module.exports = {
       {
         source: '/api/:path*',
         headers: [
-          { key: 'Access-Control-Allow-Origin', value: 'https://app.scriptumarc.com.au' },
+          { key: 'Access-Control-Allow-Origin', value: 'https://app.colemorton.com.au' },
           { key: 'Access-Control-Allow-Methods', value: 'GET,POST,PUT,DELETE' },
         ],
       },
@@ -972,7 +972,7 @@ services:
       - N8N_BASIC_AUTH_ACTIVE=true
       - N8N_BASIC_AUTH_USER=${N8N_USER}
       - N8N_BASIC_AUTH_PASSWORD=${N8N_PASSWORD}
-      - N8N_HOST=n8n.scriptumarc.internal
+      - N8N_HOST=n8n.colemorton.internal
       - N8N_PROTOCOL=https
       - DATABASE_TYPE=postgresdb
       - DB_POSTGRESDB_HOST=${POSTGRES_HOST}
@@ -1302,7 +1302,7 @@ logger.info('Financial data fetched', {
 
 ```bash
 # 1. Clone repository
-git clone git@github.com:scriptumarc/platform.git
+git clone git@github.com:colemorton/platform.git
 cd platform
 
 # 2. Install dependencies

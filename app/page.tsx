@@ -1,5 +1,11 @@
+'use client'
+
+import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
-import { Card } from '@/components/ui/card'
+import { StatCard } from '@/components/animated/stat-card'
+import { FeatureCard } from '@/components/animated/feature-card'
+import { IndustryCard } from '@/components/animated/industry-card'
+import { AnimatedCard } from '@/components/animated/animated-card'
 import {
   BarChart3,
   Clock,
@@ -8,34 +14,68 @@ import {
   TrendingUp,
   Users,
   Zap,
-  CheckCircle,
   ArrowRight,
 } from 'lucide-react'
+import {
+  fadeIn,
+  fadeInUp,
+  buttonHover,
+  buttonTap,
+  viewportConfig,
+  useShouldReduceMotion,
+} from '@/lib/animation-variants'
 
 export default function Home() {
+  const shouldReduceMotion = useShouldReduceMotion()
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-white">
       {/* Hero Section */}
       <section className="relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-32">
           <div className="text-center">
-            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-gray-900 tracking-tight animate-fade-in">
+            <motion.h1
+              className="text-5xl sm:text-6xl lg:text-7xl font-bold text-gray-900 tracking-tight"
+              variants={fadeIn}
+              initial="hidden"
+              animate="visible"
+              viewport={viewportConfig}
+            >
               Save <span className="text-blue-600 animate-pulse">$53,500</span> annually
-            </h1>
-            <p className="mt-6 text-xl sm:text-2xl text-gray-600 max-w-3xl mx-auto leading-relaxed animate-fade-in-up">
+            </motion.h1>
+            <motion.p
+              className="mt-6 text-xl sm:text-2xl text-gray-600 max-w-3xl mx-auto leading-relaxed"
+              variants={fadeInUp}
+              initial="hidden"
+              animate="visible"
+              transition={{ delay: 0.2 }}
+              viewport={viewportConfig}
+            >
               Premium Business Intelligence for Australian SMEs.
               <br className="hidden sm:block" />
               From 10 hours of manual reporting to 30 minutes of automated insights.
-            </p>
-            <div className="mt-10 animate-fade-in-up">
-              <Button
-                size="lg"
-                className="text-lg px-8 py-4 h-auto hover:scale-105 transition-transform duration-200"
+            </motion.p>
+            <motion.div
+              className="mt-10"
+              variants={fadeInUp}
+              initial="hidden"
+              animate="visible"
+              transition={{ delay: 0.4 }}
+              viewport={viewportConfig}
+            >
+              <motion.div
+                whileHover={shouldReduceMotion ? undefined : buttonHover}
+                whileTap={shouldReduceMotion ? undefined : buttonTap}
               >
-                Book a Demo
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Button>
-            </div>
+                <Button
+                  size="lg"
+                  className="text-lg px-8 py-4 h-auto hover:scale-105 transition-transform duration-200"
+                >
+                  Book a Demo
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Button>
+              </motion.div>
+            </motion.div>
           </div>
         </div>
       </section>
@@ -53,29 +93,10 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <Card className="p-8 text-center border-0 shadow-lg hover:shadow-xl transition-shadow duration-300">
-              <Clock className="h-12 w-12 text-red-500 mx-auto mb-4" />
-              <div className="text-3xl font-bold text-gray-900 mb-2">10 hrs</div>
-              <div className="text-gray-600">Weekly manual reporting</div>
-            </Card>
-
-            <Card className="p-8 text-center border-0 shadow-lg hover:shadow-xl transition-shadow duration-300">
-              <DollarSign className="h-12 w-12 text-red-500 mx-auto mb-4" />
-              <div className="text-3xl font-bold text-gray-900 mb-2">$39,000</div>
-              <div className="text-gray-600">Annual labor cost</div>
-            </Card>
-
-            <Card className="p-8 text-center border-0 shadow-lg hover:shadow-xl transition-shadow duration-300">
-              <TrendingUp className="h-12 w-12 text-red-500 mx-auto mb-4" />
-              <div className="text-3xl font-bold text-gray-900 mb-2">$8,000</div>
-              <div className="text-gray-600">Data entry errors</div>
-            </Card>
-
-            <Card className="p-8 text-center border-0 shadow-lg hover:shadow-xl transition-shadow duration-300">
-              <Users className="h-12 w-12 text-red-500 mx-auto mb-4" />
-              <div className="text-3xl font-bold text-gray-900 mb-2">2-3 weeks</div>
-              <div className="text-gray-600">Decision delays</div>
-            </Card>
+            <StatCard icon={Clock} value="10 hrs" description="Weekly manual reporting" />
+            <StatCard icon={DollarSign} value="$39,000" description="Annual labor cost" />
+            <StatCard icon={TrendingUp} value="$8,000" description="Data entry errors" />
+            <StatCard icon={Users} value="2-3 weeks" description="Decision delays" />
           </div>
         </div>
       </section>
@@ -93,34 +114,21 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <Card className="p-8 border-0 shadow-lg bg-white hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-              <Zap className="h-12 w-12 text-blue-600 mb-6" />
-              <h3 className="text-xl font-semibold text-gray-900 mb-4">
-                Automated Data Consolidation
-              </h3>
-              <p className="text-gray-600">
-                Connects to Xero, HubSpot, Asana, and 50+ Australian business tools. Data syncs
-                automatically, no manual entry required.
-              </p>
-            </Card>
-
-            <Card className="p-8 border-0 shadow-lg bg-white hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-              <BarChart3 className="h-12 w-12 text-blue-600 mb-6" />
-              <h3 className="text-xl font-semibold text-gray-900 mb-4">Custom KPI Tracking</h3>
-              <p className="text-gray-600">
-                Bespoke visualizations designed for your industry. Track the metrics that matter to
-                YOUR business, not generic templates.
-              </p>
-            </Card>
-
-            <Card className="p-8 border-0 shadow-lg bg-white hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-              <TrendingUp className="h-12 w-12 text-blue-600 mb-6" />
-              <h3 className="text-xl font-semibold text-gray-900 mb-4">Real-Time Insights</h3>
-              <p className="text-gray-600">
-                Updated daily via automated ETL pipelines. See cash flow, sales pipeline, and
-                operational efficiency in real-time.
-              </p>
-            </Card>
+            <FeatureCard
+              icon={Zap}
+              title="Automated Data Consolidation"
+              description="Connects to Xero, HubSpot, Asana, and 50+ Australian business tools. Data syncs automatically, no manual entry required."
+            />
+            <FeatureCard
+              icon={BarChart3}
+              title="Custom KPI Tracking"
+              description="Bespoke visualizations designed for your industry. Track the metrics that matter to YOUR business, not generic templates."
+            />
+            <FeatureCard
+              icon={TrendingUp}
+              title="Real-Time Insights"
+              description="Updated daily via automated ETL pipelines. See cash flow, sales pipeline, and operational efficiency in real-time."
+            />
           </div>
         </div>
       </section>
@@ -138,59 +146,30 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
-            <Card className="p-8 border-0 shadow-lg">
-              <h3 className="text-xl font-semibold text-gray-900 mb-4">Professional Services</h3>
-              <ul className="space-y-2 text-gray-600">
-                <li className="flex items-center">
-                  <CheckCircle className="h-5 w-5 text-green-500 mr-2" />
-                  Matter profitability tracking
-                </li>
-                <li className="flex items-center">
-                  <CheckCircle className="h-5 w-5 text-green-500 mr-2" />
-                  Utilization rates analysis
-                </li>
-                <li className="flex items-center">
-                  <CheckCircle className="h-5 w-5 text-green-500 mr-2" />
-                  Client lifetime value metrics
-                </li>
-              </ul>
-            </Card>
-
-            <Card className="p-8 border-0 shadow-lg">
-              <h3 className="text-xl font-semibold text-gray-900 mb-4">Construction & Trades</h3>
-              <ul className="space-y-2 text-gray-600">
-                <li className="flex items-center">
-                  <CheckCircle className="h-5 w-5 text-green-500 mr-2" />
-                  Job costing and materials tracking
-                </li>
-                <li className="flex items-center">
-                  <CheckCircle className="h-5 w-5 text-green-500 mr-2" />
-                  Equipment utilization monitoring
-                </li>
-                <li className="flex items-center">
-                  <CheckCircle className="h-5 w-5 text-green-500 mr-2" />
-                  Quote-to-completion cycle time
-                </li>
-              </ul>
-            </Card>
-
-            <Card className="p-8 border-0 shadow-lg">
-              <h3 className="text-xl font-semibold text-gray-900 mb-4">E-Commerce & Retail</h3>
-              <ul className="space-y-2 text-gray-600">
-                <li className="flex items-center">
-                  <CheckCircle className="h-5 w-5 text-green-500 mr-2" />
-                  Inventory turnover analysis
-                </li>
-                <li className="flex items-center">
-                  <CheckCircle className="h-5 w-5 text-green-500 mr-2" />
-                  Cart abandonment tracking
-                </li>
-                <li className="flex items-center">
-                  <CheckCircle className="h-5 w-5 text-green-500 mr-2" />
-                  Product margin analysis
-                </li>
-              </ul>
-            </Card>
+            <IndustryCard
+              title="Professional Services"
+              features={[
+                'Matter profitability tracking',
+                'Utilization rates analysis',
+                'Client lifetime value metrics',
+              ]}
+            />
+            <IndustryCard
+              title="Construction & Trades"
+              features={[
+                'Job costing and materials tracking',
+                'Equipment utilization monitoring',
+                'Quote-to-completion cycle time',
+              ]}
+            />
+            <IndustryCard
+              title="E-Commerce & Retail"
+              features={[
+                'Inventory turnover analysis',
+                'Cart abandonment tracking',
+                'Product margin analysis',
+              ]}
+            />
           </div>
 
           <div className="text-center">
@@ -226,35 +205,35 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <Card className="p-6 text-center border-0 shadow-lg bg-white">
+            <AnimatedCard className="p-6 text-center border-0 shadow-lg bg-white" hasHover={false}>
               <Shield className="h-10 w-10 text-green-600 mx-auto mb-4" />
               <h3 className="font-semibold text-gray-900 mb-2">Australian Data Residency</h3>
               <p className="text-sm text-gray-600">
                 Data stored in Sydney region, never leaves Australia
               </p>
-            </Card>
+            </AnimatedCard>
 
-            <Card className="p-6 text-center border-0 shadow-lg bg-white">
+            <AnimatedCard className="p-6 text-center border-0 shadow-lg bg-white" hasHover={false}>
               <Shield className="h-10 w-10 text-green-600 mx-auto mb-4" />
               <h3 className="font-semibold text-gray-900 mb-2">Bank-Grade Security</h3>
               <p className="text-sm text-gray-600">AES-256 encryption, OAuth 2.0 authentication</p>
-            </Card>
+            </AnimatedCard>
 
-            <Card className="p-6 text-center border-0 shadow-lg bg-white">
+            <AnimatedCard className="p-6 text-center border-0 shadow-lg bg-white" hasHover={false}>
               <Shield className="h-10 w-10 text-green-600 mx-auto mb-4" />
               <h3 className="font-semibold text-gray-900 mb-2">99.9% Uptime SLA</h3>
               <p className="text-sm text-gray-600">
                 Automated backups, disaster recovery tested quarterly
               </p>
-            </Card>
+            </AnimatedCard>
 
-            <Card className="p-6 text-center border-0 shadow-lg bg-white">
+            <AnimatedCard className="p-6 text-center border-0 shadow-lg bg-white" hasHover={false}>
               <Shield className="h-10 w-10 text-green-600 mx-auto mb-4" />
               <h3 className="font-semibold text-gray-900 mb-2">Privacy Act Compliant</h3>
               <p className="text-sm text-gray-600">
                 Full compliance with Australian Privacy Act 1988
               </p>
-            </Card>
+            </AnimatedCard>
           </div>
         </div>
       </section>
@@ -269,14 +248,19 @@ export default function Home() {
             Join Australian SMEs saving $53,500+ annually with automated reporting. From 10 hours of
             manual work to 30 minutes of insights.
           </p>
-          <Button
-            size="lg"
-            variant="secondary"
-            className="text-lg px-8 py-4 h-auto hover:scale-105 transition-transform duration-200"
+          <motion.div
+            whileHover={shouldReduceMotion ? undefined : buttonHover}
+            whileTap={shouldReduceMotion ? undefined : buttonTap}
           >
-            Book Your Demo Today
-            <ArrowRight className="ml-2 h-5 w-5" />
-          </Button>
+            <Button
+              size="lg"
+              variant="secondary"
+              className="text-lg px-8 py-4 h-auto hover:scale-105 transition-transform duration-200"
+            >
+              Book Your Demo Today
+              <ArrowRight className="ml-2 h-5 w-5" />
+            </Button>
+          </motion.div>
         </div>
       </section>
     </div>

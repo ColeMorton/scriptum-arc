@@ -326,7 +326,7 @@ echo "✅ Verifying migrations..."
 npx prisma migrate status
 
 echo "🔍 Running smoke tests..."
-curl -f https://app.scriptumarc.com.au/api/health || exit 1
+curl -f https://app.colemorton.com.au/api/health || exit 1
 
 echo "✅ Disabling maintenance mode..."
 vercel env rm MAINTENANCE_MODE production
@@ -454,7 +454,7 @@ git push origin main --force
 
 ```bash
 # Check application health
-curl https://app.scriptumarc.com.au/api/health
+curl https://app.colemorton.com.au/api/health
 
 # Verify database schema matches code
 npx prisma migrate status

@@ -15,7 +15,7 @@
       "headers": [
         {
           "key": "Access-Control-Allow-Origin",
-          "value": "https://app.scriptumarc.com.au"
+          "value": "https://app.colemorton.com.au"
         },
         {
           "key": "Access-Control-Allow-Methods",

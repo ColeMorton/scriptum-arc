@@ -1,10 +1,10 @@
 {
   "ignorePatterns": [
     {
-      "pattern": "^https://scriptumarc.github.io/"
+      "pattern": "^https://colemorton.github.io/"
     },
     {
-      "pattern": "^https://github.com/scriptumarc/"
+      "pattern": "^https://github.com/colemorton/"
     },
     {
       "pattern": "^mailto:"
@@ -13,12 +13,12 @@
   "replacementPatterns": [
     {
       "pattern": "^../",
-      "replacement": "https://scriptumarc.github.io/scriptum-arc/"
+      "replacement": "https://colemorton.github.io/scriptum-arc/"
     }
   ],
   "httpHeaders": [
     {
-      "urls": ["https://scriptumarc.github.io/"],
+      "urls": ["https://colemorton.github.io/"],
       "headers": {
         "Accept-Encoding": "gzip, deflate, br"
       }

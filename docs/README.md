@@ -4,7 +4,7 @@ This directory contains comprehensive documentation for the Scriptum Arc platfor
 
 ## Quick Links
 
-- **[📖 Main Documentation](https://scriptumarc.github.io/scriptum-arc/)** - Full documentation site
+- **[📖 Main Documentation](https://colemorton.github.io/scriptum-arc/)** - Full documentation site
 - **[Product Requirements](./product/product-requirements-document.md)** - User stories and features
 - **[System Architecture](./architecture/system-architecture.md)** - Technical architecture
 - **[Financial Model](./financial/financial-projections-unit-economics.md)** - Business projections
