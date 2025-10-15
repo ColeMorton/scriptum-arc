@@ -62,7 +62,7 @@ Follow the instructions in `docs/GITHUB_PAGES_SETUP.md`:
 
 ### 2. Verify Deployment
 
-- Documentation will be available at: `https://your-username.github.io/scriptum-arc/`
+- Documentation will be available at: `https://colemorton.github.io/scriptum-arc/`
 - All README links will work correctly
 - GitHub Actions will validate documentation on every push
 
@@ -147,4 +147,4 @@ Your Scriptum Arc documentation is now professionally set up with:
 
 **Implementation Date**: 2025-01-27  
 **Status**: ✅ Complete and Ready for GitHub Pages  
-**Documentation URL**: `https://your-username.github.io/scriptum-arc/` (after Pages setup)
+**Documentation URL**: `https://colemorton.github.io/scriptum-arc/`
