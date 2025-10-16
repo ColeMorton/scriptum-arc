@@ -1,6 +1,19 @@
-This expanded table includes workflows for customer support, sophisticated financial management, and operational efficiencies tailored to specific business models like trades or e-commerce.
+# n8n Workflow Templates Library
 
-### **Expanded n8n Automation Workflows for Australian SMEs**
+> **Note**: This document serves as our service templates library for n8n workflow development. Each template includes time estimates, complexity ratings, and implementation guidance for service delivery.
+
+**Version**: 1.0  
+**Last Updated**: 2025-01-27  
+**Owner**: Service Delivery  
+**Status**: Service Templates Library
+
+---
+
+## Service Templates Overview
+
+This expanded library includes workflow templates for customer support, sophisticated financial management, and operational efficiencies tailored to specific business models like trades or e-commerce.
+
+### **n8n Workflow Templates for Brisbane SMEs**
 
 | Workflow Name                              | Tools Involved                              | Ease of Integration | Utility | Effort (Implementation) | Category         |
 | :----------------------------------------- | :------------------------------------------ | :-----------------: | :-----: | :---------------------: | :--------------- |
@@ -35,6 +48,70 @@ This expanded table includes workflows for customer support, sophisticated finan
 | **End-of-Month Sales Report**              | HubSpot, Xero, Microsoft Teams              |        ★★★★★        |  ★★★★☆  |          ★★★☆☆          | Finance          |
 
 Implementing even a few of these more complex workflows can fundamentally change how a business operates, freeing up your team to focus on high-value work rather than repetitive administration.
+
+---
+
+## Service Delivery Templates
+
+### Time Estimation Guidelines
+
+**Low Complexity Workflows** (8-12 hours):
+
+- Basic data sync between two systems
+- Simple email notifications
+- Basic form submissions to CRM
+- Standard webhook integrations
+
+**Medium Complexity Workflows** (16-24 hours):
+
+- Multi-step business processes
+- Conditional logic and decision trees
+- Data transformation and mapping
+- Error handling and retry logic
+
+**High Complexity Workflows** (24-40 hours):
+
+- AI/ML integration workflows
+- Complex data processing
+- Multi-system orchestration
+- Custom TypeScript node development
+
+### Service Investment Ranges
+
+**Per Workflow Investment**:
+
+- Low Complexity: $1,200 - $3,000
+- Medium Complexity: $2,400 - $6,000
+- High Complexity: $3,600 - $10,000
+
+**Package Deals**:
+
+- 3-5 Basic Workflows: $3,500 - $7,500
+- 5-10 Medium Workflows: $7,500 - $15,000
+- 10+ Complex Workflows: $15,000 - $30,000
+
+### Implementation Methodology
+
+**Phase 1: Discovery** (2-4 hours)
+
+- Business process mapping
+- System integration analysis
+- Workflow design and planning
+- Technical requirements assessment
+
+**Phase 2: Development** (8-32 hours)
+
+- Workflow implementation
+- Integration configuration
+- Testing and validation
+- Error handling setup
+
+**Phase 3: Deployment** (2-4 hours)
+
+- Production deployment
+- User training
+- Documentation handover
+- Go-live support
 
 ---
 

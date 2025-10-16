@@ -4,10 +4,12 @@
 
 # Zixly - System Architecture Document
 
+> **Note**: This document describes our internal technical capabilities and delivery methodology for n8n service implementations. It is maintained for service delivery consistency and technical documentation purposes, not as product specifications.
+
 **Version**: 1.0
 **Last Updated**: 2025-10-15
 **Owner**: Technical Architecture
-**Status**: Production Architecture (MVP)
+**Status**: Service Delivery Infrastructure
 
 ---
 
@@ -56,6 +58,131 @@ Zixly is an integration platform for Australian SMEs that connects and automates
 | **Supabase PostgreSQL** for data warehouse  | Managed PostgreSQL, pgvector support, AU region        | Cost scales with data volume             |
 | **Self-hosted n8n** for ETL                 | No per-task fees, custom code nodes, full control      | Requires VPS management                  |
 | **Visx** for visualizations                 | D3-based custom charts, React-native                   | Steeper learning curve than Chart.js     |
+
+---
+
+## n8n vs Web App Separation of Concerns
+
+### Core Principle: Complementary Architecture
+
+Zixly's architecture is designed with **clear separation of concerns** between n8n (workflow automation) and the web application (business intelligence). This eliminates duplication and leverages each platform's strengths.
+
+### What n8n Handles (Workflow Automation)
+
+**n8n's Core Responsibilities:**
+
+- **Workflow Orchestration**: Visual workflow builder, execution engine, scheduling
+- **API Integrations**: OAuth authentication, data extraction from 50+ business systems
+- **Data Transformation**: Complex ETL logic, data normalization, aggregation
+- **Custom TypeScript Nodes**: Industry-specific business logic, advanced data processing
+- **Scheduled Automation**: Cron-based triggers, event-driven workflows
+- **Workflow Management**: Execution monitoring, error handling, retry logic
+
+**n8n's Strengths:**
+
+- ✅ Visual workflow builder for non-technical users
+- ✅ Extensive API integration library (500+ connectors)
+- ✅ Custom code nodes for complex business logic
+- ✅ Self-hosted control and data sovereignty
+- ✅ No per-task fees or usage restrictions
+- ✅ Workflow portability and export capabilities
+
+### What Web App Handles (Business Intelligence)
+
+**Web App's Core Responsibilities:**
+
+- **Business Intelligence UI**: Interactive dashboards, real-time visualizations
+- **Real-Time Communication**: WebSocket connections, live data updates
+- **Multi-Tenant User Management**: Authentication, authorization, role-based access
+- **Advanced Analytics**: ML models, predictive insights, statistical analysis
+- **Mobile Integration**: React Native app, push notifications, offline sync
+- **Data Presentation**: Visx charts, drill-down capabilities, filtering
+
+**Web App's Strengths:**
+
+- ✅ Real-time WebSocket connections (n8n limitation)
+- ✅ Interactive business intelligence dashboards
+- ✅ Multi-tenant user authentication and RBAC
+- ✅ Mobile application development
+- ✅ Advanced analytics and ML model hosting
+- ✅ Rich user experience and collaboration features
+
+### Data Flow Architecture
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    n8n Platform (Workflow Automation)      │
+│  ┌─────────────────────────────────────────────────────┐   │
+│  │ • Workflow orchestration                            │   │
+│  │ • API integrations (Xero, HubSpot, etc.)           │   │
+│  │ • Data transformation and ETL                      │   │
+│  │ • Custom TypeScript nodes                          │   │
+│  │ • Scheduled automation                             │   │
+│  └─────────────────────────────────────────────────────┘   │
+└─────────────────────┬───────────────────────────────────────┘
+                      │ Writes processed data
+┌─────────────────────▼───────────────────────────────────────┐
+│              PostgreSQL Database (Data Warehouse)        │
+│  ┌─────────────────────────────────────────────────────┐   │
+│  │ • Business data (financials, leads, metrics)      │   │
+│  │ • Workflow metadata (UI display only)               │   │
+│  │ • Data sync status (freshness indicators)          │   │
+│  │ • Multi-tenant isolation (RLS)                     │   │
+│  └─────────────────────────────────────────────────────┘   │
+└─────────────────────┬───────────────────────────────────────┘
+                      │ Reads data for presentation
+┌─────────────────────▼───────────────────────────────────────┐
+│                Web Application (Business Intelligence)     │
+│  ┌─────────────────────────────────────────────────────┐   │
+│  │ • Interactive dashboards                            │   │
+│  │ • Real-time WebSocket updates                      │   │
+│  │ • Multi-tenant user management                     │   │
+│  │ • Advanced analytics and ML                        │   │
+│  │ • Mobile application                               │   │
+│  └─────────────────────────────────────────────────────┘   │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### Integration Boundaries
+
+**Clear API Boundaries:**
+
+- **n8n → PostgreSQL**: n8n workflows write processed business data
+- **PostgreSQL → Web App**: Web app reads data for presentation and analytics
+- **Web App → n8n**: Web app NEVER triggers workflows directly (n8n handles all automation)
+- **Real-Time Updates**: PostgreSQL triggers → Supabase real-time → WebSocket → UI
+
+**What Web App NEVER Does:**
+
+- ❌ Workflow execution or management (n8n handles this)
+- ❌ API integrations or OAuth (n8n handles this)
+- ❌ Data transformation or ETL (n8n handles this)
+- ❌ Scheduled jobs or automation (n8n handles this)
+- ❌ Custom node development (n8n extensibility)
+
+**What n8n NEVER Does:**
+
+- ❌ Real-time WebSocket connections (web app limitation)
+- ❌ Interactive business intelligence dashboards (web app limitation)
+- ❌ Multi-tenant user management (web app limitation)
+- ❌ Mobile application development (web app limitation)
+- ❌ Advanced analytics and ML hosting (web app limitation)
+
+### Benefits of This Architecture
+
+**Technical Benefits:**
+
+- **Zero Duplication**: No overlap between n8n and web app responsibilities
+- **Leverage Strengths**: Each platform does what it does best
+- **Clear Boundaries**: Well-defined integration points and data flow
+- **Scalable**: n8n scales workflows, web app scales user experience
+
+**Business Benefits:**
+
+- **Faster Development**: No reinventing n8n's capabilities
+- **Lower Complexity**: Clear separation reduces cognitive load
+- **Better User Experience**: Focus on business intelligence and real-time features
+- **Defensible Moat**: Complementary architecture creates competitive advantage
 
 ---
 

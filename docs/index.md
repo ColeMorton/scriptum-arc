@@ -1,15 +1,16 @@
 # Zixly Documentation
 
-> **Integration Platform for Australian SMEs**
+> **n8n Automation Services for Brisbane SMEs**
 
-Welcome to the comprehensive documentation for Zixly, an integration platform designed specifically for Australian Small-to-Medium Enterprises that connects and automates data flow between existing business systems.
+Welcome to the comprehensive documentation for Zixly, a Brisbane-based n8n automation service provider that helps SMEs implement, configure, and manage their own automation platforms with complete ownership and control.
 
 ## 📚 Documentation Sections
 
-### 🎯 Product Documentation
+### 🎯 Service Documentation
 
-- **[Product Requirements Document](./product/product-requirements-document.md)** - 35+ user stories, detailed personas
-- **[Product Specification](./specs/product-specification.md)** - Product vision, MVP scope, success metrics
+- **[Service Catalog](./services/service-catalog.md)** - Complete service offerings and packages
+- **[Service Delivery Process](./services/delivery-process.md)** - Service delivery methodology
+- **[Client Onboarding](./services/client-onboarding.md)** - Client onboarding process
 
 ### 🏗️ Architecture & Technical
 
@@ -22,19 +23,19 @@ Welcome to the comprehensive documentation for Zixly, an integration platform de
 
 ### 💰 Business & Financial
 
-- **[Financial Projections](./financial/financial-projections-unit-economics.md)** - 3-year business model and unit economics
-- **[Sales Strategy](./sales/sales-deck-demo-script.md)** - Go-to-market approach and demo scripts
+- **[Service Business Model](./financial/service-business-model.md)** - Service revenue model and targets
+- **[Self-Hostable Stack](./Comprehensive%20self-hostable%20SME%20stack.md)** - Complete tool ecosystem
 
 ### 🚀 Implementation
 
 - **[Implementation Overview](./implementation/README.md)** - Technical roadmap and phases
 - **[Phase 1: Data Foundation](./implementation/phase-1-data-foundation.md)** - Database and API implementation
 
-### 🔗 Integrations & Concepts
+### 🔗 Service Operations & Templates
 
-- **[Entity Relationship Explained](./concepts/entity-relationship-explained.md)** - Business entity relationships
-- **[n8n Automation Workflows](./integrations/n8n-automation-workflows.md)** - ETL pipeline documentation
-- **[SME Software Comparison](./integrations/sme-software-comparison.md)** - Competitive analysis
+- **[Operations Guide](./operations/project-estimation-guide.md)** - Project estimation and time tracking
+- **[n8n Workflow Templates](./integrations/n8n-automation-workflows.md)** - Service templates library
+- **[Marketing Materials](./marketing/service-overview.md)** - Client-facing materials
 
 ## 🚀 Quick Start
 
@@ -46,9 +47,9 @@ Welcome to the comprehensive documentation for Zixly, an integration platform de
 
 ### For Business Stakeholders
 
-1. **[Product Requirements](./product/product-requirements-document.md)** - User stories and feature specifications
-2. **[Financial Projections](./financial/financial-projections-unit-economics.md)** - Business model and unit economics
-3. **[Sales Strategy](./sales/sales-deck-demo-script.md)** - Go-to-market approach
+1. **[Service Catalog](./services/service-catalog.md)** - Service offerings and packages
+2. **[Service Business Model](./financial/service-business-model.md)** - Service revenue model and targets
+3. **[Marketing Materials](./marketing/service-overview.md)** - Client-facing service overview
 
 ## 📖 Documentation Standards
 
@@ -70,30 +71,30 @@ Welcome to the comprehensive documentation for Zixly, an integration platform de
 | **Auth**       | Supabase Auth | Latest  | JWT-based authentication and session management      |
 | **ETL**        | n8n           | 1.x     | Workflow automation and ETL pipeline management      |
 
-## 🎯 Key Features
+## 🎯 Service Capabilities
 
-- **📈 Financial Performance Dashboard**: Revenue, expenses, profit, and cash flow trends
-- **🎯 Sales Pipeline Analysis**: Funnel visualization with conversion rates
-- **⚡ Operational Efficiency**: Task completion metrics and project velocity
-- **🔧 Custom KPI Tracking**: User-defined metrics with flexible data sources
-- **🚨 Threshold Alerts**: Automated notifications via email and Slack
-- **📱 Mobile-Responsive**: Optimized for tablets and desktop (768px+)
+- **🔧 n8n Platform Setup**: Complete implementation on your infrastructure
+- **⚡ Custom Workflow Development**: Bespoke workflows for your business processes
+- **🔗 System Integration**: Connect Xero, HubSpot, Asana, and 50+ business systems
+- **📚 Training & Support**: Comprehensive training and ongoing assistance
+- **🛠️ Stack Expansion**: Implement additional tools from the self-hostable SME stack
+- **📱 Flexible Engagement**: Project-based or ongoing support options
 
 ## 🏢 Target Market
 
-- **Primary**: Australian SMEs ($1-10M annual revenue)
-- **Industries**: Construction, Professional Services, E-commerce
-- **Personas**: Business Owners, COOs, Accountants/Bookkeepers
+- **Primary**: Brisbane and South East Queensland SMEs
+- **Industries**: Professional Services, Construction, E-commerce, Retail
+- **Personas**: Business Owners, Operations Managers, IT Managers
 
-## 💡 Value Proposition
+## 💡 Service Value Proposition
 
-**"Integration Platform that Unifies Your Existing Tools"**
+**"Expert n8n Automation Services for Brisbane SMEs"**
 
-- **Integration Infrastructure**: Connects and automates data flow between 50+ business systems via OAuth integrations
-- **Automated Data Consolidation**: Nightly syncs that eliminate manual data copying between systems
-- **Bespoke Dashboards**: Custom-designed visualizations tailored to each customer's industry and KPIs
-- **Zero Maintenance**: Fully managed platform with included support and ongoing optimization
-- **Australian-Focused**: AU data residency, Privacy Act compliance, integrations with AU-specific tools
+- **Platform Ownership**: You own your n8n instance, workflows, and data
+- **Brisbane-Based Expertise**: Local team with Australian business knowledge
+- **Flexible Service Options**: Full-service, hybrid, or self-service with training
+- **Complete Stack Services**: n8n automation plus 20+ self-hostable tools
+- **Proven Methodology**: Successful implementations across Brisbane SMEs
 
 ---
 

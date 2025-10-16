@@ -1,9 +1,11 @@
 # Database Schema Diagram
 
+> **Note**: This document describes our internal database architecture and schema design for n8n service implementations. It is maintained for service delivery consistency and technical documentation purposes.
+
 **Version**: 1.0
 **Last Updated**: 2025-10-15
 **Owner**: Database Architecture
-**Status**: Production Schema (MVP)
+**Status**: Service Delivery Infrastructure
 
 ---
 

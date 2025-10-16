@@ -22,6 +22,8 @@ model Tenant {
   clientKPIs      ClientKPI[]
   users           User[]
   integrations    Integration[]
+  workflowMetadata WorkflowMetadata[]
+  dataSyncStatus  DataSyncStatus[]
 
   @@map("tenants")
 }
@@ -156,4 +158,45 @@ enum IntegrationStatus {
   ACTIVE
   ERROR
   DISABLED
+}
+
+// Workflow metadata for UI display only (n8n handles actual workflow execution)
+model WorkflowMetadata {
+  id              String   @id @default(cuid())
+  tenantId        String
+  workflowId      String   // n8n workflow ID (reference only)
+  workflowName    String
+  description     String?
+  category        String   // e.g., "financial", "crm", "operational"
+  isActive        Boolean  @default(true)
+  lastRunAt       DateTime?
+  metadata        Json?    // Display metadata for UI
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  tenant          Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  
+  @@unique([tenantId, workflowId])
+  @@index([tenantId])
+  @@map("workflow_metadata")
+}
+
+// Data sync status for UI indicators (NOT workflow execution)
+model DataSyncStatus {
+  id              String   @id @default(cuid())
+  tenantId        String
+  dataSource      String   // e.g., "xero", "hubspot"
+  lastSyncAt      DateTime
+  nextSyncAt      DateTime?
+  recordCount     Int?
+  status          String   // "success", "error", "pending"
+  errorMessage    String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  tenant          Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  
+  @@unique([tenantId, dataSource])
+  @@index([tenantId])
+  @@map("data_sync_status")
 }

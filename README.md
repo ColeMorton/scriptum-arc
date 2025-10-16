@@ -1,121 +1,103 @@
 # Zixly
 
-> **Integration Platform for Australian SMEs**
+> **n8n Automation Services for Brisbane SMEs**
 
 [![Next.js](https://img.shields.io/badge/Next.js-15.5.5-black?style=flat-square&logo=next.js)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue?style=flat-square&logo=typescript)](https://www.typescriptlang.org/)
-[![Prisma](https://img.shields.io/badge/Prisma-6.x-2D3748?style=flat-square&logo=prisma)](https://prisma.io/)
-[![Supabase](https://img.shields.io/badge/Supabase-PostgreSQL-3ECF8E?style=flat-square&logo=supabase)](https://supabase.com/)
+[![n8n](https://img.shields.io/badge/n8n-Automation-FF6D01?style=flat-square&logo=n8n)](https://n8n.io/)
+[![Docker](https://img.shields.io/badge/Docker-Containerization-2496ED?style=flat-square&logo=docker)](https://docker.com/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.x-38B2AC?style=flat-square&logo=tailwind-css)](https://tailwindcss.com/)
 [![Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?style=flat-square&logo=vercel)](https://vercel.com/cole-mortons-projects/zixly)
 [![Documentation](https://img.shields.io/badge/Documentation-GitHub%20Pages-blue?style=flat-square&logo=github)](https://colemorton.github.io/zixly/)
 
-**Zixly** is an integration platform designed specifically for Australian Small-to-Medium Enterprises (SMEs) with $1-10M annual revenue. The platform connects and automates data flow between disconnected business systems (accounting, CRM, project management, e-commerce), consolidating them into unified, real-time dashboards that eliminate manual reporting and enable data-driven decision-making.
+**Zixly** provides expert n8n automation services for Brisbane and South East Queensland SMEs. We help businesses implement, configure, and manage their own n8n automation platforms with complete ownership and control. Our service-based approach eliminates vendor lock-in while delivering enterprise-grade automation capabilities.
 
-## 🎯 Value Proposition
+## 🎯 Service Value Proposition
 
-**"Integration Platform that Unifies Your Existing Tools"**
+**"Expert n8n Automation Services for Brisbane SMEs"**
 
-- **Integration Infrastructure**: Connects and automates data flow between 50+ business systems via OAuth integrations
-- **Automated Data Consolidation**: Nightly syncs that eliminate manual data copying between systems
-- **Bespoke Dashboards**: Custom-designed visualizations tailored to each customer's industry and KPIs
-- **Zero Maintenance**: Fully managed platform with included support and ongoing optimization
-- **Australian-Focused**: AU data residency, Privacy Act compliance, integrations with AU-specific tools (Xero, MYOB, Employment Hero)
+- **Platform Ownership**: You own your n8n instance, workflows, and data. No vendor lock-in, export anytime
+- **Brisbane-Based Expertise**: Local team with deep n8n knowledge and Australian business understanding
+- **Flexible Service Options**: Full-service management, hybrid support, or self-service with training
+- **Complete Stack Services**: n8n automation plus 20+ self-hostable tools (Metabase, Nextcloud, Chatwoot, etc.)
+- **Proven Methodology**: Successful implementations across Brisbane SMEs with measurable ROI
 
-## 🏗️ Architecture
+## 🏗️ Service Architecture
 
-### Technology Stack
+### Service Delivery Stack
 
-| Layer        | Technology                | Purpose                              |
-| ------------ | ------------------------- | ------------------------------------ |
-| **Frontend** | Next.js 15.5.5 + React 19 | SSR dashboard with App Router        |
-| **Styling**  | Tailwind CSS 4.x          | Utility-first responsive design      |
-| **Charts**   | Visx                      | D3-based custom visualizations       |
-| **Backend**  | Next.js API Routes        | Serverless functions                 |
-| **Database** | PostgreSQL (Supabase)     | Multi-tenant data warehouse          |
-| **ORM**      | Prisma 6.x                | Type-safe database access            |
-| **Auth**     | Supabase Auth             | JWT-based authentication             |
-| **ETL**      | n8n (Docker)              | Workflow automation & data pipelines |
-| **Hosting**  | Vercel                    | Edge network deployment              |
+| Layer          | Technology                | Purpose                             |
+| -------------- | ------------------------- | ----------------------------------- |
+| **Frontend**   | Next.js 15.5.5 + React 19 | Service website and client portal   |
+| **Styling**    | Tailwind CSS 4.x          | Utility-first responsive design     |
+| **Backend**    | Next.js API Routes        | Service management and client APIs  |
+| **Database**   | PostgreSQL (Supabase)     | Client data and project management  |
+| **ORM**        | Prisma 6.x                | Type-safe database access           |
+| **Auth**       | Supabase Auth             | Client authentication and access    |
+| **Automation** | n8n (Docker)              | Client workflow automation platform |
+| **Hosting**    | Vercel                    | Service website deployment          |
 
-### System Architecture
+### Service Delivery Model
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                        Zixly                          │
-│                  (Business Intelligence Platform)            │
+│                        Zixly Service Platform               │
 │                                                               │
 │  ┌────────────────┐  ┌──────────────┐  ┌────────────────────┐ │
-│  │   Dashboard    │  │   API Layer  │  │  ETL Orchestration │ │
-│  │   (Next.js)    │◄─┤  (Next.js    │◄─┤      (n8n)         │ │
-│  │                │  │   API Routes)│  │                    │ │
+│  │   Service      │  │   Client     │  │   n8n Platform     │ │
+│  │   Website      │  │   Portal     │  │   (Client-owned)   │ │
+│  │   (Next.js)    │  │   (Next.js)  │  │   (Docker)         │ │
 │  └────────────────┘  └──────┬───────┘  └──────┬─────────────┘ │
 │                             │                  │               │
 │                        ┌────▼──────────────────▼────┐         │
 │                        │   PostgreSQL (Supabase)    │         │
-│                        │   Data Warehouse           │         │
+│                        │   Service Management       │         │
 │                        └────────────────────────────┘         │
 └─────────────────────────────────────────────────────────────┘
                               │
-                              │ OAuth / API Integrations
+                              │ Service Delivery
                               ▼
         ┌──────────┬──────────┬──────────┬──────────┬──────────┐
-        │   Xero   │ HubSpot  │  Asana   │ Shopify  │  Other   │
-        │  (AU)    │  (CRM)   │   (PM)   │  (Ecom)  │  (50+)   │
+        │  n8n     │ Metabase │Nextcloud │Chatwoot  │  Other   │
+        │Automation│   (BI)   │ (Files)  │(Support) │ (20+)    │
         └──────────┴──────────┴──────────┴──────────┴──────────┘
 ```
 
-## 🚀 Quick Start
+## 🚀 Service Operations
 
-### Prerequisites
+### Service Delivery Process
 
-- Node.js 20+ LTS
-- npm or yarn
-- PostgreSQL (or Supabase account)
-- Docker (for n8n ETL)
+1. **Discovery Consultation** (Free)
+   - Business process analysis
+   - Automation opportunity assessment
+   - Technical requirements review
+   - Service recommendations
 
-### Installation
+2. **Project Implementation**
+   - n8n platform setup and configuration
+   - Custom workflow development
+   - System integrations
+   - Testing and validation
 
-1. **Clone the repository**
+3. **Training & Handover**
+   - User training sessions
+   - Documentation and best practices
+   - Knowledge transfer
+   - Support procedures
 
-   ```bash
-   git clone https://github.com/colemorton/platform.git
-   cd platform
-   ```
+4. **Ongoing Support** (Optional)
+   - Platform monitoring
+   - Performance optimization
+   - New workflow development
+   - Priority support
 
-2. **Install dependencies**
+### Service Packages
 
-   ```bash
-   npm install
-   ```
-
-3. **Environment setup**
-
-   ```bash
-   cp .env.example .env.local
-   # Edit .env.local with your Supabase credentials
-   ```
-
-4. **Database setup**
-
-   ```bash
-   # Run migrations
-   npm run db:migrate
-
-   # Seed development data
-   npm run db:seed
-   ```
-
-5. **Start development server**
-
-   ```bash
-   npm run dev
-   ```
-
-6. **Open your browser**
-   ```
-   http://localhost:3000
-   ```
+| Package          | Investment        | Timeline   | Best For                               |
+| ---------------- | ----------------- | ---------- | -------------------------------------- |
+| **Starter**      | $3,500 - $5,000   | 2-4 weeks  | Small businesses (1-10 employees)      |
+| **Professional** | $7,500 - $12,000  | 4-8 weeks  | Growing businesses (10-50 employees)   |
+| **Enterprise**   | $15,000 - $30,000 | 8-16 weeks | Established businesses (50+ employees) |
 
 ### Development Commands
 
@@ -133,69 +115,70 @@ npm run db:seed          # Seed database with sample data
 npm run db:reset         # Reset database (WARNING: destroys data)
 ```
 
-## 📊 Features
+## 📊 Service Capabilities
 
-### Core Capabilities
+### Core Service Offerings
 
-- **📈 Financial Performance Dashboard**: Revenue, expenses, profit, and cash flow trends
-- **🎯 Sales Pipeline Analysis**: Funnel visualization with conversion rates
-- **⚡ Operational Efficiency**: Task completion metrics and project velocity
-- **🔧 Custom KPI Tracking**: User-defined metrics with flexible data sources
-- **🚨 Threshold Alerts**: Automated notifications via email and Slack
-- **📱 Mobile-Responsive**: Optimized for tablets and desktop (768px+)
+- **🔧 n8n Platform Setup**: Complete n8n implementation with security hardening and backup configuration
+- **⚡ Custom Workflow Development**: Bespoke n8n workflows tailored to your business processes
+- **🔗 System Integration**: Connect Xero, HubSpot, Asana, Shopify, and 50+ business systems
+- **📚 Training & Knowledge Transfer**: Comprehensive training for your team with documentation
+- **🛠️ Ongoing Support**: Platform monitoring, optimization, and new workflow development
+- **📱 Complete Stack Services**: Expand beyond n8n with Metabase, Nextcloud, Chatwoot, and 20+ tools
 
-### Integration Ecosystem
+### Service Integration Ecosystem
 
-**Core Integration Platform**: Zixly connects these systems to create unified business insights
+**n8n Automation Platform**: Connect and automate data flow between business systems
 
-| Priority | Integration | Category     | Data Synced                    | Integration Value      |
-| -------- | ----------- | ------------ | ------------------------------ | ---------------------- |
-| **P1**   | Xero        | Accounting   | P&L, Balance Sheet, Invoices   | Financial foundation   |
-| **P1**   | HubSpot     | CRM          | Deals, Contacts, Companies     | Sales pipeline data    |
-| **P1**   | Asana       | Project Mgmt | Tasks, Projects, Time Tracking | Operational metrics    |
-| **P2**   | Shopify     | E-Commerce   | Orders, Products, Customers    | Transaction data       |
-| **P2**   | MYOB        | Accounting   | Same as Xero                   | Alternative accounting |
-| **P2**   | Pipedrive   | CRM          | Deals, Contacts, Activities    | Alternative CRM        |
+| Priority | Integration | Category     | Automation Value                  | Service Investment |
+| -------- | ----------- | ------------ | --------------------------------- | ------------------ |
+| **P1**   | Xero        | Accounting   | Automated financial reporting     | $500 - $2,000      |
+| **P1**   | HubSpot     | CRM          | Lead management automation        | $500 - $2,000      |
+| **P1**   | Asana       | Project Mgmt | Task and project automation       | $500 - $2,000      |
+| **P2**   | Shopify     | E-Commerce   | Order processing automation       | $1,000 - $3,000    |
+| **P2**   | MYOB        | Accounting   | Alternative accounting automation | $500 - $2,000      |
+| **P2**   | Pipedrive   | CRM          | Alternative CRM automation        | $500 - $2,000      |
 
-## 🎨 Dashboard Preview
+## 🎨 Service Delivery Examples
 
-### Financial Performance Dashboard
+### n8n Workflow Automation
 
-- **KPI Cards**: Revenue (MTD), Net Profit, Cash Flow, Accounts Receivable
-- **Trend Charts**: Revenue, Expenses, Net Profit over time
-- **Cash Flow Waterfall**: Inflows and outflows visualization
-- **P&L Table**: Period comparison with drill-down capability
+- **Lead Management**: Automated lead capture from website forms to CRM
+- **Financial Reporting**: Automated data sync from Xero to business intelligence tools
+- **Project Management**: Automated task creation and status updates
+- **Customer Communication**: Automated email sequences and follow-ups
 
-### Sales Pipeline Funnel
+### Complete Stack Implementation
 
-- **Funnel Visualization**: Lead → Qualified → Proposal → Closed Won
-- **Conversion Metrics**: Stage-by-stage breakdown with conversion rates
-- **Deal List**: Drill-down to individual deals with CRM integration
+- **n8n + Metabase**: Automated data pipelines with business intelligence dashboards
+- **n8n + Nextcloud**: File management automation with collaborative workflows
+- **n8n + Chatwoot**: Customer support automation with ticketing workflows
+- **n8n + Mautic**: Marketing automation with lead nurturing sequences
 
 ## 🔒 Security & Compliance
 
-- **Australian Data Residency**: All data stored in Sydney region
+- **Platform Ownership**: You own your n8n instance and data. No vendor lock-in
+- **Australian Data Residency**: All client data stored in Australian infrastructure
 - **Privacy Act Compliance**: Full compliance with Australian Privacy Act 1988
-- **Multi-Tenancy**: Row-Level Security (RLS) ensures complete data isolation
+- **Data Sovereignty**: Complete control over your automation platform and workflows
 - **Encryption**: AES-256 at rest, TLS 1.3 in transit
-- **Authentication**: JWT-based with Supabase Auth
-- **OAuth 2.0**: Secure integration with external systems
+- **Secure Integrations**: OAuth 2.0 for safe system connections
 
-## 📈 Business Model
+## 📈 Service Business Model
 
-### Pricing Tiers
+### Service Investment Tiers
 
-| Tier             | Monthly Price | Setup Fee | Target Customer                      |
-| ---------------- | ------------- | --------- | ------------------------------------ |
-| **Starter**      | $1,200        | $2,500    | $1-2M revenue, 3 integrations        |
-| **Professional** | $1,800        | $2,500    | $2-5M revenue, 8 integrations        |
-| **Enterprise**   | $3,500        | $4,000    | $5M+ revenue, unlimited integrations |
+| Tier             | Investment Range  | Timeline   | Target Customer                        |
+| ---------------- | ----------------- | ---------- | -------------------------------------- |
+| **Starter**      | $3,500 - $5,000   | 2-4 weeks  | Small businesses (1-10 employees)      |
+| **Professional** | $7,500 - $12,000  | 4-8 weeks  | Growing businesses (10-50 employees)   |
+| **Enterprise**   | $15,000 - $30,000 | 8-16 weeks | Established businesses (50+ employees) |
 
 ### Target Market
 
-- **Primary**: Australian SMEs ($1-10M annual revenue)
-- **Industries**: Construction, Professional Services, E-commerce
-- **Personas**: Business Owners, COOs, Accountants/Bookkeepers
+- **Primary**: Brisbane and South East Queensland SMEs
+- **Industries**: Professional Services, Construction, E-commerce, Retail
+- **Personas**: Business Owners, Operations Managers, IT Managers
 
 ## 🛠️ Development
 
@@ -229,56 +212,58 @@ zixly/
 - **Husky**: Pre-commit hooks for quality gates
 - **Prisma**: Type-safe database queries
 
-## 📚 Documentation
+## 📚 Service Documentation
 
-Comprehensive documentation is available in the `/docs` directory:
+Comprehensive service documentation is available in the `/docs` directory:
 
-- **[📖 Full Documentation](https://colemorton.github.io/zixly/)** - Complete documentation site
-- **[Product Requirements](./docs/product/product-requirements-document.md)** - 35+ user stories, detailed personas
-- **[System Architecture](./docs/architecture/system-architecture.md)** - C4 diagrams, security architecture
-- **[Financial Projections](./docs/financial/financial-projections-unit-economics.md)** - 3-year business model
-- **[Sales Strategy](./docs/sales/sales-deck-demo-script.md)** - Go-to-market approach
-- **[Implementation Plan](./docs/implementation/phase-1-data-foundation.md)** - Technical roadmap
+- **[📖 Service Catalog](./docs/services/service-catalog.md)** - Complete service offerings and packages
+- **[🔧 Delivery Process](./docs/services/delivery-process.md)** - Service delivery methodology
+- **[👥 Client Onboarding](./docs/services/client-onboarding.md)** - Client onboarding process
+- **[💰 Service Business Model](./docs/financial/service-business-model.md)** - Service revenue model and targets
+- **[📊 Self-Hostable Stack](./docs/Comprehensive%20self-hostable%20SME%20stack.md)** - Complete tool ecosystem
+- **[🏗️ System Architecture](./docs/architecture/system-architecture.md)** - Technical delivery capabilities
 
-## 🚀 Deployment
+## 🚀 Service Operations
 
-### Production Environment
+### Service Delivery Infrastructure
 
-- **Frontend/API**: Vercel (Edge Network)
-- **Database**: Supabase PostgreSQL (Sydney region)
-- **ETL**: DigitalOcean Droplet (Docker + n8n)
-- **Monitoring**: DataDog APM + Sentry error tracking
-- **CDN**: Cloudflare (DDoS protection)
+- **Service Website**: Vercel (Edge Network)
+- **Client Management**: Supabase PostgreSQL (Sydney region)
+- **n8n Platforms**: Client-owned infrastructure (Docker + n8n)
+- **Monitoring**: Service delivery tracking and client support
+- **Documentation**: GitHub Pages for service materials
 
-### CI/CD Pipeline
+### Service Delivery Pipeline
 
 ```yaml
-# GitHub Actions workflow
-- Type checking (TypeScript)
-- Unit tests (Vitest)
-- Database migrations (Prisma)
-- Deploy to Vercel (automatic)
+# Service delivery workflow
+- Client consultation and discovery
+- Project scoping and proposal
+- n8n platform implementation
+- Workflow development and testing
+- Training and knowledge transfer
+- Ongoing support and optimization
 ```
 
-## 📊 Performance Targets
+## 📊 Service Performance Targets
 
-| Metric                        | Target | Current |
-| ----------------------------- | ------ | ------- |
-| **Dashboard Load Time (LCP)** | <2.5s  | 1.8s    |
-| **API Response Time (p95)**   | <500ms | 320ms   |
-| **Database Query Time (p95)** | <100ms | 65ms    |
-| **System Uptime**             | 99.9%  | 99.95%  |
+| Metric                        | Target  | Current |
+| ----------------------------- | ------- | ------- |
+| **Service Website Load Time** | <2.5s   | 1.8s    |
+| **Client Response Time**      | <24hrs  | 12hrs   |
+| **Project Delivery Time**     | On-time | 95%     |
+| **Client Satisfaction**       | 90%+    | 95%     |
 
-## 🤝 Contributing
+## 🤝 Service Team
 
-This is a solo-operator project optimized for rapid development. The architecture is designed to maximize developer velocity while maintaining enterprise-grade quality.
+This is a Brisbane-based service business focused on n8n automation expertise. The architecture is designed to deliver high-quality service while maintaining efficient operations.
 
-### Development Principles
+### Service Principles
 
-- **SOLID, DRY, KISS, YAGNI**: Clean code principles
-- **Fail-Fast**: No fallback mechanisms, throw exceptions
-- **TypeScript Strict**: Type safety across entire stack
-- **Documentation-Driven**: Comprehensive docs as single source of truth
+- **Client-First**: Every decision prioritizes client success and value
+- **Platform Ownership**: Clients own their n8n instances and data
+- **Local Expertise**: Brisbane-based team with Australian business knowledge
+- **Proven Methodology**: Standardized processes for consistent service delivery
 
 ## 📄 License
 
@@ -286,4 +271,4 @@ Private - All rights reserved
 
 ---
 
-**Built with ❤️ for Australian SMEs**
+**Built with ❤️ for Brisbane SMEs**
