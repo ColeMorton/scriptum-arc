@@ -1,8 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { NextRequest } from 'next/server'
 
-export async function getCurrentUser(request?: NextRequest) {
-   
+export async function getCurrentUser() {
   const supabase = await createClient()
 
   const {
@@ -22,8 +21,8 @@ export async function getCurrentUser(request?: NextRequest) {
   }
 }
 
-export async function requireAuth(request?: NextRequest) {
-  const user = await getCurrentUser(request)
+export async function requireAuth(_request?: NextRequest) {
+  const user = await getCurrentUser()
 
   if (!user) {
     throw new Error('Authentication required')

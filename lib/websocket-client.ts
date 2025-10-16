@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/client'
+import type { RealtimeChannel } from '@supabase/supabase-js'
 
 export interface RealtimeEvent {
   type:
@@ -22,7 +23,7 @@ export interface WebSocketClient {
 
 class SupabaseWebSocketClient implements WebSocketClient {
   private supabase = createClient()
-  private subscriptions: Map<string, unknown> = new Map()
+  private subscriptions: Map<string, RealtimeChannel> = new Map()
   private connected = false
 
   async connect(): Promise<void> {
