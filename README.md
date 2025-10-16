@@ -1,6 +1,6 @@
 # Zixly
 
-> **Bespoke Business Intelligence for Australian SMEs**
+> **Integration Platform for Australian SMEs**
 
 [![Next.js](https://img.shields.io/badge/Next.js-15.5.5-black?style=flat-square&logo=next.js)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue?style=flat-square&logo=typescript)](https://www.typescriptlang.org/)
@@ -10,13 +10,14 @@
 [![Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?style=flat-square&logo=vercel)](https://vercel.com/cole-mortons-projects/zixly)
 [![Documentation](https://img.shields.io/badge/Documentation-GitHub%20Pages-blue?style=flat-square&logo=github)](https://colemorton.github.io/zixly/)
 
-**Zixly** is a premium Business Intelligence platform designed specifically for Australian Small-to-Medium Enterprises (SMEs) with $1-10M annual revenue. The platform consolidates data from disconnected business systems (accounting, CRM, project management, e-commerce) into unified, real-time dashboards, eliminating manual reporting and enabling data-driven decision-making.
+**Zixly** is an integration platform designed specifically for Australian Small-to-Medium Enterprises (SMEs) with $1-10M annual revenue. The platform connects and automates data flow between disconnected business systems (accounting, CRM, project management, e-commerce), consolidating them into unified, real-time dashboards that eliminate manual reporting and enable data-driven decision-making.
 
 ## 🎯 Value Proposition
 
-**"Bespoke Business Intelligence at SaaS Pricing"**
+**"Integration Platform that Unifies Your Existing Tools"**
 
-- **Automated Data Consolidation**: Nightly syncs from 50+ business systems via OAuth integrations
+- **Integration Infrastructure**: Connects and automates data flow between 50+ business systems via OAuth integrations
+- **Automated Data Consolidation**: Nightly syncs that eliminate manual data copying between systems
 - **Bespoke Dashboards**: Custom-designed visualizations tailored to each customer's industry and KPIs
 - **Zero Maintenance**: Fully managed platform with included support and ongoing optimization
 - **Australian-Focused**: AU data residency, Privacy Act compliance, integrations with AU-specific tools (Xero, MYOB, Employment Hero)
@@ -145,14 +146,16 @@ npm run db:reset         # Reset database (WARNING: destroys data)
 
 ### Integration Ecosystem
 
-| Priority | Integration | Category     | Data Synced                    |
-| -------- | ----------- | ------------ | ------------------------------ |
-| **P1**   | Xero        | Accounting   | P&L, Balance Sheet, Invoices   |
-| **P1**   | HubSpot     | CRM          | Deals, Contacts, Companies     |
-| **P1**   | Asana       | Project Mgmt | Tasks, Projects, Time Tracking |
-| **P2**   | Shopify     | E-Commerce   | Orders, Products, Customers    |
-| **P2**   | MYOB        | Accounting   | Same as Xero                   |
-| **P2**   | Pipedrive   | CRM          | Deals, Contacts, Activities    |
+**Core Integration Platform**: Zixly connects these systems to create unified business insights
+
+| Priority | Integration | Category     | Data Synced                    | Integration Value      |
+| -------- | ----------- | ------------ | ------------------------------ | ---------------------- |
+| **P1**   | Xero        | Accounting   | P&L, Balance Sheet, Invoices   | Financial foundation   |
+| **P1**   | HubSpot     | CRM          | Deals, Contacts, Companies     | Sales pipeline data    |
+| **P1**   | Asana       | Project Mgmt | Tasks, Projects, Time Tracking | Operational metrics    |
+| **P2**   | Shopify     | E-Commerce   | Orders, Products, Customers    | Transaction data       |
+| **P2**   | MYOB        | Accounting   | Same as Xero                   | Alternative accounting |
+| **P2**   | Pipedrive   | CRM          | Deals, Contacts, Activities    | Alternative CRM        |
 
 ## 🎨 Dashboard Preview
 

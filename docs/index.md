@@ -1,8 +1,8 @@
 # Zixly Documentation
 
-> **Bespoke Business Intelligence for Australian SMEs**
+> **Integration Platform for Australian SMEs**
 
-Welcome to the comprehensive documentation for Zixly, a premium Business Intelligence platform designed specifically for Australian Small-to-Medium Enterprises.
+Welcome to the comprehensive documentation for Zixly, an integration platform designed specifically for Australian Small-to-Medium Enterprises that connects and automates data flow between existing business systems.
 
 ## 📚 Documentation Sections
 
@@ -87,9 +87,10 @@ Welcome to the comprehensive documentation for Zixly, a premium Business Intelli
 
 ## 💡 Value Proposition
 
-**"Bespoke Business Intelligence at SaaS Pricing"**
+**"Integration Platform that Unifies Your Existing Tools"**
 
-- **Automated Data Consolidation**: Nightly syncs from 50+ business systems via OAuth integrations
+- **Integration Infrastructure**: Connects and automates data flow between 50+ business systems via OAuth integrations
+- **Automated Data Consolidation**: Nightly syncs that eliminate manual data copying between systems
 - **Bespoke Dashboards**: Custom-designed visualizations tailored to each customer's industry and KPIs
 - **Zero Maintenance**: Fully managed platform with included support and ongoing optimization
 - **Australian-Focused**: AU data residency, Privacy Act compliance, integrations with AU-specific tools

@@ -34,12 +34,13 @@
 
 ### Purpose
 
-Zixly is a bespoke Business Intelligence platform for Australian SMEs, consolidating data from multiple business systems (Xero, HubSpot, Asana, etc.) into unified, real-time dashboards with automated ETL pipelines.
+Zixly is an integration platform for Australian SMEs that connects and automates data flow between multiple business systems (Xero, HubSpot, Asana, etc.), consolidating them into unified, real-time dashboards with automated ETL pipelines.
 
 ### Architecture Philosophy
 
-**Solo-Optimized, Cloud-Native, Serverless-First**
+**Integration-First, Solo-Optimized, Cloud-Native, Serverless-First**
 
+- **Integration Infrastructure**: Built from the ground up to connect existing business systems
 - **Minimal DevOps Overhead**: Managed services eliminate server maintenance
 - **Type-Safe Development**: TypeScript across entire stack reduces runtime errors
 - **Cost-Optimized**: Open-source ETL (n8n) avoids per-task SaaS fees
@@ -89,13 +90,245 @@ Zixly is a bespoke Business Intelligence platform for Australian SMEs, consolida
 
 ### System Capabilities
 
-1. **Data Ingestion**: Automated extraction from 50+ business systems via OAuth APIs
-2. **Data Transformation**: Complex ETL logic (normalization, aggregation, enrichment)
-3. **Data Storage**: Centralized PostgreSQL warehouse with optimized schemas
-4. **Data Presentation**: Bespoke React dashboards with interactive Visx charts
-5. **Alerting**: Threshold-based notifications (email, Slack) for anomaly detection
-6. **Authentication**: Supabase Auth with JWT, role-based access control
-7. **Multi-Tenancy**: Customer data isolation via tenant_id partitioning
+1. **Integration Infrastructure**: Automated connection to 50+ business systems via OAuth APIs
+2. **Data Ingestion**: Automated extraction and synchronization from connected systems
+3. **Data Transformation**: Complex ETL logic (normalization, aggregation, enrichment)
+4. **Data Storage**: Centralized PostgreSQL warehouse with optimized schemas
+5. **Data Presentation**: Bespoke React dashboards with interactive Visx charts
+6. **Alerting**: Threshold-based notifications (email, Slack) for anomaly detection
+7. **Authentication**: Supabase Auth with JWT, role-based access control
+8. **Multi-Tenancy**: Customer data isolation via tenant_id partitioning
+
+---
+
+## n8n Platform Ownership Architecture
+
+### Tenant Isolation Model
+
+**Per-Tenant n8n Instances**: Each customer gets their own isolated n8n instance running on dedicated infrastructure, ensuring complete data sovereignty and workflow isolation.
+
+**Architecture Benefits**:
+
+- **Data Sovereignty**: Customer data never leaves their controlled environment
+- **Workflow Portability**: Workflow definitions are exportable and portable
+- **No Vendor Lock-in**: Customers can migrate workflows to other n8n instances
+- **Custom Extensions**: Full access to n8n's extensibility for custom business logic
+
+### Deployment Architecture
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    Zixly Platform                          │
+│                                                             │
+│  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────┐ │
+│  │   Tenant A      │  │   Tenant B      │  │   Tenant C   │ │
+│  │   n8n Instance  │  │   n8n Instance  │  │   n8n       │ │
+│  │   (Isolated)    │  │   (Isolated)    │  │   Instance  │ │
+│  └─────────────────┘  └─────────────────┘  └─────────────┘ │
+│           │                   │                   │         │
+│           └───────────────────┼───────────────────┘         │
+│                               │                             │
+│                    ┌──────────▼──────────┐                 │
+│                    │   Shared Dashboard  │                 │
+│                    │   (Next.js + React) │                 │
+│                    └─────────────────────┘                 │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### Management Model Flexibility
+
+**Full Service**: Zixly manages all n8n operations, workflow development, and maintenance
+**Hybrid**: Customer gets n8n access with optional Zixly management services
+**Self-Service**: Customer owns and manages their n8n instance with Zixly support
+
+### Customer Data Control
+
+- **Workflow Definitions**: Stored in customer's n8n instance, fully exportable
+- **Integration Credentials**: Managed by customer within their n8n instance
+- **Data Processing**: All ETL operations run within customer's controlled environment
+- **Backup & Recovery**: Customer controls their own backup and disaster recovery
+
+---
+
+## Advanced n8n Capabilities
+
+### Custom Node Development Strategy
+
+**Industry-Specific Nodes**: Zixly develops custom n8n nodes for Australian SME requirements that are impossible with generic automation tools.
+
+**Custom Node Examples**:
+
+```typescript
+// Australian Tax Office Integration
+- BAS reporting automation with ATO API
+- PAYG calculation and submission
+- Superannuation guarantee monitoring
+- GST compliance with automated reporting
+
+// Industry-Specific APIs
+- MYOB Advanced (payroll, superannuation, job costing)
+- Xero Advanced (project tracking, inventory, reporting)
+- Australian banking APIs (Open Banking integration)
+- Government services (ABN lookup, ASIC integration)
+```
+
+**Development Framework**:
+
+- TypeScript-based custom nodes for complex business logic
+- OAuth 2.0 integration patterns for Australian business systems
+- Error handling and retry logic for unreliable APIs
+- Data transformation and validation for Australian compliance requirements
+
+### ML/AI Integration Architecture
+
+**Predictive Analytics Workflows**:
+
+```typescript
+// Machine learning integration patterns
+- Customer churn prediction with behavioral data analysis
+- Cash flow forecasting with seasonal adjustment algorithms
+- Anomaly detection in financial transactions using statistical models
+- Lead scoring with conversion probability calculations
+- Price optimization based on market conditions and margin analysis
+```
+
+**Document Intelligence**:
+
+```typescript
+// AI-powered document processing
+- OCR + NLP for invoice data extraction and categorization
+- Contract analysis with risk assessment and key term extraction
+- Receipt processing with automated expense categorization
+- Email content analysis for lead qualification and routing
+- Automated report generation from multiple data sources
+```
+
+**Implementation Architecture**:
+
+- Python microservice for ML model training and inference
+- REST API integration with n8n workflows
+- Vector database (pgvector) for similarity search and embeddings
+- Real-time model serving with caching for performance
+
+### Real-Time Data Processing
+
+**WebSocket Integration**:
+
+```typescript
+// Real-time workflow capabilities
+- Live dashboard updates via WebSocket connections
+- Push notifications for critical business events
+- Real-time inventory tracking across multiple systems
+- Live cash flow monitoring with automated alerts
+- Operational KPI tracking with real-time responses
+```
+
+**Event-Driven Architecture**:
+
+```typescript
+// Reactive workflow patterns
+- Customer action triggers → multi-channel response automation
+- System failure detection → automated recovery workflows
+- Market condition changes → dynamic pricing adjustments
+- Inventory threshold breaches → automated reorder processes
+- Payment delays → collection workflow activation
+```
+
+### Document Processing Workflows
+
+**OCR + AI Integration**:
+
+```typescript
+// Document intelligence automation
+- Invoice processing with automated data entry
+- Contract analysis with key term extraction
+- Receipt categorization and expense tracking
+- Email attachment processing and routing
+- PDF report generation with real-time data integration
+```
+
+**Compliance Automation**:
+
+```typescript
+// Australian compliance workflows
+- ATO reporting automation (BAS, PAYG, Super)
+- WorkCover compliance tracking and reporting
+- Industry-specific regulatory compliance
+- Audit trail generation and documentation
+- Data retention and archival automation
+```
+
+### IoT Sensor Integration
+
+**Equipment Monitoring**:
+
+```typescript
+// IoT integration capabilities
+- Equipment monitoring with predictive maintenance alerts
+- Environmental sensors for compliance tracking (temperature, humidity)
+- GPS tracking for fleet management and job tracking
+- Security system integration with business operations
+- Smart building integration for energy optimization
+```
+
+**Mobile Device Integration**:
+
+```typescript
+// Mobile-first workflow capabilities
+- Photo capture → OCR processing → system update automation
+- GPS location → job tracking → client notification workflows
+- Voice-to-text → workflow trigger → automated response
+- Barcode scanning → inventory update → reorder trigger
+- Offline data collection → batch sync → real-time processing
+```
+
+### Advanced Workflow Patterns
+
+**Multi-Channel Customer Experience**:
+
+```typescript
+// End-to-end customer journey automation
+- Website lead capture → CRM qualification → proposal generation
+- Email marketing → behavior tracking → personalized follow-up
+- Social media monitoring → sentiment analysis → response automation
+- Support ticket creation → priority routing → resolution tracking
+- Customer feedback → satisfaction scoring → improvement workflows
+```
+
+**Business Intelligence Automation**:
+
+```typescript
+// Advanced analytics workflows
+- Financial data aggregation with automated reporting
+- Customer segmentation with behavioral analysis
+- Market trend analysis with competitive intelligence
+- Operational efficiency optimization with KPI tracking
+- Predictive modeling for business forecasting
+```
+
+### Integration Flexibility
+
+**API-First Architecture**:
+
+```typescript
+// Comprehensive integration capabilities
+- REST and GraphQL API support for any business system
+- Webhook integration for real-time event processing
+- OAuth 2.0 authentication with token management
+- Custom authentication for legacy systems
+- Rate limiting and error handling strategies
+```
+
+**Workflow Portability**:
+
+```typescript
+// Platform independence
+- Workflow definitions fully exportable to other n8n instances
+- No vendor lock-in with complete platform ownership
+- Migration tools for workflow portability
+- Version control for workflow definitions
+- Backup and recovery with workflow preservation
+```
 
 ---
 
@@ -1664,7 +1897,7 @@ The implementation follows a 4-phase approach optimized for solo senior full-sta
 
 **TDR-002: Why Self-Hosted n8n over Zapier/Make?**
 
-**Context**: Need ETL orchestration for high-volume data syncs
+**Context**: Need ETL orchestration for high-volume data syncs in integration platform
 
 **Decision**: Self-hosted n8n on DigitalOcean
 
@@ -1673,6 +1906,7 @@ The implementation follows a 4-phase approach optimized for solo senior full-sta
 - Cost: Zapier charges per task ($0.01-0.03/task) = $500-1500/month at scale. n8n = $40/month VPS.
 - Flexibility: Custom TypeScript code nodes for complex transformations
 - Data residency: Data never leaves our infrastructure (compliance requirement)
+- Integration focus: n8n designed for connecting systems, not just simple automation
 
 **Trade-offs**:
 

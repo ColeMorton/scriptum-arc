@@ -9,10 +9,10 @@
 ## Product Identity
 
 **Name**: Zixly
-**Category**: Automated Business Intelligence (ABI) Console
+**Category**: Integration Platform with Business Intelligence
 **Target Market**: Small-to-Medium Australian Businesses ($1-10M annual revenue)
 
-**Product Definition**: A bespoke data consolidation and visualization platform that eliminates 5-15 hours per week of manual reporting by unifying data from 50+ business systems (Xero, HubSpot, Asana, Shopify, etc.) into real-time, custom-built dashboards.
+**Product Definition**: An integration platform that connects and automates data flow between 50+ disconnected business systems (Xero, HubSpot, Asana, Shopify, etc.), eliminating 5-15 hours per week of manual reporting by providing unified, real-time, custom-built dashboards.
 
 ---
 
@@ -20,9 +20,9 @@
 
 ### Core Promise
 
-**"Bespoke Business Intelligence at SaaS Pricing"**
+**"Integration Platform Ownership for Australian SMEs"**
 
-Zixly delivers enterprise-grade, custom-built data dashboards at predictable SaaS subscription rates—eliminating the traditional trade-off between generic template solutions (Power BI, Tableau) and expensive bespoke consulting engagements.
+Zixly gives you your own n8n integration platform that connects your disconnected business systems and delivers enterprise-grade, custom-built data dashboards at predictable subscription rates—eliminating the traditional trade-off between SaaS dependency and expensive bespoke consulting engagements.
 
 ### Target Customer Profile
 
@@ -38,10 +38,11 @@ Zixly delivers enterprise-grade, custom-built data dashboards at predictable Saa
 
 **Pain Points Addressed**:
 
-1. Manual data consolidation across disconnected systems (Xero + HubSpot + project management tools)
-2. Delayed business insights (weekly/monthly reporting cycles instead of real-time)
-3. Generic BI templates that don't match unique business workflows
-4. Expensive custom consulting (AU$50K+ for bespoke dashboards)
+1. Disconnected business systems that don't communicate (Xero + HubSpot + project management tools)
+2. Manual data consolidation requiring 5-15 hours weekly of copying data between systems
+3. Delayed business insights (weekly/monthly reporting cycles instead of real-time)
+4. Generic BI templates that don't match unique business workflows
+5. Expensive custom consulting (AU$50K+ for bespoke dashboards)
 
 ---
 
@@ -49,20 +50,27 @@ Zixly delivers enterprise-grade, custom-built data dashboards at predictable Saa
 
 ### Differentiation Matrix
 
-| Feature              | Zixly                              | Power BI / Tableau          | Klipfolio / Databox       | Bespoke Consulting |
-| -------------------- | ---------------------------------- | --------------------------- | ------------------------- | ------------------ |
-| **Customization**    | Fully bespoke per client           | Template-based              | Template-based            | Fully bespoke      |
-| **Pricing**          | $1,200-$3,500/mo                   | $10-70/user/mo + consulting | $90-700/mo                | $50K+ upfront      |
-| **Setup Time**       | 4-6 weeks                          | Self-service (weeks-months) | Self-service (hours-days) | 3-6 months         |
-| **Australian Focus** | Native (Xero, MYOB, AU compliance) | International (add-ons)     | International             | Varies             |
-| **Support Included** | Unlimited (flat-rate)              | Pay-per-incident            | Limited tiers             | Project-based      |
+| Feature                   | Zixly                                       | Power BI / Tableau                 | Klipfolio / Databox                | Bespoke Consulting    |
+| ------------------------- | ------------------------------------------- | ---------------------------------- | ---------------------------------- | --------------------- |
+| **Platform Ownership**    | ✅ Customer owns n8n instance               | ❌ SaaS dependency                 | ❌ SaaS dependency                 | ✅ Customer owns      |
+| **Integration Focus**     | Native integration platform                 | Requires separate ETL tools        | Limited integrations               | Manual data prep      |
+| **Cost Model**            | ✅ Flat rate                                | ❌ Per-user fees                   | ❌ Per-task fees                   | ✅ One-time cost      |
+| **Data Control**          | ✅ Self-hosted                              | ❌ Third-party                     | ❌ Third-party                     | ✅ Self-hosted        |
+| **Customization**         | Fully bespoke per client                    | Template-based                     | Template-based                     | Fully bespoke         |
+| **Advanced Capabilities** | ✅ Custom nodes, ML integration, full-stack | ❌ Limited to pre-built connectors | ❌ Limited to pre-built connectors | ✅ Custom development |
+| **Pricing**               | $1,200-$3,500/mo                            | $10-70/user/mo + consulting        | $90-700/mo                         | $50K+ upfront         |
+| **Setup Time**            | 4-6 weeks                                   | Self-service (weeks-months)        | Self-service (hours-days)          | 3-6 months            |
+| **Australian Focus**      | Native (Xero, MYOB, AU compliance)          | International (add-ons)            | International                      | Varies                |
+| **Support Included**      | Unlimited (flat-rate)                       | Pay-per-incident                   | Limited tiers                      | Project-based         |
 
 **Unique Value**:
 
-1. **Flat-rate pricing** (no per-user fees, no consulting hour surprises)
-2. **Included implementation** (custom dashboard build included in subscription)
-3. **Australian-first compliance** (Privacy Act, local data residency)
-4. **Unified support** (single vendor for integrations, dashboards, ETL)
+1. **Platform Ownership** (you own your n8n instance, not SaaS dependency)
+2. **Flexible Management Model** (from full-service to self-managed as you grow)
+3. **No Vendor Lock-in** (your workflows are portable, no per-task fees)
+4. **Visual Workflow Builder** (non-technical users can modify workflows)
+5. **Flat-rate pricing** (no per-user fees, no consulting hour surprises)
+6. **Australian-first compliance** (Privacy Act, local data residency)
 
 ---
 
@@ -202,6 +210,7 @@ The entire product architecture is explicitly designed to maximize developer vel
 2. **Sales approach**: 30-day pilot at $2,500 (credited if convert), demonstrating ROI with real customer data
 3. **Conversion hook**: ROI calculator showing 297% Year 1 return (time savings + better decision-making)
 4. **Retention**: Flat-rate pricing eliminates "per-user" growth penalties, incentivizes dashboard expansion
+5. **Partnership opportunities**: Work with Xero, HubSpot, Asana to create referral programs and co-marketing opportunities
 
 ---
 

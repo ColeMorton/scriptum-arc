@@ -4,7 +4,7 @@
 
 # Zixly - Financial Projections & Unit Economics
 
-**3-Year Financial Model for Premium BI SaaS Platform**
+**3-Year Financial Model for n8n Platform Ownership with Flexible Management**
 
 **Document Version**: 1.0
 **Last Updated**: 2025-10-15
@@ -48,6 +48,9 @@
 
 - **Bootstrapped**: Founder equity + savings
 - **Use of Funds**: Operating expenses during ramp-up (Months 1-9 until breakeven)
+- **Partnership Revenue**: Potential referral revenue from Xero, HubSpot, Asana partnerships
+- **Tiered Management Model**: Platform access fees + optional management services
+- **Self-Service Adoption**: Reduced operational overhead as customers transition to self-management
 - **No external funding required**: Positive cash flow by Month 10
 
 ---

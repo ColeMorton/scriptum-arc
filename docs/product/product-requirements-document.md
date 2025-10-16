@@ -34,7 +34,7 @@
 
 ### Product Overview
 
-**Zixly** is a bespoke Business Intelligence platform designed specifically for Australian SMEs (Small-to-Medium Enterprises) with $1-10M annual revenue. The platform consolidates data from disconnected business systems (accounting, CRM, project management, e-commerce) into unified, real-time dashboards, eliminating manual reporting and enabling data-driven decision-making.
+**Zixly** is an integration platform designed specifically for Australian SMEs (Small-to-Medium Enterprises) with $1-10M annual revenue. The platform connects and automates data flow between disconnected business systems (accounting, CRM, project management, e-commerce), consolidating them into unified, real-time dashboards that eliminate manual reporting and enable data-driven decision-making.
 
 ### Problem Statement
 
@@ -44,7 +44,11 @@ Australian SME owners and managers spend 5-15 hours weekly on manual reporting, 
 
 Zixly provides:
 
-- **Automated Data Consolidation**: Nightly (or hourly) syncs from 50+ business systems via OAuth integrations
+- **Integration Platform Ownership**: Each tenant gets their own n8n instance, not SaaS dependency
+- **Flexible Management Model**: From full-service to self-managed as your needs evolve
+- **Visual Workflow Builder**: Non-technical users can modify workflows independently
+- **Integration Infrastructure**: Connects and automates data flow between 50+ business systems via OAuth integrations
+- **Automated Data Consolidation**: Nightly (or hourly) syncs that eliminate manual data copying
 - **Bespoke Dashboards**: Custom-designed visualizations tailored to each customer's industry and KPIs
 - **Zero Maintenance**: Fully managed platform with included support and ongoing optimization
 - **Australian-Focused**: AU data residency, Privacy Act compliance, integrations with AU-specific tools (Xero, MYOB, Employment Hero)
@@ -256,6 +260,48 @@ _"Empower every Australian SME to make data-driven decisions as confidently as e
 - Default role: ADMIN (first user in tenant)
 
 **US-1.2**: As a customer, I want to connect my Xero account via OAuth so that my financial data syncs automatically.
+
+**US-1.3**: As a technical customer, I want access to my n8n instance so I can modify workflows myself.
+
+**US-1.4**: As a growing business, I want to transition from managed to self-service to reduce costs.
+
+**US-1.5**: As an operations manager, I want to train my team on n8n so we can maintain our own workflows.
+
+**US-1.6**: As a technical customer, I want custom n8n nodes for my industry-specific APIs so I can automate complex business processes.
+
+**Acceptance Criteria**:
+
+- Custom nodes available for Australian business systems (ATO, MYOB Advanced, industry-specific APIs)
+- Node documentation includes setup instructions and example workflows
+- Custom nodes support OAuth authentication and error handling
+- Workflow templates provided for common industry use cases
+
+**US-1.7**: As a business owner, I want ML-powered predictive analytics in my workflows so I can make data-driven forecasts.
+
+**Acceptance Criteria**:
+
+- Predictive models available for cash flow forecasting, customer churn, demand forecasting
+- ML insights integrated into dashboard visualizations
+- Automated alerts when predictions indicate significant changes
+- Model performance metrics visible in settings
+
+**US-1.8**: As an operations manager, I want real-time alerts via mobile push notifications so I can respond to critical business events immediately.
+
+**Acceptance Criteria**:
+
+- Push notifications for critical business events (cash flow alerts, budget overruns, system failures)
+- Mobile app or web push notifications with actionable information
+- Notification preferences configurable per user
+- Alert history and acknowledgment tracking
+
+**US-1.9**: As a developer, I want to extend n8n workflows with custom TypeScript code so I can implement complex business logic.
+
+**Acceptance Criteria**:
+
+- Custom code nodes support TypeScript with full type safety
+- Access to external APIs and libraries within custom nodes
+- Error handling and debugging tools for custom code
+- Version control integration for workflow definitions
 
 **Acceptance Criteria**:
 
@@ -1192,8 +1238,9 @@ The following features are **explicitly excluded** from the MVP to maintain focu
 - ❌ No CRM features (lead management, email campaigns) - HubSpot does this
 - ❌ No project management (task assignment, time tracking) - Asana does this
 - ❌ No data entry UI (customers enter data in source systems, we consolidate)
+- ❌ No competing with existing software - We integrate with them, not against them
 
-**Philosophy**: Zixly is a **read-only BI layer**. We aggregate and visualize data from systems of record, but we do not become a system of record ourselves.
+**Philosophy**: Zixly is a **read-only integration layer**. We connect and aggregate data from systems of record, but we do not become a system of record ourselves. We enhance your existing tools by making them work together, never replacing them.
 
 ---
 

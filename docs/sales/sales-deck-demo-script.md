@@ -4,7 +4,7 @@
 
 # Zixly - Sales Deck & Demo Script
 
-**Premium Automated Business Intelligence for Australian SMEs**
+**Integration Platform for Australian SMEs with Bespoke Visualization**
 
 ---
 
@@ -18,7 +18,7 @@
 
 **Pause for response**
 
-"Zixly eliminates that entirely. It's a bespoke business intelligence platform built specifically for Australian SMEs who need enterprise-grade insights without enterprise-grade complexity or cost."
+"Zixly eliminates that entirely. It's an integration platform built specifically for Australian SMEs that connects your existing business systems and delivers enterprise-grade insights without enterprise-grade complexity or cost."
 
 ---
 
@@ -45,20 +45,21 @@ Generic BI tools like Power BI or Tableau? They require expensive consultants, w
 
 **Visual**: Zixly architecture diagram (simplified)
 
-### Zixly: Your Business Intelligence, Automated
+### Zixly: Your Business Systems, Connected
 
-**One Unified Dashboard. Zero Manual Work.**
+**Integration Platform. Zero Manual Work.**
 
-- **Automated Data Consolidation** - Connects to Xero, HubSpot, Pipedrive, Asana, Shopify, and 50+ Australian business tools
+- **Integration Infrastructure** - Connects and automates data flow between Xero, HubSpot, Pipedrive, Asana, Shopify, and 50+ Australian business tools
+- **Automated Data Consolidation** - Eliminates manual data copying with nightly (or hourly) syncs
 - **Custom KPI Tracking** - See the metrics that matter to YOUR business, not generic templates
 - **Real-Time Insights** - Updated daily (or hourly) via automated ETL pipelines
 - **Bespoke Visualizations** - Premium, custom-built charts designed for decision-making, not decoration
 
 ### Script
 
-"Zixly is different. We built it from the ground up for Australian SMEs using the same technology stack that powers enterprise data warehouses - but without the complexity.
+"Zixly is different. We built it from the ground up as an integration platform for Australian SMEs using the same technology stack that powers enterprise data warehouses - but without the complexity.
 
-Your data flows automatically from all your business systems into one secure database. Every morning, you open one dashboard and see everything: cash flow, sales pipeline, project margins, operational efficiency. All in real-time. All accurate. All without lifting a finger."
+We don't replace your existing tools - we connect them. Your data flows automatically from all your business systems into one secure database. Every morning, you open one dashboard and see everything: cash flow, sales pipeline, project margins, operational efficiency. All in real-time. All accurate. All without lifting a finger."
 
 ---
 
@@ -100,14 +101,14 @@ Then it just runs. Data updates automatically. You check your dashboard like you
 
 **Visual**: Tech stack icons with "Enterprise Power, SME Pricing" headline
 
-### Built With Enterprise-Grade Technology
+### Built With Enterprise-Grade Integration Technology
 
-| Component          | Technology            | Why It Matters                             |
-| ------------------ | --------------------- | ------------------------------------------ |
-| **Database**       | PostgreSQL (Supabase) | Bank-grade security, unlimited scalability |
-| **ETL/Automation** | n8n (Self-hosted)     | No per-task fees, unlimited workflows      |
-| **Visualization**  | Visx (D3-based)       | Custom, publication-quality charts         |
-| **API/Frontend**   | Next.js + TypeScript  | Fast, secure, type-safe                    |
+| Component           | Technology            | Why It Matters                             |
+| ------------------- | --------------------- | ------------------------------------------ |
+| **Database**        | PostgreSQL (Supabase) | Bank-grade security, unlimited scalability |
+| **Integration/ETL** | n8n (Self-hosted)     | No per-task fees, unlimited workflows      |
+| **Visualization**   | Visx (D3-based)       | Custom, publication-quality charts         |
+| **API/Frontend**    | Next.js + TypeScript  | Fast, secure, type-safe                    |
 
 ### The Solo Operator Advantage
 
@@ -115,15 +116,70 @@ Then it just runs. Data updates automatically. You check your dashboard like you
 
 ### Script
 
-"Here's what makes Zixly technically superior: we use the same database technology that runs Spotify and Instagram. The same automation platform used by BMW and Telstra. The same visualization library Netflix uses for their internal analytics.
+"Here's what makes Zixly technically superior: we use the same database technology that runs Spotify and Instagram. The same integration platform used by BMW and Telstra. The same visualization library Netflix uses for their internal analytics.
 
-But because we're optimized for solo operation - no sales teams, no account managers, no bureaucracy - we deliver this at a fraction of enterprise BI pricing.
+But because we're optimized for solo operation - no sales teams, no account managers, no bureaucracy - we deliver this at a fraction of enterprise integration platform pricing.
 
 And unlike SaaS platforms like Klipfolio that charge per user or per integration, we charge a flat monthly fee. Use 5 integrations or 50. Have 3 users or 30. Same price."
 
 ---
 
-## Slide 6: ROI Calculator
+## Slide 6: Platform Ownership
+
+**Visual**: n8n interface screenshot with "You Own This" overlay
+
+### Unlike Zapier or Make, You OWN Your Integration Platform
+
+- **Your own n8n instance** (not shared SaaS)
+- **Your workflow definitions are yours to keep**
+- **No per-task fees or usage restrictions**
+- **Visual workflow builder for your team**
+- **Choose your management level**: Full Service, Hybrid, or Self-Managed
+
+### Script
+
+"Here's what makes Zixly fundamentally different from Zapier or Make: you own your integration platform. You get your own n8n instance running on your infrastructure, not a shared SaaS platform.
+
+Your workflow definitions, your data flows, your automation logic—it's all yours. You can export it, modify it, take it elsewhere if you want. No vendor lock-in.
+
+And because it's your platform, you choose how much management you want. Start with full service, transition to hybrid, or go completely self-managed as your team gets comfortable with the technology."
+
+---
+
+## Slide 7: Advanced Workflow Capabilities
+
+**Visual**: n8n workflow diagram showing complex automation with ML integration
+
+### Custom Workflows Impossible with Zapier/Make
+
+**Industry-Specific Automation**:
+
+- Construction: Job costing with IoT sensor data integration
+- Professional Services: Matter profitability with time tracking automation
+- E-commerce: Inventory intelligence with predictive analytics
+- Retail: Multi-location consolidation with real-time POS integration
+
+**Advanced Capabilities**:
+
+- **Custom TypeScript Nodes**: Complex business logic impossible in visual-only tools
+- **ML/AI Integration**: Predictive analytics, anomaly detection, demand forecasting
+- **Real-Time Processing**: WebSocket connections, live dashboard updates
+- **Document Intelligence**: OCR + AI for invoice processing and contract analysis
+- **Mobile Integration**: Photo capture → OCR → workflow automation
+
+### Script
+
+"Here's where Zixly's n8n platform really shines. While Zapier and Make are limited to simple 'if this, then that' workflows, n8n lets you build sophisticated automation that would require a team of developers.
+
+For example, a construction company can set up a workflow that monitors IoT sensors on equipment, tracks GPS location of materials deliveries, processes photos from job sites with OCR to extract material costs, and automatically updates job profitability in real-time.
+
+A law firm can automate matter management by tracking time entries, calculating billable hours, generating invoices, and predicting case outcomes using machine learning models.
+
+These aren't just integrations—they're custom business processes that give you competitive advantages impossible with generic automation tools."
+
+---
+
+## Slide 8: ROI Calculator
 
 **Visual**: Interactive ROI table
 
@@ -300,16 +356,20 @@ Compare that to a traditional BI consultant: $15-25k setup, then $2-5k monthly r
 
 ### Zixly vs. Alternatives
 
-| Feature                      | Zixly                | Power BI + Consultant | Klipfolio/Databox | Excel Spreadsheets |
-| ---------------------------- | -------------------- | --------------------- | ----------------- | ------------------ |
-| **Setup Time**               | 2-3 weeks            | 2-3 months            | 1-2 months        | Ongoing            |
-| **Custom Dashboards**        | ✅ Bespoke           | ✅ (extra cost)       | ❌ Templates only | ✅ (manual)        |
-| **Australian Focus**         | ✅ Built for AU SMEs | ⚠️ Generic            | ⚠️ US-focused     | N/A                |
-| **Ongoing Maintenance**      | ✅ Included          | ❌ Retainer required  | ⚠️ DIY            | ❌ Manual          |
-| **Total Year 1 Cost**        | $20,500              | $45,000-$80,000       | $12,000-$18,000   | Staff time ($30k+) |
-| **Technical Skill Required** | None                 | Medium-High           | Medium            | Medium             |
-| **Data Flexibility**         | Unlimited sources    | Unlimited sources     | Limited by plan   | Manual only        |
-| **Support Quality**          | Direct to developer  | Depends on firm       | Ticket system     | N/A                |
+| Feature                      | Zixly                | Power BI + Consultant | Klipfolio/Databox  | Excel Spreadsheets |
+| ---------------------------- | -------------------- | --------------------- | ------------------ | ------------------ |
+| **Platform Ownership**       | ✅ You own n8n       | ❌ SaaS dependency    | ❌ SaaS dependency | ✅ You own files   |
+| **Integration Focus**        | ✅ Native platform   | ❌ Requires ETL tools | ⚠️ Limited         | ❌ Manual only     |
+| **Cost Model**               | ✅ Flat rate         | ❌ Per-user fees      | ❌ Per-task fees   | ✅ One-time cost   |
+| **Data Control**             | ✅ Self-hosted       | ❌ Third-party        | ❌ Third-party     | ✅ Local files     |
+| **Setup Time**               | 2-3 weeks            | 2-3 months            | 1-2 months         | Ongoing            |
+| **Custom Dashboards**        | ✅ Bespoke           | ✅ (extra cost)       | ❌ Templates only  | ✅ (manual)        |
+| **Australian Focus**         | ✅ Built for AU SMEs | ⚠️ Generic            | ⚠️ US-focused      | N/A                |
+| **Ongoing Maintenance**      | ✅ Included          | ❌ Retainer required  | ⚠️ DIY             | ❌ Manual          |
+| **Total Year 1 Cost**        | $20,500              | $45,000-$80,000       | $12,000-$18,000    | Staff time ($30k+) |
+| **Technical Skill Required** | None                 | Medium-High           | Medium             | Medium             |
+| **Data Flexibility**         | Unlimited sources    | Unlimited sources     | Limited by plan    | Manual only        |
+| **Support Quality**          | Direct to developer  | Depends on firm       | Ticket system      | N/A                |
 
 ### Script
 
@@ -319,7 +379,7 @@ Klipfolio and Databox are cheaper - $1,000-$1,500/month - but they're template-b
 
 Spreadsheets seem free, but someone's spending 10-15 hours a week maintaining them. That's $30-40k in labor annually, plus the error risk and data lag.
 
-Zixly is the sweet spot: bespoke quality at SaaS pricing, with included ongoing support and optimization."
+Zixly is the sweet spot: integration platform that connects your existing systems, bespoke quality at SaaS pricing, with included ongoing support and optimization."
 
 ---
 
