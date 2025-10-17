@@ -10,4 +10,7 @@ export async function register() {
   }
 }
 
-export const onRequestError = Sentry.captureRequestError
+// Only export onRequestError if Sentry is configured
+export const onRequestError = process.env.NEXT_PUBLIC_SENTRY_DSN
+  ? Sentry.captureRequestError
+  : undefined
