@@ -73,7 +73,7 @@ environment:
 
 # ❌ WRONG - Hardcoded credentials
 environment:
-  - N8N_BASIC_AUTH_PASSWORD=zixly2025
+  - N8N_BASIC_AUTH_PASSWORD=your_n8n_password_here
   - DB_POSTGRESDB_PASSWORD=n8n_password
 ```
 
@@ -137,7 +137,7 @@ DB_POSTGRESDB_PASSWORD=your_postgres_password_here
 ```yaml
 # ❌ NEVER DO THIS
 environment:
-  - N8N_BASIC_AUTH_PASSWORD=zixly2025
+  - N8N_BASIC_AUTH_PASSWORD=your_n8n_password_here
   - DB_POSTGRESDB_PASSWORD=n8n_password
 ```
 
@@ -209,7 +209,7 @@ fi
 
 **Security Team:**
 
-- **Primary**: Cole Morton (cole.morton@hotmail.com)
+- **Primary**: Your Name (your_email@domain.com)
 - **Emergency**: Immediate notification required for credential exposure
 
 **Reporting Security Issues:**

@@ -1,0 +1,122 @@
+{
+  "name": "Hello World - Smoke Test",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "7557cc0c-f7a7-4272-8188-58bab039bb92",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [-656, 32]
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "tableId": "tenants",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id",
+              "keyValue": "cmgrh5b8m0000oxx37dssfm9z"
+            }
+          ]
+        }
+      },
+      "id": "5e2fdc5a-aaa7-432c-a1e4-d28b85a53e5c",
+      "name": "Fetch Test Info (Supabase)",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [-432, 32],
+      "credentials": {
+        "supabaseApi": {
+          "id": "jR2oDMaYm92erG4j",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "4514cbc2-fe73-46b3-b186-7f3459b7cef9",
+      "name": "Return Success Response",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [16, 32]
+    },
+    {
+      "parameters": {
+        "toRecipients": "cole.morton@hotmail.com",
+        "subject": "Zixly - Smoke Test",
+        "bodyContent": "=Data extracted from Supabase: {{ $json.name }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.microsoftOutlook",
+      "typeVersion": 2,
+      "position": [-208, 32],
+      "id": "0eba00a6-006e-4267-9fc8-1fdb80212cc6",
+      "name": "Send a message",
+      "webhookId": "96ad1246-5700-4269-8c9c-b6392caeed02",
+      "credentials": {
+        "microsoftOutlookOAuth2Api": {
+          "id": "GhxWB76cyZtwkhJb",
+          "name": "Microsoft Outlook account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Fetch Test Info (Supabase)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Test Info (Supabase)": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message": {
+      "main": [
+        [
+          {
+            "node": "Return Success Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "5d90f61e-2274-498c-8764-77ea30d422cb",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "365ba3cc0509f2d22e0d4bcddb5989fab3a8210d528e13074c7b487ab9199407"
+  },
+  "id": "Os5VmRRhDHAiH4Zr",
+  "tags": [
+    {
+      "name": "Smoke Test",
+      "id": "ETeHEXR6U9tVOCMA",
+      "createdAt": "2025-10-16T23:33:26.486Z",
+      "updatedAt": "2025-10-16T23:33:26.486Z"
+    }
+  ]
+}

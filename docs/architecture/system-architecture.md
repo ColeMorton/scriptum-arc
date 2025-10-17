@@ -36,18 +36,33 @@
 
 ### Purpose
 
-Zixly is an integration platform for Australian SMEs that connects and automates data flow between multiple business systems (Xero, HubSpot, Asana, etc.), consolidating them into unified, real-time dashboards with automated ETL pipelines.
+Zixly is an **open-source internal operations platform** for the Zixly service business that tracks and automates our own service delivery operations. This platform demonstrates "eating our own dogfood" by using the same self-hostable SME stack tools and workflows we recommend to clients, providing authentic expertise and continuous improvement of our service delivery capabilities.
 
 ### Architecture Philosophy
 
-**Integration-First, Solo-Optimized, Cloud-Native, Serverless-First**
+**Open-Source Internal Operations-First, Self-Hostable Stack, Service Business Optimized**
 
-- **Integration Infrastructure**: Built from the ground up to connect existing business systems
-- **Minimal DevOps Overhead**: Managed services eliminate server maintenance
-- **Type-Safe Development**: TypeScript across entire stack reduces runtime errors
-- **Cost-Optimized**: Open-source ETL (n8n) avoids per-task SaaS fees
-- **Scalable Foundation**: PostgreSQL + serverless functions scale from 1 to 1000+ customers
-- **Security-First**: Australian data residency, OAuth authentication, encryption at rest/transit
+- **Internal Operations Focus**: Built to track and optimize Zixly's own service delivery operations
+- **Open-Source Strategy**: Code available for demonstration and reuse by the community
+- **Single Tenant**: Only Zixly organization data (not multi-tenant SaaS)
+- **Service Business Model**: Zixly provides n8n automation services to clients
+- **Self-Hostable Stack**: Uses the complete SME stack we recommend to clients (n8n, Metabase, Nextcloud, etc.)
+- **Service Business Metrics**: Tracks billable hours, project velocity, client satisfaction, service delivery efficiency
+- **Authentic Expertise**: Daily usage of recommended tools provides genuine implementation knowledge
+- **Continuous Improvement**: Internal usage drives workflow optimization and new feature development
+- **Dogfooding Benefits**: Real-world proof of concept for client demonstrations and case studies
+
+### Business Model Clarification
+
+**Zixly is NOT a multi-tenant SaaS platform for external customers.**
+
+**Zixly IS an open-source internal operations platform for the Zixly service business.**
+
+- **Single Tenant**: Only Zixly organization data
+- **Internal Users**: Only Zixly team members
+- **Service Clients**: Businesses that hire Zixly for n8n automation services
+- **Open-Source**: Code available for demonstration and reuse
+- **Dogfooding**: Using our own tools to run our business
 
 ### Key Architectural Decisions
 
@@ -91,12 +106,13 @@ Zixly's architecture is designed with **clear separation of concerns** between n
 
 **Web App's Core Responsibilities:**
 
-- **Business Intelligence UI**: Interactive dashboards, real-time visualizations
-- **Real-Time Communication**: WebSocket connections, live data updates
-- **Multi-Tenant User Management**: Authentication, authorization, role-based access
-- **Advanced Analytics**: ML models, predictive insights, statistical analysis
-- **Mobile Integration**: React Native app, push notifications, offline sync
-- **Data Presentation**: Visx charts, drill-down capabilities, filtering
+- **Unified Business Intelligence**: Aggregates data from SME tools (Plane, Invoice Ninja, Metabase, etc.) into real-time dashboards
+- **Interactive Dashboards**: Real-time visualizations with drill-down capabilities (unlike static Metabase dashboards)
+- **Real-Time Communication**: WebSocket connections, live data updates (not available in SME tools)
+- **Multi-Tenant User Management**: Authentication, authorization, role-based access across all data sources
+- **Advanced Analytics**: ML models, predictive insights, statistical analysis (beyond Metabase capabilities)
+- **Mobile Integration**: React Native app, push notifications, offline sync (not available in SME tools)
+- **Data Presentation**: Visx charts, drill-down capabilities, filtering across multiple data sources
 
 **Web App's Strengths:**
 

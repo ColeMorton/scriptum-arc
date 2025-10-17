@@ -23,7 +23,7 @@ export async function GET() {
       return NextResponse.json({ error: 'No tenant associated with user' }, { status: 400 })
     }
 
-    // Fetch tenant data (RLS will automatically filter)
+    // Fetch Zixly organization data (RLS will automatically filter)
     const tenant = await prisma.tenant.findUnique({
       where: { id: tenantId },
       include: {
@@ -38,15 +38,15 @@ export async function GET() {
         clientKPIs: {
           select: {
             id: true,
-            clientName: true,
+            clientName: true, // Service client names
             industry: true,
             createdAt: true,
           },
         },
         _count: {
           select: {
-            users: true,
-            clientKPIs: true,
+            users: true, // Zixly team members
+            clientKPIs: true, // Service clients
           },
         },
       },
@@ -59,12 +59,15 @@ export async function GET() {
     return NextResponse.json({
       tenant: {
         id: tenant.id,
-        name: tenant.name,
-        industry: tenant.industry,
+        name: tenant.name, // "Zixly"
+        industry: tenant.industry, // "n8n Automation Services"
         createdAt: tenant.createdAt,
-        stats: tenant._count,
-        users: tenant.users,
-        clients: tenant.clientKPIs,
+        stats: {
+          teamMembers: tenant._count.users, // Zixly team size
+          serviceClients: tenant._count.clientKPIs, // Active service clients
+        },
+        users: tenant.users, // Zixly team members
+        serviceClients: tenant.clientKPIs, // Service clients (businesses using Zixly)
       },
     })
   } catch (error) {

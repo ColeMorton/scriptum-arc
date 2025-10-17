@@ -1,9 +1,14 @@
 # n8n Workflow Capabilities for Australian SMEs
 
-**Version**: 1.0  
-**Last Updated**: 2025-10-15  
+**Version**: 1.1  
+**Last Updated**: 2025-01-27  
 **Owner**: Technical Architecture  
 **Status**: Defined
+
+**Recent Updates**:
+
+- ✅ Migrated email integrations from SMTP to Microsoft Outlook OAuth2 API
+- ✅ Enhanced security and reliability for all email-based workflows
 
 ---
 

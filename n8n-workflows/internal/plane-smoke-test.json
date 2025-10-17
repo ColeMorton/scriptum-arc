@@ -1,0 +1,249 @@
+{
+  "name": "Plane Smoke Test",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "GET",
+        "url": "http://plane:8000/api/workspaces/",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "httpHeaderAuth": {
+          "name": "Authorization",
+          "value": "Bearer {{$credentials.planeApi.token}}"
+        }
+      },
+      "id": "plane-workspaces-test",
+      "name": "Test Plane Workspaces",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "condition1",
+              "leftValue": "={{ $json.status }}",
+              "rightValue": 200,
+              "operator": {
+                "type": "number",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "check-response",
+      "name": "Check Response Status",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "httpMethod": "GET",
+        "url": "http://plane:8000/api/projects/",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "httpHeaderAuth": {
+          "name": "Authorization",
+          "value": "Bearer {{$credentials.planeApi.token}}"
+        }
+      },
+      "id": "plane-projects-test",
+      "name": "Test Plane Projects",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [680, 200]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "url": "http://plane:8000/api/workspaces/{{ $json.workspaces[0].id }}/projects/",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "httpHeaderAuth": {
+          "name": "Authorization",
+          "value": "Bearer {{$credentials.planeApi.token}}"
+        },
+        "sendBody": true,
+        "bodyContentType": "json",
+        "jsonBody": "{\n  \"name\": \"Smoke Test Project\",\n  \"description\": \"Test project created by n8n smoke test\",\n  \"identifier\": \"ST\",\n  \"network\": 0,\n  \"icon_prop\": {\n    \"name\": \"package\",\n    \"color\": \"#3b82f6\"\n  }\n}"
+      },
+      "id": "create-test-project",
+      "name": "Create Test Project",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [900, 200]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "url": "http://plane:8000/api/workspaces/{{ $('Test Plane Workspaces').item.json.workspaces[0].id }}/projects/{{ $json.id }}/issues/",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "httpHeaderAuth": {
+          "name": "Authorization",
+          "value": "Bearer {{$credentials.planeApi.token}}"
+        },
+        "sendBody": true,
+        "bodyContentType": "json",
+        "jsonBody": "{\n  \"name\": \"Smoke Test Issue\",\n  \"description\": \"Test issue created by n8n smoke test workflow\",\n  \"priority\": \"low\",\n  \"state\": \"backlog\"\n}"
+      },
+      "id": "create-test-issue",
+      "name": "Create Test Issue",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [1120, 200]
+    },
+    {
+      "parameters": {
+        "httpMethod": "DELETE",
+        "url": "http://plane:8000/api/workspaces/{{ $('Test Plane Workspaces').item.json.workspaces[0].id }}/projects/{{ $('Create Test Project').item.json.id }}/",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "httpHeaderAuth": {
+          "name": "Authorization",
+          "value": "Bearer {{$credentials.planeApi.token}}"
+        }
+      },
+      "id": "cleanup-test-project",
+      "name": "Cleanup Test Project",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [1340, 200]
+    },
+    {
+      "parameters": {
+        "authentication": "genericCredentialType",
+        "genericAuthType": "smtp",
+        "smtpAuth": {
+          "user": "{{ $credentials.outlookSmtp.user }}",
+          "password": "{{ $credentials.outlookSmtp.password }}"
+        },
+        "fromEmail": "{{ $credentials.outlookSmtp.user }}",
+        "toEmail": "ops@colemorton.com.au",
+        "subject": "✅ Plane Smoke Test - SUCCESS (Local)",
+        "message": "Plane integration smoke test completed successfully in local environment:\n\n- Plane API connectivity: ✅\n- Workspaces access: ✅\n- Projects access: ✅\n- Project creation: ✅\n- Issue creation: ✅\n- Cleanup: ✅\n\nPlane is ready for production use with n8n workflows.",
+        "options": {}
+      },
+      "id": "send-success-email",
+      "name": "Send Success Email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [1560, 200]
+    },
+    {
+      "parameters": {
+        "authentication": "genericCredentialType",
+        "genericAuthType": "smtp",
+        "smtpAuth": {
+          "user": "{{ $credentials.outlookSmtp.user }}",
+          "password": "{{ $credentials.outlookSmtp.password }}"
+        },
+        "fromEmail": "{{ $credentials.outlookSmtp.user }}",
+        "toEmail": "ops@colemorton.com.au",
+        "subject": "❌ Plane Smoke Test - FAILED (Local)",
+        "message": "Plane integration smoke test failed in local environment:\n\n- Error: {{ $json.error }}\n- Status: {{ $json.status }}\n\nPlease check Plane configuration and API credentials.",
+        "options": {}
+      },
+      "id": "send-failure-email",
+      "name": "Send Failure Email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [680, 400]
+    }
+  ],
+  "connections": {
+    "Test Plane Workspaces": {
+      "main": [
+        [
+          {
+            "node": "Check Response Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Response Status": {
+      "main": [
+        [
+          {
+            "node": "Test Plane Projects",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send Failure Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Test Plane Projects": {
+      "main": [
+        [
+          {
+            "node": "Create Test Project",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Test Project": {
+      "main": [
+        [
+          {
+            "node": "Create Test Issue",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Test Issue": {
+      "main": [
+        [
+          {
+            "node": "Cleanup Test Project",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cleanup Test Project": {
+      "main": [
+        [
+          {
+            "node": "Send Success Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-01-27T00:00:00.000Z",
+  "versionId": "1"
+}

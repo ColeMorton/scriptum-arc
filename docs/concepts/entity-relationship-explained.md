@@ -1,9 +1,24 @@
-# Entity Relationship Explained: Tenant, User, and Client
+# Entity Relationship Explained: Zixly Internal Operations
 
-**Version**: 1.0
-**Last Updated**: 2025-10-15
+**Version**: 2.1
+**Last Updated**: 2025-01-27
 **Owner**: Business Architecture
-**Status**: Reference Guide
+**Status**: Internal Operations Guide
+
+---
+
+## BUSINESS MODEL CLARIFICATION
+
+**Zixly is an open-source internal operations platform for the Zixly service business.**
+
+This platform:
+
+- Tracks Zixly's service delivery operations
+- Demonstrates "eating our own dogfood" with the self-hostable SME stack
+- Provides authentic expertise and continuous improvement
+- Is open-source for demonstration and reuse purposes
+
+**Zixly is NOT a multi-tenant SaaS platform for external customers.**
 
 ---
 
@@ -22,78 +37,86 @@
 
 **Three-Second Version**:
 
-- **TENANT** = A company that subscribes to Zixly (your customer)
-- **USER** = An employee of that company who logs into the platform
-- **CLIENT** = A business entity or project that the company tracks metrics for
+- **TENANT** = Zixly organization (the service business itself)
+- **USER** = Zixly team members (cole@zixly.com.au, support@zixly.com.au)
+- **CLIENT** = Service clients (businesses using Zixly for n8n automation)
 
-**Business Model**: Zixly is a **B2B SaaS platform**. Each tenant pays for the service and invites their own users to track their own clients' performance.
+**Business Model**: Zixly is a **service business** that uses its own platform to track service delivery operations, demonstrating "eating our own dogfood" with the self-hostable SME stack.
+
+### What This Means:
+
+1. **Single Tenant**: Only Zixly organization data
+2. **Internal Users**: Only Zixly team members
+3. **Service Clients**: Businesses that hire Zixly for n8n automation services
+4. **Open-Source**: Code available for demonstration and reuse
+5. **Dogfooding**: Using our own tools to run our business
 
 ---
 
 ## Detailed Explanation
 
-### 1. Tenant (The Company Account)
+### 1. Tenant (Zixly Organization)
 
-**Definition**: A **Tenant** is a company or organization that subscribes to Zixly.
+**Definition**: The **Tenant** represents the Zixly service business itself.
 
 **Business Context**:
 
-- This is **Zixly's customer** (the entity that pays the subscription fee)
-- Each tenant has their own **isolated data environment** (multi-tenant architecture)
-- Tenants cannot see each other's data (enforced by Row-Level Security)
+- This is **Zixly's own organization** (the service business)
+- Single tenant for internal operations (Zixly organization)
+- All data is Zixly's internal business operations
 
 **Database Entity**: `Tenant` table
 
-- Fields: `id`, `name`, `industry`, `createdAt`, `updatedAt`
-- Root entity for all tenant-scoped data
+- Fields: `id`, `name` ("Zixly"), `industry` ("n8n Automation Services"), `createdAt`, `updatedAt`
+- Root entity for all Zixly internal operations data
 
 **Examples**:
 
-- ABC Construction Pty Ltd (tenant_id: `tenant_001`)
-- Sydney Property Group (tenant_id: `tenant_002`)
-- Melbourne Marketing Agency (tenant_id: `tenant_003`)
+- Zixly (tenant_id: `zixly-org-001`)
+- Industry: "n8n Automation Services"
+- Single tenant for all Zixly internal operations
 
 **Lifecycle**:
 
-- Created when a company signs up for Zixly
-- Cannot be deleted while active users or data exist (cascade protection)
+- Represents the Zixly service business organization
+- Contains all Zixly internal operations data
+- Single tenant for all Zixly business operations
 - Deactivation triggers data retention policies
 
 ---
 
-### 2. User (The Employee)
+### 2. User (Zixly Team Members)
 
-**Definition**: A **User** is an individual employee of a tenant company who has access to the Zixly platform.
+**Definition**: A **User** is a Zixly team member who has access to the internal operations platform.
 
 **Business Context**:
 
-- This is **NOT** Zixly's customer (the tenant is the customer)
-- This is an **employee** of the tenant company
-- Users belong to exactly one tenant (no cross-tenant user accounts)
+- These are **Zixly team members** (employees of the Zixly service business)
+- Users belong to the Zixly organization (single tenant)
 - Users have role-based permissions: ADMIN, EDITOR, VIEWER
+- All users access Zixly internal operations data
 
 **Database Entity**: `User` table
 
 - Fields: `id`, `tenantId`, `email`, `role`, `createdAt`, `updatedAt`
-- Each user is scoped to a single tenant via `tenantId` foreign key
+- Each user is scoped to the Zixly tenant via `tenantId` foreign key
 
-**Examples** (within ABC Construction):
+**Examples** (Zixly team members):
 
-- Sarah Chen (sarah@abcconstruction.com.au) - Role: ADMIN
-- John Smith (john@abcconstruction.com.au) - Role: EDITOR
-- Emma Brown (emma@abcconstruction.com.au) - Role: VIEWER
+- Cole (cole@zixly.com.au) - Role: ADMIN
+- Support (support@zixly.com.au) - Role: EDITOR
 
 **User Roles**:
 
-- **ADMIN**: Full access (manage users, integrations, data)
+- **ADMIN**: Full access (manage users, integrations, all Zixly data)
 - **EDITOR**: Can modify data, view reports, but cannot manage users
-- **VIEWER**: Read-only access to dashboards and reports
+- **VIEWER**: Read-only access to Zixly internal operations dashboards
 
 **Lifecycle**:
 
-- Created when a tenant ADMIN invites a new team member
+- Created when Zixly team members are added to the platform
 - Authentication via email/password (Supabase Auth)
-- Deletion cascades: User deleted → all their audit logs archived
+- All users access Zixly internal operations data
 
 ---
 
@@ -192,159 +215,153 @@
 
 ## Real-World Scenario
 
-### ABC Construction Pty Ltd (Tenant)
+### Zixly Service Business (Tenant)
 
-**Context**: ABC Construction is a mid-sized Australian construction company that subscribes to Zixly to track profitability across their multiple projects.
+**Context**: Zixly is a service business that provides n8n automation services to clients. This platform tracks Zixly's internal service delivery operations.
 
 **Tenant Details**:
 
-- **Tenant Name**: ABC Construction Pty Ltd
-- **Industry**: Construction
-- **Subscription Plan**: Professional (50 users, 200 clients)
-- **Tenant ID**: `tenant_001`
+- **Tenant Name**: Zixly
+- **Industry**: n8n Automation Services
+- **Business Model**: Service provider (not SaaS)
+- **Tenant ID**: `zixly-org-001`
 
 ---
 
-### Users (Employees at ABC Construction)
+### Users (Zixly Team Members)
 
-**1. Sarah Chen - Operations Director (ADMIN)**
+**1. Cole Morton - Founder (ADMIN)**
 
-- **Email**: sarah@abcconstruction.com.au
+- **Email**: cole@zixly.com.au
 - **Role**: ADMIN
 - **Permissions**:
-  - Invite new users (John, Emma)
-  - Configure integrations (Xero, HubSpot)
-  - Delete clients/projects
+  - Full access to all Zixly internal operations
+  - Configure integrations (Xero, HubSpot, etc.)
+  - Manage team members
   - View all dashboards and reports
 
-**2. John Smith - Project Manager (EDITOR)**
+**2. Support Team - Operations (EDITOR)**
 
-- **Email**: john@abcconstruction.com.au
+- **Email**: support@zixly.com.au
 - **Role**: EDITOR
 - **Permissions**:
-  - Add new clients/projects
-  - Update financial data manually
-  - Create custom metrics
+  - Track service client projects
+  - Update financial data
+  - Create custom metrics for service delivery
   - View all dashboards and reports
-  - **CANNOT**: Invite users or configure integrations
-
-**3. Emma Brown - Finance Analyst (VIEWER)**
-
-- **Email**: emma@abcconstruction.com.au
-- **Role**: VIEWER
-- **Permissions**:
-  - View dashboards and reports
-  - Export data to CSV
-  - **CANNOT**: Modify data, add clients, or configure settings
+  - **CANNOT**: Manage team members or configure integrations
 
 ---
 
-### Clients (Projects Being Tracked)
+### Clients (Zixly's Service Clients)
 
-**Client 1: Harbor Bridge Renovation Project**
+**Client 1: Harbor Bridge Construction Project**
 
-- **Client ID**: `HBR-2024-001` (external identifier from Xero)
-- **Client Name**: Harbor Bridge Renovation
-- **Industry**: Infrastructure
+- **Client ID**: `HBC-2024-001` (external identifier from Xero)
+- **Client Name**: Harbor Bridge Construction
+- **Industry**: Construction
 - **Currency**: AUD
-- **Status**: Active
+- **Status**: Active Service Client
 - **Data Tracked**:
-  - **Financials**: Monthly revenue ($2.5M), expenses ($1.8M), profit ($700K)
+  - **Financials**: Zixly revenue from this client ($15K/month), expenses ($8K), profit ($7K)
   - **Lead Events**: Initial consultation (2024-01-15), contract signed (2024-02-10)
   - **Custom Metrics**:
-    - "Construction Milestones Completed" (15 out of 20)
-    - "Safety Incidents" (0 in past 90 days)
+    - "Billable Hours" (120 hours/month)
+    - "Project Velocity" (85% on-time delivery)
+    - "Client Satisfaction" (4.8/5.0)
 
-**Client 2: Bondi Residential Development**
+**Client 2: Bondi E-commerce Store**
 
-- **Client ID**: `BRD-2024-002`
-- **Client Name**: Bondi Residential Development
-- **Industry**: Residential Construction
+- **Client ID**: `BES-2024-002`
+- **Client Name**: Bondi E-commerce Store
+- **Industry**: E-commerce
 - **Currency**: AUD
-- **Status**: Active
+- **Status**: Active Service Client
 - **Data Tracked**:
-  - **Financials**: Monthly revenue ($1.2M), expenses ($950K), profit ($250K)
-  - **Lead Events**: Pre-sale consultation (2024-03-01), deposit received (2024-03-20)
+  - **Financials**: Zixly revenue ($8K/month), expenses ($4K), profit ($4K)
+  - **Lead Events**: Discovery call (2024-03-01), proposal accepted (2024-03-20)
   - **Custom Metrics**:
-    - "Units Sold" (8 out of 12)
-    - "Customer Satisfaction Score" (4.7/5.0)
+    - "Automation Workflows" (12 active)
+    - "Data Sync Accuracy" (99.2%)
+    - "Client Retention" (12 months)
 
-**Client 3: Sydney CBD Office Fit-Out**
+**Client 3: Sydney Law Firm**
 
-- **Client ID**: `SCO-2024-003`
-- **Client Name**: Sydney CBD Office Fit-Out
-- **Industry**: Commercial Construction
+- **Client ID**: `SLF-2024-003`
+- **Client Name**: Sydney Law Firm
+- **Industry**: Professional Services
 - **Currency**: AUD
-- **Status**: Completed
+- **Status**: Completed Project
 - **Data Tracked**:
-  - **Financials**: Total revenue ($800K), expenses ($600K), profit ($200K)
+  - **Financials**: Total Zixly revenue ($25K), expenses ($12K), profit ($13K)
   - **Lead Events**: Initial inquiry (2024-01-05), proposal sent (2024-01-12), contract signed (2024-01-20)
   - **Custom Metrics**:
     - "Project Completion Rate" (100%)
     - "Delivered On-Time" (Yes)
+    - "Client Satisfaction" (5.0/5.0)
 
 ---
 
 ### User Workflows
 
-**Workflow 1: Sarah (ADMIN) adds John (EDITOR)**
+**Workflow 1: Cole (ADMIN) adds Support Team (EDITOR)**
 
-1. Sarah logs into Zixly (authenticated as `tenant_001`)
+1. Cole logs into Zixly (authenticated as `zixly-org-001`)
 2. Navigates to "Team Management" → "Invite User"
-3. Enters John's email: `john@abcconstruction.com.au`
+3. Enters support email: `support@zixly.com.au`
 4. Assigns role: **EDITOR**
 5. System creates `User` record:
    ```prisma
    {
      id: "user_002",
-     tenantId: "tenant_001",  // Scoped to ABC Construction
-     email: "john@abcconstruction.com.au",
+     tenantId: "zixly-org-001",  // Scoped to Zixly organization
+     email: "support@zixly.com.au",
      role: "EDITOR",
    }
    ```
-6. John receives invitation email and sets password
+6. Support team receives invitation email and sets password
 
-**Workflow 2: John (EDITOR) adds a new client**
+**Workflow 2: Support Team (EDITOR) adds a new service client**
 
-1. John logs into Zixly (authenticated as `tenant_001`)
-2. Navigates to "Clients" → "Add Client"
+1. Support team logs into Zixly (authenticated as `zixly-org-001`)
+2. Navigates to "Service Clients" → "Add Client"
 3. Enters details:
-   - Client Name: "Parramatta Warehouse Conversion"
-   - External ID: `PWC-2024-004`
-   - Industry: "Commercial Construction"
+   - Client Name: "Melbourne Accounting Firm"
+   - External ID: `MAF-2024-004`
+   - Industry: "Professional Services"
    - Currency: "AUD"
 4. System creates `ClientKPI` record:
    ```prisma
    {
      id: "ckpi_004",
-     tenantId: "tenant_001",  // Scoped to ABC Construction
-     clientId: "PWC-2024-004",
-     clientName: "Parramatta Warehouse Conversion",
-     industry: "Commercial Construction",
+     tenantId: "zixly-org-001",  // Scoped to Zixly organization
+     clientId: "MAF-2024-004",
+     clientName: "Melbourne Accounting Firm",
+     industry: "Professional Services",
      currency: "AUD",
    }
    ```
 5. System syncs financial data from Xero integration (if configured)
 
-**Workflow 3: Emma (VIEWER) generates a profitability report**
+**Workflow 3: Cole (ADMIN) generates service delivery profitability report**
 
-1. Emma logs into Zixly (authenticated as `tenant_001`)
-2. Navigates to "Reports" → "Client Profitability"
+1. Cole logs into Zixly (authenticated as `zixly-org-001`)
+2. Navigates to "Reports" → "Service Delivery Profitability"
 3. Selects date range: Q1 2024 (Jan 1 - Mar 31)
 4. System queries financials:
    ```sql
    SELECT ck.client_name, SUM(f.revenue) as total_revenue, SUM(f.expenses) as total_expenses
    FROM client_kpis ck
    JOIN financials f ON ck.id = f.client_kpi_id
-   WHERE ck.tenant_id = 'tenant_001'  -- RLS enforces this automatically
+   WHERE ck.tenant_id = 'zixly-org-001'  -- RLS enforces this automatically
      AND f.record_date BETWEEN '2024-01-01' AND '2024-03-31'
    GROUP BY ck.client_name;
    ```
-5. Emma views report showing:
-   - Harbor Bridge: $7.5M revenue, $5.4M expenses, $2.1M profit
-   - Bondi Residential: $3.6M revenue, $2.85M expenses, $750K profit
-   - Sydney CBD Office: $800K revenue, $600K expenses, $200K profit
-6. Emma exports report to CSV (read-only action)
+5. Cole views report showing:
+   - Harbor Bridge Construction: $45K revenue, $24K expenses, $21K profit
+   - Bondi E-commerce: $24K revenue, $12K expenses, $12K profit
+   - Sydney Law Firm: $25K revenue, $12K expenses, $13K profit
+6. Cole exports report to CSV for business analysis
 
 ---
 

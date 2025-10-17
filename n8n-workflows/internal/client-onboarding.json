@@ -1,0 +1,356 @@
+{
+  "name": "Zixly Client Onboarding Automation",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "client-onboarding",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-trigger",
+      "name": "Client Onboarding Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [240, 300],
+      "webhookId": "client-onboarding-webhook"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "service-tier-check",
+              "leftValue": "={{ $json.serviceTier }}",
+              "rightValue": "Starter",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "service-tier-router",
+      "name": "Service Tier Router",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "table": "client_kpis",
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "tenantId": "={{ $json.tenantId || 'zixly-org-001' }}",
+            "clientId": "={{ $json.clientId }}",
+            "clientName": "={{ $json.clientName }}",
+            "industry": "={{ $json.industry }}"
+          }
+        }
+      },
+      "id": "create-client-record",
+      "name": "Create Client Record",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [680, 200],
+      "credentials": {
+        "supabaseApi": {
+          "id": "zixly-supabase",
+          "name": "Zixly Supabase"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "table": "workflow_metadata",
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "tenantId": "={{ $json.tenantId || 'zixly-org-001' }}",
+            "workflowId": "client-onboarding-{{ $json.clientId }}",
+            "workflowName": "Client Onboarding - {{ $json.clientName }}",
+            "description": "Automated client onboarding workflow",
+            "category": "client_onboarding",
+            "isActive": true,
+            "metadata": "={{ JSON.stringify({ clientId: $json.clientId, serviceTier: $json.serviceTier, onboardingDate: new Date().toISOString() }) }}"
+          }
+        }
+      },
+      "id": "create-workflow-metadata",
+      "name": "Create Workflow Metadata",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [900, 200],
+      "credentials": {
+        "supabaseApi": {
+          "id": "zixly-supabase",
+          "name": "Zixly Supabase"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "http://plane:8000/api/v1/projects/",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "planeApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "name",
+              "value": "={{ $json.clientName }} - {{ $json.serviceTier }} Package"
+            },
+            {
+              "name": "description",
+              "value": "={{ $json.serviceTier }} package implementation for {{ $json.clientName }}"
+            },
+            {
+              "name": "identifier",
+              "value": "={{ $json.clientId }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "create-plane-project",
+      "name": "Create Plane Project",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [680, 400],
+      "credentials": {
+        "planeApi": {
+          "id": "zixly-plane",
+          "name": "Zixly Plane API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "http://nextcloud:8080/remote.php/dav/files/admin/{{ $json.clientId }}/",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "nextcloudApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/xml"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "body",
+              "value": "<?xml version=\"1.0\" encoding=\"utf-8\" ?>\n<d:mkcol xmlns:d=\"DAV:\">\n  <d:set>\n    <d:prop>\n      <d:displayname>{{ $json.clientName }}</d:displayname>\n    </d:prop>\n  </d:set>\n</d:mkcol>"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "create-nextcloud-folder",
+      "name": "Create Nextcloud Folder",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [900, 400],
+      "credentials": {
+        "nextcloudApi": {
+          "id": "zixly-nextcloud",
+          "name": "Zixly Nextcloud API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "cole.morton@hotmail.com",
+        "toEmail": "={{ $json.contactEmail }}",
+        "subject": "Welcome to Zixly - {{ $json.serviceTier }} Package Setup",
+        "message": "Dear {{ $json.contactName }},\n\nWelcome to Zixly! We're excited to help {{ $json.clientName }} with your {{ $json.serviceTier }} package implementation.\n\nYour project has been set up and our team will begin work shortly.\n\nProject Details:\n- Client: {{ $json.clientName }}\n- Service Tier: {{ $json.serviceTier }}\n- Project ID: {{ $json.clientId }}\n\nNext Steps:\n1. We'll send you access credentials within 24 hours\n2. Initial setup will begin within 48 hours\n3. You'll receive regular progress updates\n\nIf you have any questions, please don't hesitate to contact us.\n\nBest regards,\nCole Morton\nZixly Team",
+        "options": {}
+      },
+      "id": "send-welcome-email",
+      "name": "Send Welcome Email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2,
+      "position": [1120, 300],
+      "credentials": {
+        "smtp": {
+          "id": "zixly-smtp",
+          "name": "Zixly SMTP"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "table": "custom_metric",
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "clientKPIId": "={{ $('Create Client Record').item.json.id }}",
+            "metricName": "client_onboarding_completed",
+            "metricValue": 1,
+            "unit": "count",
+            "recordDate": "={{ new Date().toISOString().split('T')[0] }}",
+            "sourceSystem": "n8n",
+            "metadata": "={{ JSON.stringify({ serviceTier: $json.serviceTier, onboardingDate: new Date().toISOString(), workflowId: 'client-onboarding' }) }}"
+          }
+        }
+      },
+      "id": "track-onboarding-metric",
+      "name": "Track Onboarding Metric",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [1340, 300],
+      "credentials": {
+        "supabaseApi": {
+          "id": "zixly-supabase",
+          "name": "Zixly Supabase"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ success: true, message: 'Client onboarding initiated successfully', clientId: $json.clientId, projectCreated: true, folderCreated: true, emailSent: true }) }}"
+      },
+      "id": "success-response",
+      "name": "Success Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [1560, 300]
+    }
+  ],
+  "connections": {
+    "Client Onboarding Webhook": {
+      "main": [
+        [
+          {
+            "node": "Service Tier Router",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Service Tier Router": {
+      "main": [
+        [
+          {
+            "node": "Create Client Record",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Create Plane Project",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Client Record": {
+      "main": [
+        [
+          {
+            "node": "Create Workflow Metadata",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Workflow Metadata": {
+      "main": [
+        [
+          {
+            "node": "Send Welcome Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Plane Project": {
+      "main": [
+        [
+          {
+            "node": "Create Nextcloud Folder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Nextcloud Folder": {
+      "main": [
+        [
+          {
+            "node": "Send Welcome Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Welcome Email": {
+      "main": [
+        [
+          {
+            "node": "Track Onboarding Metric",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Track Onboarding Metric": {
+      "main": [
+        [
+          {
+            "node": "Success Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [
+    {
+      "createdAt": "2025-01-27T00:00:00.000Z",
+      "updatedAt": "2025-01-27T00:00:00.000Z",
+      "id": "client-onboarding",
+      "name": "Client Onboarding"
+    }
+  ],
+  "triggerCount": 1,
+  "updatedAt": "2025-01-27T00:00:00.000Z",
+  "versionId": "1"
+}

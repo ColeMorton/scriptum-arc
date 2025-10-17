@@ -1,55 +1,78 @@
 # Zixly Documentation
 
-> **n8n Automation Services for Brisbane SMEs**
+> **Open-Source Internal Operations Platform**
 
-Welcome to the comprehensive documentation for Zixly, a Brisbane-based n8n automation service provider that helps SMEs implement, configure, and manage their own automation platforms with complete ownership and control.
+Welcome to the comprehensive documentation for Zixly, an open-source internal operations platform for the Zixly service business that tracks and automates our own service delivery operations.
+
+## BUSINESS CONTEXT
+
+**Zixly is an open-source internal operations platform for the Zixly service business.**
+
+This platform:
+
+- Tracks Zixly's service delivery operations
+- Demonstrates "eating our own dogfood" with the self-hostable SME stack
+- Provides authentic expertise and continuous improvement
+- Is open-source for demonstration and reuse purposes
+
+**Zixly is NOT a multi-tenant SaaS platform for external customers.**
 
 ## 📚 Documentation Sections
 
-### 🎯 Service Documentation
+### 🏢 Business & Strategy
 
-- **[Service Catalog](./services/service-catalog.md)** - Complete service offerings and packages
-- **[Service Delivery Process](./services/delivery-process.md)** - Service delivery methodology
-- **[Client Onboarding](./services/client-onboarding.md)** - Client onboarding process
+- **[Business Model Clarification](./business/business-model-clarification.md)** - Internal operations platform context
+- **[Open-Source Strategy](./business/open-source-strategy.md)** - Community contribution and demonstration strategy
+- **[Dogfooding Strategy](./architecture/dogfooding-strategy.md)** - Using our own tools to run our business
 
 ### 🏗️ Architecture & Technical
 
-- **[System Architecture](./architecture/system-architecture.md)** - C4 diagrams, security architecture
+- **[System Architecture](./architecture/system-architecture.md)** - Technical architecture and implementation status
+- **[Separation of Concerns](./architecture/separation-of-concerns.md)** - n8n vs web app boundaries
+- **[Entity Relationship Explained](./concepts/entity-relationship-explained.md)** - Internal operations data model
+- **[Architecture Decision Records](./architecture/decisions/README.md)** - Key architectural decisions
 - **[Database Schema Diagram](./architecture/database-schema-diagram.md)** - Complete ERD with relationships
-- **[Database Migrations](./architecture/database-migrations.md)** - Migration workflow and procedures
-- **[Database Monitoring](./architecture/database-monitoring.md)** - Performance monitoring and alerts
 - **[Row-Level Security Policies](./architecture/row-level-security-policies.md)** - Multi-tenant security implementation
-- **[RAG Strategy](./architecture/rag-strategy.md)** - Vector search and AI integration plan
-
-### 💰 Business & Financial
-
-- **[Service Business Model](./financial/service-business-model.md)** - Service revenue model and targets
-- **[Self-Hostable Stack](./Comprehensive%20self-hostable%20SME%20stack.md)** - Complete tool ecosystem
 
 ### 🚀 Implementation
 
-- **[Implementation Overview](./implementation/README.md)** - Technical roadmap and phases
+- **[Implementation Status](./implementation/current-status.md)** - What's built vs. planned
+- **[Missing Features Roadmap](./implementation/missing-features-roadmap.md)** - Implementation priorities
+- **[Phase Plans](./implementation/README.md)** - 4-phase implementation approach
 - **[Phase 1: Data Foundation](./implementation/phase-1-data-foundation.md)** - Database and API implementation
 
-### 🔗 Service Operations & Templates
+### 🔗 Integrations & Workflows
 
-- **[Operations Guide](./operations/project-estimation-guide.md)** - Project estimation and time tracking
-- **[n8n Workflow Templates](./integrations/n8n-automation-workflows.md)** - Service templates library
-- **[Marketing Materials](./marketing/service-overview.md)** - Client-facing materials
+- **[n8n Workflow Capabilities](./integrations/n8n-workflow-capabilities.md)** - Advanced workflow features
+- **[n8n Automation Workflows](./integrations/n8n-automation-workflows.md)** - Pre-built workflow templates
+- **[SME Software Comparison](./integrations/sme-software-comparison.md)** - Tool comparison matrix
+
+### 🛠️ Operations & Support
+
+- **[Internal Operations](./operations/internal-operations-guide.md)** - Service delivery operations
+- **[Troubleshooting](./troubleshooting/README.md)** - Common issues and solutions
+- **[Docker Services](./troubleshooting/docker-services.md)** - Container management
 
 ## 🚀 Quick Start
 
 ### For Developers
 
-1. **[System Architecture](./architecture/system-architecture.md)** - Understand the technical stack
-2. **[Phase 1 Implementation](./implementation/phase-1-data-foundation.md)** - Database setup and API development
-3. **[Database Schema](./architecture/database-schema-diagram.md)** - Data model and relationships
+1. **[Business Model Clarification](./business/business-model-clarification.md)** - Understand the business context
+2. **[Implementation Status](./implementation/current-status.md)** - See what's built vs. planned
+3. **[System Architecture](./architecture/system-architecture.md)** - Understand the technical architecture
+4. **[Missing Features Roadmap](./implementation/missing-features-roadmap.md)** - Implementation priorities
 
 ### For Business Stakeholders
 
-1. **[Service Catalog](./services/service-catalog.md)** - Service offerings and packages
-2. **[Service Business Model](./financial/service-business-model.md)** - Service revenue model and targets
-3. **[Marketing Materials](./marketing/service-overview.md)** - Client-facing service overview
+1. **[Business Model Clarification](./business/business-model-clarification.md)** - Internal operations platform
+2. **[Open-Source Strategy](./business/open-source-strategy.md)** - Community engagement strategy
+3. **[Implementation Status](./implementation/current-status.md)** - Current development status
+
+### For Community Contributors
+
+1. **[Open-Source Strategy](./business/open-source-strategy.md)** - Community contribution strategy
+2. **[Architecture Decision Records](./architecture/decisions/README.md)** - Key architectural decisions
+3. **[Implementation Status](./implementation/current-status.md)** - Current development status
 
 ## 📖 Documentation Standards
 
@@ -71,35 +94,66 @@ Welcome to the comprehensive documentation for Zixly, a Brisbane-based n8n autom
 | **Auth**       | Supabase Auth | Latest  | JWT-based authentication and session management      |
 | **ETL**        | n8n           | 1.x     | Workflow automation and ETL pipeline management      |
 
-## 🎯 Service Capabilities
+## Key Concepts
 
-- **🔧 n8n Platform Setup**: Complete implementation on your infrastructure
-- **⚡ Custom Workflow Development**: Bespoke workflows for your business processes
-- **🔗 System Integration**: Connect Xero, HubSpot, Asana, and 50+ business systems
-- **📚 Training & Support**: Comprehensive training and ongoing assistance
-- **🛠️ Stack Expansion**: Implement additional tools from the self-hostable SME stack
-- **📱 Flexible Engagement**: Project-based or ongoing support options
+### Business Model
 
-## 🏢 Target Market
+Zixly is a **service business** that provides n8n automation services to clients, using this platform to track our own service delivery operations.
 
-- **Primary**: Brisbane and South East Queensland SMEs
-- **Industries**: Professional Services, Construction, E-commerce, Retail
-- **Personas**: Business Owners, Operations Managers, IT Managers
+### Technical Architecture
 
-## 💡 Service Value Proposition
+- **Frontend**: Next.js with React and TypeScript
+- **Backend**: n8n for workflow automation
+- **Database**: PostgreSQL with Supabase
+- **Authentication**: Supabase Auth
+- **Deployment**: Vercel (frontend) + DigitalOcean (n8n)
 
-**"Expert n8n Automation Services for Brisbane SMEs"**
+### Implementation Status
 
-- **Platform Ownership**: You own your n8n instance, workflows, and data
-- **Brisbane-Based Expertise**: Local team with Australian business knowledge
-- **Flexible Service Options**: Full-service, hybrid, or self-service with training
-- **Complete Stack Services**: n8n automation plus 20+ self-hostable tools
-- **Proven Methodology**: Successful implementations across Brisbane SMEs
+- **Phase 1**: ✅ Completed (Data Foundation)
+- **Phase 2**: 📋 Planned (ETL & Orchestration)
+- **Phase 3**: 📋 Planned (Visualization)
+- **Phase 4**: 📋 Planned (Operationalization)
+
+## Current Implementation Status
+
+### ✅ COMPLETED FEATURES
+
+- Database schema and migrations
+- Multi-tenant authentication (single tenant: Zixly)
+- API endpoints for internal data retrieval
+- Basic dashboard UI for service metrics
+- Comprehensive testing suite
+
+### 📋 PLANNED FEATURES
+
+- n8n deployment and workflow automation
+- Real-time WebSocket connections
+- Interactive dashboard features
+- Mobile application
+- Advanced analytics
+
+### ❌ DOCUMENTED BUT NOT IMPLEMENTED
+
+- WebSocket connections
+- Mobile app
+- n8n workflows
+- Real-time features
+- Advanced analytics
+
+## Recent Updates
+
+- **2025-01-27**: Updated business model clarification for internal operations
+- **2025-01-27**: Added open-source strategy documentation
+- **2025-01-27**: Created implementation status document
+- **2025-01-27**: Added missing features roadmap
+- **2025-01-27**: Created Architecture Decision Records (ADRs)
+- **2025-01-27**: Updated entity relationship for internal operations context
 
 ---
 
 **Last Updated**: 2025-01-27  
-**Documentation Version**: 1.0  
+**Documentation Version**: 2.1  
 **Maintained By**: Zixly Development Team
 
 **🌐 Repository**: [GitHub Repository](https://github.com/colemorton/platform)

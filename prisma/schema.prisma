@@ -11,19 +11,20 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
-// Multi-tenancy: All tables include tenantId for data isolation
+// INTERNAL OPERATIONS: Zixly organization (single tenant for internal use)
+// This represents the Zixly service business itself
 model Tenant {
   id              String   @id @default(cuid())
-  name            String
-  industry        String?
+  name            String   // "Zixly" - the service business
+  industry        String?  // "n8n Automation Services"
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 
-  clientKPIs      ClientKPI[]
-  users           User[]
-  integrations    Integration[]
-  workflowMetadata WorkflowMetadata[]
-  dataSyncStatus  DataSyncStatus[]
+  clientKPIs      ClientKPI[]      // Service clients (businesses using Zixly services)
+  users           User[]            // Zixly team members
+  integrations    Integration[]     // Zixly's own system integrations (Xero, etc.)
+  workflowMetadata WorkflowMetadata[] // Internal n8n workflows for Zixly operations
+  dataSyncStatus  DataSyncStatus[]   // Internal data sync health monitoring
 
   @@map("tenants")
 }
@@ -48,39 +49,41 @@ enum UserRole {
   VIEWER
 }
 
-// Primary business entity
+// INTERNAL OPERATIONS: Service clients (businesses using Zixly services)
+// Each record represents a client that has engaged Zixly for n8n automation services
 model ClientKPI {
   id              String   @id @default(cuid())
   tenantId        String
   clientId        String   // External client identifier (unique per tenant)
-  clientName      String
-  industry        String?
+  clientName      String   // Client business name (e.g., "Brisbane Construction Co")
+  industry        String?  // Client's industry (e.g., "Construction", "Professional Services")
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 
   tenant          Tenant          @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  financials      Financial[]
-  leadEvents      LeadEvent[]
-  customMetrics   CustomMetric[]
+  financials      Financial[]    // Zixly revenue/expenses per client project
+  leadEvents      LeadEvent[]    // Zixly sales pipeline (leads for service contracts)
+  customMetrics   CustomMetric[] // Internal KPIs (billable hours, project velocity, etc.)
 
   @@unique([tenantId, clientId])
   @@index([tenantId])
   @@map("client_kpis")
 }
 
-// Time-series financial data
+// INTERNAL OPERATIONS: Zixly revenue/expenses per client project
+// Tracks financial performance of Zixly service delivery to each client
 model Financial {
   id              String   @id @default(cuid())
   clientKPIId     String
   recordDate      DateTime @db.Date
-  revenue         Decimal  @db.Decimal(12, 2)
-  expenses        Decimal  @db.Decimal(12, 2)
-  netProfit       Decimal  @db.Decimal(12, 2)
-  cashFlow        Decimal  @db.Decimal(12, 2)
+  revenue         Decimal  @db.Decimal(12, 2) // Zixly revenue from this client
+  expenses        Decimal  @db.Decimal(12, 2) // Zixly costs for this client (consultant time, tools, etc.)
+  netProfit       Decimal  @db.Decimal(12, 2) // Zixly profit from this client
+  cashFlow        Decimal  @db.Decimal(12, 2) // Cash flow impact
   currency        String   @default("AUD")
-  sourceSystem    String?  // e.g., "xero", "myob"
+  sourceSystem    String?  // e.g., "xero", "invoice_ninja" (Zixly's accounting systems)
   externalId      String?  // External system record ID
-  metadata        Json?    // Flexible storage for system-specific fields
+  metadata        Json?    // Project details, billing tier, service type
   createdAt       DateTime @default(now())
 
   clientKPI       ClientKPI @relation(fields: [clientKPIId], references: [id], onDelete: Cascade)
@@ -91,18 +94,19 @@ model Financial {
   @@map("financials")
 }
 
-// CRM/Sales pipeline tracking
+// INTERNAL OPERATIONS: Zixly sales pipeline (leads for service contracts)
+// Tracks potential clients through Zixly's sales process
 model LeadEvent {
   id              String   @id @default(cuid())
   clientKPIId     String
   eventDate       DateTime
   leadId          String   // External lead/deal identifier
   stage           String   // e.g., "prospect", "qualified", "proposal", "closed-won"
-  value           Decimal? @db.Decimal(12, 2)
+  value           Decimal? @db.Decimal(12, 2) // Potential contract value
   status          String   // e.g., "active", "stale", "lost"
-  sourceSystem    String?  // e.g., "hubspot", "pipedrive"
+  sourceSystem    String?  // e.g., "mautic", "hubspot" (Zixly's marketing/sales tools)
   externalId      String?
-  metadata        Json?
+  metadata        Json?    // Lead source, contact details, service tier interest
   createdAt       DateTime @default(now())
 
   clientKPI       ClientKPI @relation(fields: [clientKPIId], references: [id], onDelete: Cascade)
@@ -113,16 +117,17 @@ model LeadEvent {
   @@map("lead_events")
 }
 
-// Flexible custom KPIs
+// INTERNAL OPERATIONS: Internal KPIs (billable hours, project velocity, etc.)
+// Tracks Zixly's service delivery performance and operational metrics
 model CustomMetric {
   id              String   @id @default(cuid())
   clientKPIId     String
-  metricName      String   // e.g., "project_delivery_days", "customer_satisfaction"
+  metricName      String   // e.g., "billable_hours", "project_velocity", "client_satisfaction", "service_delivery_days"
   metricValue     Decimal  @db.Decimal(12, 4)
-  unit            String?  // e.g., "days", "percent", "count"
+  unit            String?  // e.g., "hours", "days", "percent", "count", "AUD"
   recordDate      DateTime
-  sourceSystem    String?
-  metadata        Json?
+  sourceSystem    String?  // e.g., "plane", "time_tracking", "chatwoot" (Zixly's operational tools)
+  metadata        Json?    // Project details, consultant info, service tier
   embedding       Unsupported("vector(1536)")? // Future: OpenAI embeddings for RAG
   createdAt       DateTime @default(now())
 
@@ -132,11 +137,12 @@ model CustomMetric {
   @@map("custom_metrics")
 }
 
-// Integration configuration (stores OAuth tokens securely)
+// INTERNAL OPERATIONS: Zixly's own system integrations (Xero for accounting, etc.)
+// Stores OAuth tokens for Zixly's business systems (not client systems)
 model Integration {
   id              String   @id @default(cuid())
   tenantId        String
-  provider        String   // e.g., "xero", "hubspot", "asana"
+  provider        String   // e.g., "xero", "plane", "nextcloud", "metabase" (Zixly's tools)
   status          IntegrationStatus @default(PENDING)
   accessToken     String   @db.Text // Encrypted at application layer
   refreshToken    String?  @db.Text // Encrypted
@@ -160,17 +166,18 @@ enum IntegrationStatus {
   DISABLED
 }
 
-// Workflow metadata for UI display only (n8n handles actual workflow execution)
+// INTERNAL OPERATIONS: Internal n8n workflows for Zixly operations
+// Tracks Zixly's own automation workflows (client onboarding, time tracking, etc.)
 model WorkflowMetadata {
   id              String   @id @default(cuid())
   tenantId        String
   workflowId      String   // n8n workflow ID (reference only)
-  workflowName    String
-  description     String?
-  category        String   // e.g., "financial", "crm", "operational"
+  workflowName    String   // e.g., "Client Onboarding", "Time Tracking Sync", "Financial Reporting"
+  description     String?  // Workflow purpose and functionality
+  category        String   // e.g., "client_onboarding", "time_tracking", "financial", "support"
   isActive        Boolean  @default(true)
   lastRunAt       DateTime?
-  metadata        Json?    // Display metadata for UI
+  metadata        Json?    // Display metadata for UI, workflow configuration
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
   
@@ -181,11 +188,12 @@ model WorkflowMetadata {
   @@map("workflow_metadata")
 }
 
-// Data sync status for UI indicators (NOT workflow execution)
+// INTERNAL OPERATIONS: Internal data sync health monitoring
+// Tracks sync status of Zixly's own data sources (Xero, Plane, Nextcloud, etc.)
 model DataSyncStatus {
   id              String   @id @default(cuid())
   tenantId        String
-  dataSource      String   // e.g., "xero", "hubspot"
+  dataSource      String   // e.g., "xero", "plane", "nextcloud", "metabase" (Zixly's tools)
   lastSyncAt      DateTime
   nextSyncAt      DateTime?
   recordCount     Int?

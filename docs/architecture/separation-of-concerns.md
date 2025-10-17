@@ -1,9 +1,22 @@
 # n8n vs Web App Separation of Concerns
 
-**Version**: 1.0  
-**Last Updated**: 2025-10-15  
+**Version**: 1.1  
+**Last Updated**: 2025-01-27  
 **Owner**: Technical Architecture  
 **Status**: Defined
+
+---
+
+## BUSINESS CONTEXT: INTERNAL OPERATIONS PLATFORM
+
+**Zixly is an open-source internal operations platform for the Zixly service business.**
+
+This platform:
+
+- Tracks Zixly's service delivery operations
+- Demonstrates "eating our own dogfood" with the self-hostable SME stack
+- Provides authentic expertise and continuous improvement
+- Is open-source for demonstration and reuse purposes
 
 ---
 
@@ -19,6 +32,60 @@ This document defines the clear boundaries between n8n (workflow automation plat
 
 - **n8n**: Workflow automation, data movement, API integrations
 - **Web App**: Business intelligence, user experience, real-time communication, analytics
+
+---
+
+## CURRENT IMPLEMENTATION STATUS
+
+### ✅ IMPLEMENTED (Web App)
+
+- Basic dashboard UI with static charts
+- Multi-tenant authentication (Supabase Auth) - single tenant (Zixly)
+- API endpoints for data retrieval
+- Static data visualization
+- Basic UI components
+- Internal operations data tracking
+
+### ❌ NOT IMPLEMENTED (Web App)
+
+- Real-time WebSocket connections
+- Live dashboard updates
+- Interactive filtering and drill-down
+- Advanced analytics and ML
+- Mobile application
+
+### ❌ NOT IMPLEMENTED (n8n)
+
+- n8n deployment and configuration
+- Workflow execution engine
+- OAuth integrations (Xero, HubSpot, Asana)
+- Custom TypeScript nodes
+- Automated data sync workflows
+
+---
+
+## INTERNAL OPERATIONS FOCUS
+
+### What We Track (Zixly Service Business):
+
+- **Service Clients**: Businesses using Zixly for n8n automation
+- **Project Performance**: Service delivery metrics and timelines
+- **Financial Performance**: Revenue, expenses, profit from service delivery
+- **Team Productivity**: Billable hours, project velocity, efficiency
+- **Client Satisfaction**: NPS scores, retention rates, feedback
+
+### Data Flow (Internal Operations):
+
+```
+Zixly Service Clients → n8n Workflows → PostgreSQL → Dashboard → Zixly Team
+```
+
+### Open-Source Benefits:
+
+- **Transparency**: Clients can see our actual operations
+- **Trust Building**: Open codebase demonstrates confidence
+- **Demonstration**: Live system shows capabilities to potential clients
+- **Community**: Sharing knowledge and reusable patterns
 
 ---
 
@@ -173,6 +240,108 @@ This document defines the clear boundaries between n8n (workflow automation plat
 - ❌ Workflow dependency management
 - ❌ Integration automation
 - ❌ Data synchronization workflows
+
+---
+
+## SME Tools in the Architecture
+
+### SME Tools as Data Sources
+
+**Core Principle**: SME tools provide domain-specific functionality and serve as **data sources** for the unified Next.js BI dashboard. They do NOT replace the Next.js application's BI capabilities.
+
+#### SME Tool Responsibilities
+
+**Plane (Project Management):**
+
+- ✅ Project and task management interface
+- ✅ Sprint planning and issue tracking
+- ✅ Team collaboration on projects
+- ❌ NOT a replacement for Next.js service delivery dashboard
+- **Data Flow**: Plane data → n8n → PostgreSQL → Next.js dashboard
+
+**Invoice Ninja (Billing):**
+
+- ✅ Invoice generation and payment tracking
+- ✅ Client billing management
+- ✅ Payment status tracking
+- ❌ NOT a replacement for Next.js financial reporting
+- **Data Flow**: Invoice data → n8n → PostgreSQL → Next.js dashboard
+
+**Metabase (Static Analytics):**
+
+- ✅ Ad-hoc SQL queries and static reports
+- ✅ Pre-built dashboard templates
+- ✅ Business intelligence for technical users
+- ❌ NOT a replacement for Next.js real-time BI dashboards
+- ❌ No real-time updates, limited interactivity
+- **Use Case**: Complementary tool for data exploration, not primary BI layer
+
+**Integration Pattern:**
+
+```
+┌──────────────────────────────────────────────────────┐
+│                    SME Tools Layer                    │
+│  (Domain-Specific Data Sources & Operations)         │
+│                                                       │
+│  Plane    Invoice Ninja    Metabase    Chatwoot     │
+│  Mautic   Nextcloud        Xero        Others        │
+└────────────────────┬─────────────────────────────────┘
+                     │ APIs & Webhooks
+┌────────────────────▼─────────────────────────────────┐
+│              n8n (Integration Layer)                  │
+│  - Extracts data from SME tools                      │
+│  - Transforms and normalizes data                    │
+│  - Loads into PostgreSQL data warehouse              │
+└────────────────────┬─────────────────────────────────┘
+                     │ Writes to Database
+┌────────────────────▼─────────────────────────────────┐
+│         Supabase PostgreSQL (Data Warehouse)         │
+│  - Centralized business data storage                 │
+│  - Real-time subscriptions                           │
+│  - Row-level security for multi-tenancy             │
+└────────────────────┬─────────────────────────────────┘
+                     │ Reads from Database
+┌────────────────────▼─────────────────────────────────┐
+│        Next.js Application (Unified BI Layer)        │
+│  - Real-time interactive dashboards                  │
+│  - Aggregates data from ALL SME tools                │
+│  - WebSocket live updates                            │
+│  - Advanced analytics and ML models                  │
+│  - Mobile app with offline sync                      │
+└──────────────────────────────────────────────────────┘
+```
+
+### Why Next.js Cannot Be Replaced by SME Tools
+
+**Real-Time Capabilities:**
+
+- SME tools lack WebSocket connections for live updates
+- Next.js provides real-time dashboard refreshes as data changes
+- Metabase requires manual refresh, no push notifications
+
+**Unified View:**
+
+- SME tools are siloed (Plane doesn't show Invoice Ninja data)
+- Next.js aggregates data from ALL sources into unified dashboards
+- Cross-functional insights require centralized BI layer
+
+**Advanced Analytics:**
+
+- SME tools lack ML model hosting and predictive analytics
+- Next.js provides statistical analysis, forecasting, anomaly detection
+- Custom business logic and KPI calculations
+
+**Multi-Tenant Architecture:**
+
+- SME tools have limited multi-tenancy support
+- Next.js provides RBAC, row-level security, tenant isolation
+- User authentication and authorization across all data sources
+
+**Mobile Integration:**
+
+- SME tools lack native mobile apps or have limited functionality
+- Next.js React Native app provides offline sync and push notifications
+- Unified mobile experience across all business operations
 
 ---
 

@@ -23,9 +23,9 @@ export async function GET() {
       return NextResponse.json({ error: 'No tenant associated with user' }, { status: 400 })
     }
 
-    // Fetch aggregated business data (written by n8n workflows)
+    // Fetch aggregated Zixly service business data (written by n8n workflows)
     const [financials, leadEvents, customMetrics] = await Promise.all([
-      // Financial KPIs aggregated by n8n workflows
+      // Zixly service revenue/expenses aggregated by n8n workflows
       prisma.financial.groupBy({
         by: ['recordDate'],
         where: {
@@ -35,10 +35,10 @@ export async function GET() {
           },
         },
         _sum: {
-          revenue: true,
-          expenses: true,
-          netProfit: true,
-          cashFlow: true,
+          revenue: true, // Zixly revenue from service clients
+          expenses: true, // Zixly costs (consultant time, tools, infrastructure)
+          netProfit: true, // Zixly profit from service delivery
+          cashFlow: true, // Cash flow impact
         },
         _avg: {
           revenue: true,
@@ -50,7 +50,7 @@ export async function GET() {
         take: 30,
       }),
 
-      // Lead pipeline data aggregated by n8n workflows
+      // Zixly sales pipeline data aggregated by n8n workflows
       prisma.leadEvent.groupBy({
         by: ['stage', 'status'],
         where: {
@@ -59,11 +59,11 @@ export async function GET() {
             gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000), // Last 30 days
           },
         },
-        _sum: { value: true },
+        _sum: { value: true }, // Potential service contract values
         _count: { id: true },
       }),
 
-      // Custom metrics aggregated by n8n workflows
+      // Zixly internal KPIs aggregated by n8n workflows
       prisma.customMetric.groupBy({
         by: ['metricName'],
         where: {
@@ -72,24 +72,24 @@ export async function GET() {
             gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000), // Last 30 days
           },
         },
-        _avg: { metricValue: true },
+        _avg: { metricValue: true }, // Average billable hours, project velocity, etc.
         _max: { metricValue: true },
         _min: { metricValue: true },
       }),
     ])
 
-    // Calculate business intelligence metrics
-    const totalRevenue = financials.reduce((sum, f) => sum + Number(f._sum.revenue || 0), 0)
-    const totalExpenses = financials.reduce((sum, f) => sum + Number(f._sum.expenses || 0), 0)
-    const netProfit = totalRevenue - totalExpenses
-    const profitMargin = totalRevenue > 0 ? (netProfit / totalRevenue) * 100 : 0
+    // Calculate Zixly service business intelligence metrics
+    const totalRevenue = financials.reduce((sum, f) => sum + Number(f._sum.revenue || 0), 0) // Zixly service revenue
+    const totalExpenses = financials.reduce((sum, f) => sum + Number(f._sum.expenses || 0), 0) // Zixly operational costs
+    const netProfit = totalRevenue - totalExpenses // Zixly service profit
+    const profitMargin = totalRevenue > 0 ? (netProfit / totalRevenue) * 100 : 0 // Service delivery margin
 
-    // Calculate lead pipeline metrics
-    const activeLeads = leadEvents.filter((le) => le.status === 'active').length
-    const totalPipelineValue = leadEvents.reduce((sum, le) => sum + Number(le._sum.value || 0), 0)
+    // Calculate Zixly sales pipeline metrics
+    const activeLeads = leadEvents.filter((le) => le.status === 'active').length // Active prospects
+    const totalPipelineValue = leadEvents.reduce((sum, le) => sum + Number(le._sum.value || 0), 0) // Total potential revenue
     const closedWonValue = leadEvents
       .filter((le) => le.stage === 'closed-won' && le.status === 'active')
-      .reduce((sum, le) => sum + Number(le._sum.value || 0), 0)
+      .reduce((sum, le) => sum + Number(le._sum.value || 0), 0) // Won service contracts
 
     // Calculate growth metrics (month over month)
     const currentMonth = financials.slice(0, 15) // Last 15 days
