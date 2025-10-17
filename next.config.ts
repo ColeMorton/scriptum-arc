@@ -14,10 +14,9 @@ const nextConfig: NextConfig = {
 
   // Performance optimizations
   experimental: {
-    // Enable parallel builds
-    parallelServerCompiles: true,
-    // Optimize memory usage
-    memoryBasedWorkersCount: true,
+    // Note: parallelServerCompiles and memoryBasedWorkersCount are not compatible with Turbopack
+    // Turbopack has its own parallelization and memory management strategies
+    // These options are automatically handled by Turbopack when --turbopack flag is used
   },
 
   // Optimize images
