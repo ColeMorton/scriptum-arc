@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { prisma } from '@/lib/prisma'
 import { NextResponse } from 'next/server'
+import { getProjectMetadata, getBillableHoursMetadata } from '@/lib/types'
 
 export async function GET() {
   try {
@@ -68,14 +69,17 @@ export async function GET() {
     const totalBillableHours = billableHours.reduce((sum, bh) => sum + Number(bh.metricValue), 0)
     const averageProjectDuration =
       projects.length > 0
-        ? projects.reduce((sum, p) => sum + Number(p.metadata?.completionTime || 0), 0) /
-          projects.length
+        ? projects.reduce((sum, p) => {
+            const metadata = getProjectMetadata(p.metadata)
+            return sum + Number(metadata.completionTime || 0)
+          }, 0) / projects.length
         : 0
 
     // Group by service tier
     const projectsByTier = projects.reduce(
       (acc, project) => {
-        const tier = project.metadata?.serviceTier || 'Unknown'
+        const metadata = getProjectMetadata(project.metadata)
+        const tier = metadata.serviceTier || 'Unknown'
         acc[tier] = (acc[tier] || 0) + 1
         return acc
       },
@@ -88,29 +92,35 @@ export async function GET() {
         totalBillableHours,
         averageProjectDuration,
         projectsByTier,
-        recentProjects: projects.slice(0, 10).map((p) => ({
-          id: p.id,
-          clientName: p.clientKPI.clientName,
-          industry: p.clientKPI.industry,
-          serviceTier: p.metadata?.serviceTier || 'Unknown',
-          completionTime: p.metadata?.completionTime || 0,
-          consultant: p.metadata?.consultant || 'Unknown',
-          completedAt: p.recordDate,
-          billableHours: billableHours
-            .filter((bh) => bh.clientKPIId === p.clientKPIId)
-            .reduce((sum, bh) => sum + Number(bh.metricValue), 0),
-        })),
+        recentProjects: projects.slice(0, 10).map((p) => {
+          const metadata = getProjectMetadata(p.metadata)
+          return {
+            id: p.id,
+            clientName: p.clientKPI.clientName,
+            industry: p.clientKPI.industry,
+            serviceTier: metadata.serviceTier || 'Unknown',
+            completionTime: metadata.completionTime || 0,
+            consultant: metadata.consultant || 'Unknown',
+            completedAt: p.recordDate,
+            billableHours: billableHours
+              .filter((bh) => bh.clientKPIId === p.clientKPIId)
+              .reduce((sum, bh) => sum + Number(bh.metricValue), 0),
+          }
+        }),
       },
       billableHours: {
         total: totalBillableHours,
-        byClient: billableHours.map((bh) => ({
-          clientName: bh.clientKPI.clientName,
-          hours: Number(bh.metricValue),
-          hourlyRate: bh.metadata?.hourlyRate || 0,
-          totalValue: Number(bh.metricValue) * (bh.metadata?.hourlyRate || 0),
-          consultant: bh.metadata?.consultant || 'Unknown',
-          date: bh.recordDate,
-        })),
+        byClient: billableHours.map((bh) => {
+          const metadata = getBillableHoursMetadata(bh.metadata)
+          return {
+            clientName: bh.clientKPI.clientName,
+            hours: Number(bh.metricValue),
+            hourlyRate: metadata.hourlyRate || 0,
+            totalValue: Number(bh.metricValue) * (metadata.hourlyRate || 0),
+            consultant: metadata.consultant || 'Unknown',
+            date: bh.recordDate,
+          }
+        }),
       },
       lastUpdated: new Date().toISOString(),
     })

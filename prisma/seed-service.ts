@@ -525,11 +525,18 @@ async function main() {
   console.log(`   - Sync statuses: ${syncStatuses.length}`)
 }
 
-main()
-  .catch((e) => {
-    console.error('❌ Seeding failed:', e)
-    process.exit(1)
-  })
-  .finally(async () => {
-    await prisma.$disconnect()
-  })
+export default async function seedService() {
+  await main()
+}
+
+// Run if called directly
+if (require.main === module) {
+  main()
+    .catch((e) => {
+      console.error('❌ Seeding failed:', e)
+      process.exit(1)
+    })
+    .finally(async () => {
+      await prisma.$disconnect()
+    })
+}

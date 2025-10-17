@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { prisma } from '@/lib/prisma'
 import { NextResponse } from 'next/server'
+import { getBillableHoursMetadata, getSurveyMetadata, getProjectMetadata } from '@/lib/types'
 
 export async function GET() {
   try {
@@ -125,14 +126,16 @@ export async function GET() {
     const totalBillableHours = billableHours.reduce((sum, bh) => sum + Number(bh.metricValue), 0)
     const totalRevenue = billableHours.reduce((sum, bh) => {
       const hours = Number(bh.metricValue)
-      const rate = bh.metadata?.hourlyRate || 0
+      const metadata = getBillableHoursMetadata(bh.metadata)
+      const rate = metadata.hourlyRate || 0
       return sum + hours * rate
     }, 0)
 
     // Calculate efficiency metrics
     const onTimeDelivery = serviceDelivery.filter((sd) => {
       const actual = Number(sd.metricValue)
-      const estimated = sd.metadata?.estimatedDays || 0
+      const metadata = getProjectMetadata(sd.metadata)
+      const estimated = metadata.estimatedDays || 0
       return actual <= estimated
     }).length
 
@@ -175,35 +178,44 @@ export async function GET() {
         },
       },
       detailedMetrics: {
-        clientSatisfaction: clientSatisfaction.map((cs) => ({
-          id: cs.id,
-          clientName: cs.clientKPI.clientName,
-          industry: cs.clientKPI.industry,
-          score: Number(cs.metricValue),
-          feedback: cs.metadata?.feedback || '',
-          surveyType: cs.metadata?.surveyType || 'NPS',
-          date: cs.recordDate,
-        })),
-        projectVelocity: projectVelocity.map((pv) => ({
-          id: pv.id,
-          clientName: pv.clientKPI.clientName,
-          industry: pv.clientKPI.industry,
-          projectsCompleted: Number(pv.metricValue),
-          serviceTier: pv.metadata?.serviceTier || 'Unknown',
-          completionTime: pv.metadata?.completionTime || 0,
-          consultant: pv.metadata?.consultant || 'Unknown',
-          date: pv.recordDate,
-        })),
-        serviceDelivery: serviceDelivery.map((sd) => ({
-          id: sd.id,
-          clientName: sd.clientKPI.clientName,
-          industry: sd.clientKPI.industry,
-          actualDays: Number(sd.metricValue),
-          estimatedDays: sd.metadata?.estimatedDays || 0,
-          efficiency: sd.metadata?.efficiency || 0,
-          serviceTier: sd.metadata?.serviceTier || 'Unknown',
-          date: sd.recordDate,
-        })),
+        clientSatisfaction: clientSatisfaction.map((cs) => {
+          const metadata = getSurveyMetadata(cs.metadata)
+          return {
+            id: cs.id,
+            clientName: cs.clientKPI.clientName,
+            industry: cs.clientKPI.industry,
+            score: Number(cs.metricValue),
+            feedback: metadata.feedback || '',
+            surveyType: metadata.surveyType || 'NPS',
+            date: cs.recordDate,
+          }
+        }),
+        projectVelocity: projectVelocity.map((pv) => {
+          const metadata = getProjectMetadata(pv.metadata)
+          return {
+            id: pv.id,
+            clientName: pv.clientKPI.clientName,
+            industry: pv.clientKPI.industry,
+            projectsCompleted: Number(pv.metricValue),
+            serviceTier: metadata.serviceTier || 'Unknown',
+            completionTime: metadata.completionTime || 0,
+            consultant: metadata.consultant || 'Unknown',
+            date: pv.recordDate,
+          }
+        }),
+        serviceDelivery: serviceDelivery.map((sd) => {
+          const metadata = getProjectMetadata(sd.metadata)
+          return {
+            id: sd.id,
+            clientName: sd.clientKPI.clientName,
+            industry: sd.clientKPI.industry,
+            actualDays: Number(sd.metricValue),
+            estimatedDays: metadata.estimatedDays || 0,
+            efficiency: metadata.efficiency || 0,
+            serviceTier: metadata.serviceTier || 'Unknown',
+            date: sd.recordDate,
+          }
+        }),
       },
       lastUpdated: new Date().toISOString(),
     })
