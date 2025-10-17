@@ -29,19 +29,19 @@ export interface TimeTrackingMetadata {
 
 // Type guard functions to safely access JSON metadata
 export function isProjectMetadata(metadata: unknown): metadata is ProjectMetadata {
-  return metadata && typeof metadata === 'object'
+  return metadata != null && typeof metadata === 'object' && !Array.isArray(metadata)
 }
 
 export function isBillableHoursMetadata(metadata: unknown): metadata is BillableHoursMetadata {
-  return metadata && typeof metadata === 'object'
+  return metadata != null && typeof metadata === 'object' && !Array.isArray(metadata)
 }
 
 export function isSurveyMetadata(metadata: unknown): metadata is SurveyMetadata {
-  return metadata && typeof metadata === 'object'
+  return metadata != null && typeof metadata === 'object' && !Array.isArray(metadata)
 }
 
 export function isTimeTrackingMetadata(metadata: unknown): metadata is TimeTrackingMetadata {
-  return metadata && typeof metadata === 'object'
+  return metadata != null && typeof metadata === 'object' && !Array.isArray(metadata)
 }
 
 // Helper functions to safely get metadata values
