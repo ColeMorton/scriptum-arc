@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { JobsTable } from '@/components/pipelines/JobsTable'
 import { mockJobs } from '../utils/test-data'
-import type { ReactNode } from 'react'
+import React, { type ReactNode } from 'react'
 
 // Mock Next.js router
 const mockPush = vi.fn()
