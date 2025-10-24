@@ -1,5 +1,5 @@
 ---
-**← [Phase 1: Data Foundation](./phase-1-data-foundation.md)** | **[Back to Documentation Index](../index.md)** | **[Phase 3: Business Intelligence Layer](./phase-3-business-intelligence.md)** →
+**← [Phase 1: Data Foundation](./phase-1-data-foundation.md)** | **[Back to Documentation Index](../README.md)** | **[Phase 3: Business Intelligence Layer](./phase-3-business-intelligence.md)** →
 ---
 
 # Phase 2: Local Development & Testing
@@ -13,7 +13,7 @@
 
 ## Executive Summary
 
-Phase 2 focuses on local development and testing of the self-hostable stack integration, specifically adding Plane project management alongside the existing n8n setup. This phase is 100% local and functional, enabling rapid development and testing without deployment complexity.
+Phase 2 focuses on local development and testing of the self-hostable stack integration, specifically adding Plane project management alongside the existing pipeline services setup. This phase is 100% local and functional, enabling rapid development and testing without deployment complexity.
 
 **Strategic Importance**: This phase establishes the core project management capability for Zixly's internal operations while maintaining a local development environment for rapid iteration and testing.
 
@@ -25,13 +25,13 @@ Phase 2 focuses on local development and testing of the self-hostable stack inte
 
 - [Phase 1: Data Foundation](./phase-1-data-foundation.md) - Complete ✅
 - [System Architecture](../architecture/system-architecture.md) - Technical patterns
-- [Dogfooding Strategy](../architecture/dogfooding-strategy.md) - Strategic rationale
+- [Business Model](../business/business-model.md) - Strategic rationale and dogfooding approach
 
 **Implementation Guidance**:
 
 - [Internal Operations Guide](../operations/internal-operations-guide.md) - Business requirements
 - [Time Tracking System](../operations/time-tracking-system.md) - Operational standards
-- [n8n Workflow Capabilities](../integrations/n8n-workflow-capabilities.md) - Technical patterns
+- [Pipeline Workflow Capabilities](../integrations/pipeline services-workflow-capabilities.md) - Technical patterns
 
 ---
 
@@ -39,15 +39,15 @@ Phase 2 focuses on local development and testing of the self-hostable stack inte
 
 ### Primary Goals
 
-1. **Local Docker Environment** - Spin up both n8n and Plane locally with single command
+1. **Local Docker Environment** - Spin up both pipeline services and Plane locally with single command
 2. **Plane Integration** - Configure Plane for Zixly internal project management
-3. **Plane Smoke Test** - n8n workflow to validate Plane connectivity and functionality
+3. **Plane Smoke Test** - Pipeline Workflow to validate Plane connectivity and functionality
 4. **Local Development Workflow** - Streamlined development and testing process
 
 ### Success Criteria
 
-- ✅ Both n8n and Plane running locally via Docker Compose
-- ✅ Plane smoke test workflow operational in n8n
+- ✅ Both pipeline services and Plane running locally via Docker Compose
+- ✅ Plane smoke test workflow operational in pipeline services
 - ✅ Plane configured for Zixly internal project management
 - ✅ Local development workflow documented and functional
 - ✅ All functionality testable without external dependencies
@@ -106,21 +106,21 @@ services:
       timeout: 10s
       retries: 3
 
-  # n8n Workflow Automation
-  n8n:
-    image: n8nio/n8n:latest
-    container_name: zixly-n8n
+  # Pipeline Workflow Automation
+  pipeline services:
+    image: pipeline servicesio/pipeline services:latest
+    container_name: zixly-pipeline services
     restart: unless-stopped
     environment:
-      - N8N_HOST=localhost
-      - N8N_PORT=5678
-      - N8N_BASIC_AUTH_ACTIVE=true
-      - N8N_BASIC_AUTH_USER=admin
-      - N8N_BASIC_AUTH_PASSWORD=local_dev_password
+      - pipeline services_HOST=localhost
+      - pipeline services_PORT=5678
+      - pipeline services_BASIC_AUTH_ACTIVE=true
+      - pipeline services_BASIC_AUTH_USER=admin
+      - pipeline services_BASIC_AUTH_PASSWORD=local_dev_password
       - DB_TYPE=postgresdb
       - DB_POSTGRESDB_HOST=postgres
       - DB_POSTGRESDB_PORT=5432
-      - DB_POSTGRESDB_DATABASE=n8n
+      - DB_POSTGRESDB_DATABASE=pipeline services
       - DB_POSTGRESDB_USER=zixly_admin
       - DB_POSTGRESDB_PASSWORD=local_dev_password
       - EXECUTIONS_DATA_PRUNE=true
@@ -128,7 +128,7 @@ services:
     ports:
       - '5678:5678'
     volumes:
-      - n8n_data:/home/node/.n8n
+      - pipeline services_data:/home/node/.pipeline services
     depends_on:
       postgres:
         condition: service_healthy
@@ -172,7 +172,7 @@ volumes:
     driver: local
   redis_data:
     driver: local
-  n8n_data:
+  pipeline services_data:
     driver: local
 
 networks:
@@ -196,13 +196,13 @@ POSTGRES_USER=zixly_admin
 POSTGRES_PASSWORD=local_dev_password
 POSTGRES_DB=zixly_main
 
-# n8n Configuration
-N8N_BASIC_AUTH_ACTIVE=true
-N8N_BASIC_AUTH_USER=admin
-N8N_BASIC_AUTH_PASSWORD=local_dev_password
-N8N_DB_NAME=n8n
-N8N_DB_USER=zixly_admin
-N8N_DB_PASSWORD=local_dev_password
+# pipeline services Configuration
+pipeline services_BASIC_AUTH_ACTIVE=true
+pipeline services_BASIC_AUTH_USER=admin
+pipeline services_BASIC_AUTH_PASSWORD=local_dev_password
+pipeline services_DB_NAME=pipeline services
+pipeline services_DB_USER=zixly_admin
+pipeline services_DB_PASSWORD=local_dev_password
 
 # Plane Configuration
 PLANE_SECRET_KEY=local_plane_secret_key
@@ -230,13 +230,13 @@ POSTGRES_USER=zixly_admin
 POSTGRES_PASSWORD=your_local_db_password
 POSTGRES_DB=zixly_main
 
-# n8n Configuration
-N8N_BASIC_AUTH_ACTIVE=true
-N8N_BASIC_AUTH_USER=admin
-N8N_BASIC_AUTH_PASSWORD=your_n8n_password
-N8N_DB_NAME=n8n
-N8N_DB_USER=zixly_admin
-N8N_DB_PASSWORD=your_local_db_password
+# pipeline services Configuration
+pipeline services_BASIC_AUTH_ACTIVE=true
+pipeline services_BASIC_AUTH_USER=admin
+pipeline services_BASIC_AUTH_PASSWORD=your_pipeline services_password
+pipeline services_DB_NAME=pipeline services
+pipeline services_DB_USER=zixly_admin
+pipeline services_DB_PASSWORD=your_local_db_password
 
 # Plane Configuration
 PLANE_SECRET_KEY=your_plane_secret_key
@@ -257,19 +257,19 @@ SMTP_PASSWORD=your_email_password
 
 ```sql
 -- Create databases for local development
-CREATE DATABASE n8n;
+CREATE DATABASE pipeline services;
 CREATE DATABASE plane;
 
 -- Create service users
-CREATE USER n8n_user WITH PASSWORD 'n8n_password';
+CREATE USER pipeline services_user WITH PASSWORD 'pipeline services_password';
 CREATE USER plane_user WITH PASSWORD 'plane_password';
 
 -- Grant permissions
-GRANT ALL PRIVILEGES ON DATABASE n8n TO n8n_user;
+GRANT ALL PRIVILEGES ON DATABASE pipeline services TO pipeline services_user;
 GRANT ALL PRIVILEGES ON DATABASE plane TO plane_user;
 
 -- Enable required extensions
-\c n8n;
+\c pipeline services;
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 \c plane;
@@ -328,11 +328,11 @@ else
     echo "❌ Redis health check failed"
 fi
 
-# Check n8n
+# Check pipeline services
 if curl -f -s http://localhost:5678/healthz > /dev/null; then
-    echo "✅ n8n is healthy"
+    echo "✅ pipeline services is healthy"
 else
-    echo "❌ n8n health check failed"
+    echo "❌ pipeline services health check failed"
 fi
 
 # Check Plane
@@ -345,14 +345,14 @@ fi
 echo "🎉 Zixly local stack is running!"
 echo ""
 echo "📋 Service URLs:"
-echo "  - n8n: http://localhost:5678"
+echo "  - pipeline services: http://localhost:5678"
 echo "  - Plane: http://localhost:8000"
 echo "  - PostgreSQL: localhost:5432"
 echo "  - Redis: localhost:6379"
 echo ""
 echo "🔧 Next steps:"
 echo "  1. Configure Plane workspace and generate API token"
-echo "  2. Import Plane smoke test workflow in n8n"
+echo "  2. Import Plane smoke test workflow in pipeline services"
 echo "  3. Run smoke test to validate integration"
 ```
 
@@ -454,11 +454,11 @@ echo "  2. Run ./scripts/start-local.sh to start the stack"
 4. **Generate API Token**:
    - Go to Settings → API Tokens
    - Create token with full access
-   - Store in n8n credentials
+   - Store in pipeline services credentials
 
 #### 6.2 Plane Smoke Test Workflow
 
-**File**: `n8n-workflows/internal/plane-smoke-test.json`
+**File**: `pipeline services-workflows/internal/plane-smoke-test.json`
 
 ```json
 {
@@ -477,7 +477,7 @@ echo "  2. Run ./scripts/start-local.sh to start the stack"
       },
       "id": "plane-workspaces-test",
       "name": "Test Plane Workspaces",
-      "type": "n8n-nodes-base.httpRequest",
+      "type": "pipeline services-nodes-base.httpRequest",
       "typeVersion": 4.1,
       "position": [240, 300]
     },
@@ -506,7 +506,7 @@ echo "  2. Run ./scripts/start-local.sh to start the stack"
       },
       "id": "check-response",
       "name": "Check Response Status",
-      "type": "n8n-nodes-base.if",
+      "type": "pipeline services-nodes-base.if",
       "typeVersion": 2,
       "position": [460, 300]
     },
@@ -523,7 +523,7 @@ echo "  2. Run ./scripts/start-local.sh to start the stack"
       },
       "id": "plane-projects-test",
       "name": "Test Plane Projects",
-      "type": "n8n-nodes-base.httpRequest",
+      "type": "pipeline services-nodes-base.httpRequest",
       "typeVersion": 4.1,
       "position": [680, 200]
     },
@@ -539,11 +539,11 @@ echo "  2. Run ./scripts/start-local.sh to start the stack"
         },
         "sendBody": true,
         "bodyContentType": "json",
-        "jsonBody": "{\n  \"name\": \"Smoke Test Project\",\n  \"description\": \"Test project created by n8n smoke test\",\n  \"identifier\": \"ST\",\n  \"network\": 0,\n  \"icon_prop\": {\n    \"name\": \"package\",\n    \"color\": \"#3b82f6\"\n  }\n}"
+        "jsonBody": "{\n  \"name\": \"Smoke Test Project\",\n  \"description\": \"Test project created by pipeline services smoke test\",\n  \"identifier\": \"ST\",\n  \"network\": 0,\n  \"icon_prop\": {\n    \"name\": \"package\",\n    \"color\": \"#3b82f6\"\n  }\n}"
       },
       "id": "create-test-project",
       "name": "Create Test Project",
-      "type": "n8n-nodes-base.httpRequest",
+      "type": "pipeline services-nodes-base.httpRequest",
       "typeVersion": 4.1,
       "position": [900, 200]
     },
@@ -559,11 +559,11 @@ echo "  2. Run ./scripts/start-local.sh to start the stack"
         },
         "sendBody": true,
         "bodyContentType": "json",
-        "jsonBody": "{\n  \"name\": \"Smoke Test Issue\",\n  \"description\": \"Test issue created by n8n smoke test workflow\",\n  \"priority\": \"low\",\n  \"state\": \"backlog\"\n}"
+        "jsonBody": "{\n  \"name\": \"Smoke Test Issue\",\n  \"description\": \"Test issue created by pipeline services smoke test workflow\",\n  \"priority\": \"low\",\n  \"state\": \"backlog\"\n}"
       },
       "id": "create-test-issue",
       "name": "Create Test Issue",
-      "type": "n8n-nodes-base.httpRequest",
+      "type": "pipeline services-nodes-base.httpRequest",
       "typeVersion": 4.1,
       "position": [1120, 200]
     },
@@ -580,7 +580,7 @@ echo "  2. Run ./scripts/start-local.sh to start the stack"
       },
       "id": "cleanup-test-project",
       "name": "Cleanup Test Project",
-      "type": "n8n-nodes-base.httpRequest",
+      "type": "pipeline services-nodes-base.httpRequest",
       "typeVersion": 4.1,
       "position": [1340, 200]
     },
@@ -595,12 +595,12 @@ echo "  2. Run ./scripts/start-local.sh to start the stack"
         "fromEmail": "{{ $credentials.outlookSmtp.user }}",
         "toEmail": "ops@colemorton.com.au",
         "subject": "✅ Plane Smoke Test - SUCCESS (Local)",
-        "message": "Plane integration smoke test completed successfully in local environment:\n\n- Plane API connectivity: ✅\n- Workspaces access: ✅\n- Projects access: ✅\n- Project creation: ✅\n- Issue creation: ✅\n- Cleanup: ✅\n\nPlane is ready for production use with n8n workflows.",
+        "message": "Plane integration smoke test completed successfully in local environment:\n\n- Plane API connectivity: ✅\n- Workspaces access: ✅\n- Projects access: ✅\n- Project creation: ✅\n- Issue creation: ✅\n- Cleanup: ✅\n\nPlane is ready for production use with Pipeline Workflows.",
         "options": {}
       },
       "id": "send-success-email",
       "name": "Send Success Email",
-      "type": "n8n-nodes-base.emailSend",
+      "type": "pipeline services-nodes-base.emailSend",
       "typeVersion": 2.1,
       "position": [1560, 200]
     },
@@ -620,7 +620,7 @@ echo "  2. Run ./scripts/start-local.sh to start the stack"
       },
       "id": "send-failure-email",
       "name": "Send Failure Email",
-      "type": "n8n-nodes-base.emailSend",
+      "type": "pipeline services-nodes-base.emailSend",
       "typeVersion": 2.1,
       "position": [680, 400]
     }
@@ -712,9 +712,9 @@ echo "  2. Run ./scripts/start-local.sh to start the stack"
 }
 ```
 
-#### 6.3 n8n Credentials Configuration
+#### 6.3 pipeline services Credentials Configuration
 
-**File**: `n8n-credentials/credentials-local.json`
+**File**: `pipeline services-credentials/credentials-local.json`
 
 ```json
 {
@@ -764,7 +764,7 @@ echo "  2. Run ./scripts/start-local.sh to start the stack"
 
 2. **Configure credentials**:
    - Update `.env.local` with your values
-   - Configure n8n credentials in the interface
+   - Configure pipeline services credentials in the interface
 
 3. **Start the stack**:
 
@@ -773,7 +773,7 @@ echo "  2. Run ./scripts/start-local.sh to start the stack"
    ```
 
 4. **Access services**:
-   - n8n: http://localhost:5678
+   - pipeline services: http://localhost:5678
    - Plane: http://localhost:8000
    - PostgreSQL: localhost:5432
    - Redis: localhost:6379
@@ -781,10 +781,10 @@ echo "  2. Run ./scripts/start-local.sh to start the stack"
 5. **Configure Plane**:
    - Complete setup wizard
    - Generate API token
-   - Update n8n credentials
+   - Update pipeline services credentials
 
 6. **Import smoke test workflow**:
-   - Import `plane-smoke-test.json` in n8n
+   - Import `plane-smoke-test.json` in pipeline services
    - Configure credentials
    - Execute workflow
 
@@ -794,7 +794,7 @@ echo "  2. Run ./scripts/start-local.sh to start the stack"
 
 1. Start stack: `./scripts/start-local.sh`
 2. Make changes to workflows
-3. Test changes in n8n
+3. Test changes in pipeline services
 4. Stop stack: `./scripts/stop-local.sh`
 
 ### Clean Development
@@ -842,18 +842,18 @@ echo "  2. Run ./scripts/start-local.sh to start the stack"
 
 | Component | Success Criteria | Validation Method |
 |-----------|------------------|-------------------|
-| **Docker Services** | Both n8n and Plane containers healthy | `docker-compose -f docker-compose.local.yml ps` |
+| **Docker Services** | Both pipeline services and Plane containers healthy | `docker-compose -f docker-compose.local.yml ps` |
 | **Local Access** | Both services accessible via localhost | `curl http://localhost:5678` and `curl http://localhost:8000` |
-| **Database** | Both n8n and Plane databases accessible | Connect to each service database |
-| **Plane Smoke Test** | Workflow executes successfully | Run smoke test workflow in n8n |
-| **Integration** | n8n can create projects/issues in Plane | Manual test via n8n workflows |
+| **Database** | Both pipeline services and Plane databases accessible | Connect to each service database |
+| **Plane Smoke Test** | Workflow executes successfully | Run smoke test workflow in pipeline services |
+| **Integration** | pipeline services can create projects/issues in Plane | Manual test via Pipeline Workflows |
 
 ### Performance Validation
 
 | Metric | Target | Measurement |
 |--------|--------|-------------|
 | **Service Startup** | < 2 minutes | Time from `./scripts/start-local.sh` to both healthy |
-| **Plane API Response** | < 500ms | API calls from n8n to Plane |
+| **Plane API Response** | < 500ms | API calls from pipeline services to Plane |
 | **Memory Usage** | < 2GB total | `docker stats --no-stream` |
 | **Disk Usage** | < 5GB | `df -h` on local machine |
 
@@ -878,7 +878,7 @@ echo "  2. Run ./scripts/start-local.sh to start the stack"
 ````
 
 2. **Make Changes**:
-   - Edit workflows in n8n
+   - Edit workflows in pipeline services
    - Modify Plane configuration
    - Update database schemas
 
@@ -959,9 +959,9 @@ With local development complete, Phase 3 will focus on:
 
 The local development environment provides:
 
-- **Validated Workflows** - All n8n workflows tested locally
+- **Validated Workflows** - All Pipeline Workflows tested locally
 - **Database Schema** - PostgreSQL setup ready for production
-- **Integration Patterns** - n8n to Plane integration proven
+- **Integration Patterns** - pipeline services to Plane integration proven
 - **Documentation** - Complete setup and troubleshooting guides
 
 ---

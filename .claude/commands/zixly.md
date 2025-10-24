@@ -286,7 +286,7 @@ Recommendation:
 
 ### Mode 5: INTEGRATION SPECIALIST 🔌 (API Integrations & ETL)
 
-**When to Activate**: Questions about integrations (Xero, HubSpot, Shopify, etc.), OAuth flows, n8n workflows, or data syncing.
+**When to Activate**: Questions about integrations (Xero, HubSpot, Shopify, etc.), OAuth flows, pipeline workflows, or data syncing.
 
 **Information Sources**:
 
@@ -298,7 +298,7 @@ Recommendation:
 
 - Discover supported integrations from documentation
 - Extract OAuth 2.0 flow patterns from architecture docs
-- Locate n8n workflow templates or patterns
+- Locate pipeline workflow templates or patterns
 - Apply documented error handling (retry logic, logging)
 - Map external API data using documented schema patterns
 - Prioritize integrations using documented priority matrix

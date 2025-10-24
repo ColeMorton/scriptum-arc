@@ -23,9 +23,9 @@ export async function GET() {
       return NextResponse.json({ error: 'No tenant associated with user' }, { status: 400 })
     }
 
-    // Fetch aggregated Zixly service business data (written by n8n workflows)
+    // Fetch aggregated Zixly service business data (written by pipeline workflows)
     const [financials, leadEvents, customMetrics] = await Promise.all([
-      // Zixly service revenue/expenses aggregated by n8n workflows
+      // Zixly service revenue/expenses aggregated by pipeline workflows
       prisma.financial.groupBy({
         by: ['recordDate'],
         where: {
@@ -50,7 +50,7 @@ export async function GET() {
         take: 30,
       }),
 
-      // Zixly sales pipeline data aggregated by n8n workflows
+      // Zixly sales pipeline data aggregated by pipeline workflows
       prisma.leadEvent.groupBy({
         by: ['stage', 'status'],
         where: {
@@ -63,7 +63,7 @@ export async function GET() {
         _count: { id: true },
       }),
 
-      // Zixly internal KPIs aggregated by n8n workflows
+      // Zixly internal KPIs aggregated by pipeline workflows
       prisma.customMetric.groupBy({
         by: ['metricName'],
         where: {

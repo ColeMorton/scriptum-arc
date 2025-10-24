@@ -10,7 +10,7 @@ Zixly is an open-source internal operations platform for the Zixly service busin
 
 **Business Context**:
 
-- Zixly is a service business that provides n8n automation services to clients
+- Zixly is a DevOps automation service business for Brisbane tech companies
 - This platform tracks Zixly's internal service delivery operations
 - Single tenant architecture (only Zixly organization data)
 - Open-source for demonstration and reuse purposes
@@ -109,7 +109,7 @@ If Zixly were to become a multi-tenant SaaS platform in the future:
 
 ## Related Decisions
 
-- **ADR-002**: n8n vs Web App Separation
+- **ADR-002 (REMOVED)**: n8n vs Web App Separation
 - **ADR-003**: Real-Time Data Strategy
 - **ADR-005**: Open-Source Strategy
 

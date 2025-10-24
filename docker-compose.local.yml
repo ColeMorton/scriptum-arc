@@ -11,7 +11,7 @@ services:
       - POSTGRES_PASSWORD=local_dev_password
       - POSTGRES_DB=zixly_main
     ports:
-      - '5432:5432'
+      - '5433:5432'
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./init-scripts:/docker-entrypoint-initdb.d
@@ -30,7 +30,7 @@ services:
     restart: unless-stopped
     command: redis-server --appendonly yes --requirepass local_dev_password
     ports:
-      - '6379:6379'
+      - '6380:6379'
     volumes:
       - redis_data:/data
     networks:
@@ -41,29 +41,26 @@ services:
       timeout: 10s
       retries: 3
 
-  # n8n Workflow Automation
-  n8n:
-    image: n8nio/n8n:latest
-    container_name: zixly-n8n
+  # pipeline Workflow Automation
+  pipeline:
+    image: pipelineio/pipeline:latest
+    container_name: zixly-pipeline
     restart: unless-stopped
     environment:
-      - N8N_HOST=localhost
-      - N8N_PORT=5678
-      - N8N_BASIC_AUTH_ACTIVE=true
-      - N8N_BASIC_AUTH_USER=admin
-      - N8N_BASIC_AUTH_PASSWORD=local_dev_password
-      - DB_TYPE=postgresdb
-      - DB_POSTGRESDB_HOST=postgres
-      - DB_POSTGRESDB_PORT=5432
-      - DB_POSTGRESDB_DATABASE=n8n
-      - DB_POSTGRESDB_USER=zixly_admin
-      - DB_POSTGRESDB_PASSWORD=local_dev_password
+      - PIPELINE_HOST=localhost
+      - PIPELINE_PORT=5678
+      - PIPELINE_BASIC_AUTH_ACTIVE=true
+      - PIPELINE_BASIC_AUTH_USER=cole.morton@hotmail.com
+      - PIPELINE_BASIC_AUTH_PASSWORD=Password1
+      - DB_TYPE=sqlite
+      - DB_SQLITE_DATABASE=/home/node/.pipeline/database.sqlite
+      - PIPELINE_ENCRYPTION_KEY=zixly-local-encryption-key-2024
       - EXECUTIONS_DATA_PRUNE=true
       - EXECUTIONS_DATA_MAX_AGE=168
     ports:
       - '5678:5678'
     volumes:
-      - n8n_data:/home/node/.n8n
+      - pipeline_data:/home/node/.pipeline
     depends_on:
       postgres:
         condition: service_healthy
@@ -76,38 +73,38 @@ services:
       timeout: 10s
       retries: 3
 
-  # Plane Project Management
-  plane:
-    image: makeplane/plane:latest
-    container_name: zixly-plane
-    restart: unless-stopped
-    environment:
-      - DATABASE_URL=postgresql://zixly_admin:local_dev_password@postgres:5432/plane
-      - REDIS_URL=redis://:local_dev_password@redis:6379
-      - SECRET_KEY=local_plane_secret_key
-      - WEB_URL=http://localhost:8000
-      - NEXT_PUBLIC_API_BASE_URL=http://localhost:8000
-    ports:
-      - '8000:8000'
-    depends_on:
-      postgres:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-    networks:
-      - zixly-local
-    healthcheck:
-      test: ['CMD', 'wget', '--no-verbose', '--tries=1', '--spider', 'http://localhost:8000/health']
-      interval: 30s
-      timeout: 10s
-      retries: 3
+  # Plane Project Management (commented out - image not available)
+  # plane:
+  #   image: makeplane/plane:latest
+  #   container_name: zixly-plane
+  #   restart: unless-stopped
+  #   environment:
+  #     - DATABASE_URL=postgresql://zixly_admin:local_dev_password@postgres:5432/plane
+  #     - REDIS_URL=redis://:local_dev_password@redis:6379
+  #     - SECRET_KEY=local_plane_secret_key
+  #     - WEB_URL=http://localhost:8000
+  #     - NEXT_PUBLIC_API_BASE_URL=http://localhost:8000
+  #   ports:
+  #     - '8000:8000'
+  #   depends_on:
+  #     postgres:
+  #       condition: service_healthy
+  #     redis:
+  #       condition: service_healthy
+  #   networks:
+  #     - zixly-local
+  #   healthcheck:
+  #     test: ['CMD', 'wget', '--no-verbose', '--tries=1', '--spider', 'http://localhost:8000/health']
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 3
 
 volumes:
   postgres_data:
     driver: local
   redis_data:
     driver: local
-  n8n_data:
+  pipeline_data:
     driver: local
 
 networks:

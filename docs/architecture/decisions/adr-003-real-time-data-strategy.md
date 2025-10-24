@@ -10,9 +10,9 @@ The documentation mentions real-time WebSocket connections and live dashboard up
 
 **Business Context**:
 
-- Zixly is an open-source internal operations platform
+- Zixly is an open-source DevOps automation platform
 - Tracks Zixly's service delivery operations
-- Demonstrates "eating our own dogfood" with self-hostable SME stack
+- Demonstrates cloud-native infrastructure patterns
 - Open-source for demonstration and reuse purposes
 
 **Current State**:
@@ -254,7 +254,7 @@ const Dashboard = () => {
 ## Related Decisions
 
 - **ADR-001**: Multi-Tenant Architecture
-- **ADR-002**: n8n vs Web App Separation
+- **ADR-002 (REMOVED)**: n8n vs Web App Separation
 - **ADR-004**: Mobile App Architecture
 
 ## Review

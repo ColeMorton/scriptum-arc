@@ -9,13 +9,13 @@
 
 ## Overview
 
-This document provides internal pricing guidelines for Zixly n8n automation services. Use this as a reference for proposal development and client discussions.
+This document provides internal pricing guidelines for Zixly DevOps automation services. Use this as a reference for proposal development and client discussions.
 
 ---
 
 ## Service Pricing Structure
 
-### 1. n8n Platform Setup & Configuration
+### 1. DevOps infrastructure Platform Setup & Configuration
 
 **Base Investment**: $2,500 - $5,000 (one-time)
 **Timeline**: 1-2 weeks
@@ -29,7 +29,7 @@ This document provides internal pricing guidelines for Zixly n8n automation serv
 
 **Standard Package Includes**:
 
-- n8n instance setup
+- DevOps infrastructure instance setup
 - Security hardening
 - Backup system configuration
 - User management setup
@@ -114,7 +114,7 @@ This document provides internal pricing guidelines for Zixly n8n automation serv
 
 **Includes**:
 
-- n8n platform setup
+- DevOps infrastructure platform setup
 - 3-5 basic workflows
 - 1 integration (Xero or CRM)
 - Basic training
@@ -128,7 +128,7 @@ This document provides internal pricing guidelines for Zixly n8n automation serv
 
 **Includes**:
 
-- n8n platform setup
+- DevOps infrastructure platform setup
 - 5-10 custom workflows
 - 2-3 integrations
 - Advanced training
@@ -143,7 +143,7 @@ This document provides internal pricing guidelines for Zixly n8n automation serv
 
 **Includes**:
 
-- n8n platform setup
+- DevOps infrastructure platform setup
 - Unlimited workflows
 - Multiple integrations
 - Full stack expansion

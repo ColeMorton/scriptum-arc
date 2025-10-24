@@ -9,7 +9,7 @@
 
 ## Overview
 
-This document outlines Zixly's client onboarding process for n8n automation services. Our structured approach ensures smooth project initiation, clear communication, and successful service delivery.
+This document outlines Zixly's client onboarding process for DevOps automation services. Our structured approach ensures smooth project initiation, clear communication, and successful service delivery.
 
 ---
 
@@ -273,7 +273,7 @@ This document outlines Zixly's client onboarding process for n8n automation serv
 
 **Activities**:
 
-- n8n platform setup
+- pipeline platform setup
 - Workflow development
 - Integration implementation
 - Testing and validation
@@ -289,7 +289,7 @@ This document outlines Zixly's client onboarding process for n8n automation serv
 
 **Deliverables**:
 
-- Configured n8n platform
+- Configured pipeline platform
 - Functional workflows
 - Tested integrations
 - User documentation

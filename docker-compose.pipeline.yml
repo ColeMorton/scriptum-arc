@@ -1,0 +1,216 @@
+version: '3.8'
+
+services:
+  # Redis - Job queue for async task processing
+  redis:
+    image: redis:7-alpine
+    container_name: zixly-redis
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis-data:/data
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    networks:
+      - pipeline-network
+    restart: unless-stopped
+
+  # LocalStack - AWS service emulator for local development
+  localstack:
+    image: localstack/localstack:3.0
+    container_name: zixly-localstack
+    ports:
+      - '4566:4566' # LocalStack gateway
+      - '4510-4559:4510-4559' # External services
+    environment:
+      - SERVICES=sqs,s3,secretsmanager
+      - DEBUG=1
+      - DOCKER_HOST=unix:///var/run/docker.sock
+      - LOCALSTACK_HOST=localstack
+    volumes:
+      - ./localstack-data:/var/lib/localstack
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - pipeline-network
+    restart: unless-stopped
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:4566/_localstack/health']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Webhook Receiver - Express.js service for webhook ingestion
+  webhook-receiver:
+    build:
+      context: ./services/webhook-receiver
+      dockerfile: Dockerfile
+    container_name: zixly-webhook-receiver
+    ports:
+      - '3000:3000'
+    environment:
+      - NODE_ENV=development
+      - REDIS_URL=redis://redis:6379
+      - DATABASE_URL=${DATABASE_URL}
+      - SUPABASE_URL=${NEXT_PUBLIC_SUPABASE_URL}
+      - SUPABASE_ANON_KEY=${NEXT_PUBLIC_SUPABASE_ANON_KEY}
+      - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
+      - TRADING_API_URL=http://host.docker.internal:8000
+      - TRADING_API_KEY=${TRADING_API_KEY:-dev-key-000000000000000000000000}
+      - WEBHOOK_BASE_URL=http://webhook-receiver:3000
+      - LOG_LEVEL=info
+      # AWS / LocalStack Configuration
+      - AWS_REGION=us-east-1
+      - AWS_ENDPOINT_URL=http://localstack:4566
+      - SQS_QUEUE_URL=${SQS_QUEUE_URL}
+    volumes:
+      - ./services/webhook-receiver/src:/app/src:ro
+      - /app/node_modules
+    depends_on:
+      redis:
+        condition: service_healthy
+      localstack:
+        condition: service_healthy
+    networks:
+      - pipeline-network
+    restart: unless-stopped
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:3000/health']
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  # Pipeline Worker - Processes jobs from Redis queue
+  pipeline-worker:
+    build:
+      context: ./services/pipeline-worker
+      dockerfile: Dockerfile
+    environment:
+      - NODE_ENV=development
+      - REDIS_URL=redis://redis:6379
+      - DATABASE_URL=${DATABASE_URL}
+      - SUPABASE_URL=${NEXT_PUBLIC_SUPABASE_URL}
+      - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
+      - TRADING_API_URL=http://host.docker.internal:8000
+      - TRADING_API_KEY=${TRADING_API_KEY:-dev-key-000000000000000000000000}
+      - SMTP_HOST=${SMTP_HOST}
+      - SMTP_PORT=${SMTP_PORT}
+      - SMTP_USER=${SMTP_USER}
+      - SMTP_PASSWORD=${SMTP_PASSWORD}
+      - SMTP_FROM=${SMTP_FROM}
+      - NOTIFICATION_EMAIL=${NOTIFICATION_EMAIL:-cole.morton@hotmail.com}
+      - LOG_LEVEL=info
+      - WORKER_CONCURRENCY=2
+      # AWS / LocalStack Configuration
+      - AWS_REGION=us-east-1
+      - AWS_ENDPOINT_URL=http://localstack:4566
+      - SQS_QUEUE_URL=${SQS_QUEUE_URL}
+      - S3_BUCKET_NAME=${S3_BUCKET_NAME}
+      - TRADING_API_SECRET_NAME=${TRADING_API_SECRET_NAME}
+      - SMTP_SECRET_NAME=${SMTP_SECRET_NAME}
+    volumes:
+      - ./services/pipeline-worker/src:/app/src:ro
+      - /app/node_modules
+    depends_on:
+      redis:
+        condition: service_healthy
+      localstack:
+        condition: service_healthy
+    networks:
+      - pipeline-network
+    restart: unless-stopped
+    deploy:
+      replicas: 2
+      resources:
+        limits:
+          cpus: '1'
+          memory: 512M
+        reservations:
+          cpus: '0.5'
+          memory: 256M
+
+  # Prometheus - Metrics collection
+  prometheus:
+    image: prom/prometheus:v2.48.0
+    container_name: zixly-prometheus
+    ports:
+      - '9090:9090'
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./prometheus/alerts.yml:/etc/prometheus/alerts.yml:ro
+      - prometheus-data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--storage.tsdb.retention.time=30d'
+      - '--web.enable-lifecycle'
+    networks:
+      - pipeline-network
+    restart: unless-stopped
+    healthcheck:
+      test: ['CMD', 'wget', '--quiet', '--tries=1', '--spider', 'http://localhost:9090/-/healthy']
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  # Grafana - Visualization and dashboards
+  grafana:
+    image: grafana/grafana:10.2.2
+    container_name: zixly-grafana
+    ports:
+      - '3001:3000'
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD:-admin}
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_SERVER_ROOT_URL=http://localhost:3001
+      - GF_ANALYTICS_REPORTING_ENABLED=false
+      - GF_ANALYTICS_CHECK_FOR_UPDATES=false
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./grafana/dashboards:/var/lib/grafana/dashboards:ro
+      - grafana-data:/var/lib/grafana
+    depends_on:
+      - prometheus
+    networks:
+      - pipeline-network
+    restart: unless-stopped
+    healthcheck:
+      test: ['CMD', 'wget', '--quiet', '--tries=1', '--spider', 'http://localhost:3000/api/health']
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  # Redis Commander - Redis GUI (development only)
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    container_name: zixly-redis-commander
+    ports:
+      - '8081:8081'
+    environment:
+      - REDIS_HOSTS=local:redis:6379
+    depends_on:
+      - redis
+    networks:
+      - pipeline-network
+    restart: unless-stopped
+    profiles:
+      - debug
+
+networks:
+  pipeline-network:
+    driver: bridge
+    name: zixly-pipeline-network
+
+volumes:
+  redis-data:
+    name: zixly-redis-data
+  prometheus-data:
+    name: zixly-prometheus-data
+  grafana-data:
+    name: zixly-grafana-data
+  localstack-data:
+    name: zixly-localstack-data

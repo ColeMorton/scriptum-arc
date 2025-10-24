@@ -1,0 +1,142 @@
+name: Container Security Scanning
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - 'services/**'
+      - '.github/workflows/security.yml'
+  pull_request:
+    branches: [main, develop]
+    paths:
+      - 'services/**'
+      - '.github/workflows/security.yml'
+  schedule:
+    # Run weekly security scans on Mondays at 9:00 UTC
+    - cron: '0 9 * * 1'
+  workflow_dispatch:
+
+env:
+  REGISTRY: ghcr.io
+
+jobs:
+  scan-webhook-receiver:
+    name: Scan webhook-receiver
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+      actions: read
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build webhook-receiver image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./services/webhook-receiver
+          load: true
+          tags: webhook-receiver:${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: webhook-receiver:${{ github.sha }}
+          format: 'sarif'
+          output: 'trivy-webhook-receiver.sarif'
+          severity: 'CRITICAL,HIGH'
+          exit-code: '1'
+          ignore-unfixed: false
+          vuln-type: 'os,library'
+          scanners: 'vuln,secret,config'
+
+      - name: Upload Trivy results to GitHub Security
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: 'trivy-webhook-receiver.sarif'
+          category: 'webhook-receiver'
+
+      - name: Run Trivy vulnerability scanner (table output)
+        uses: aquasecurity/trivy-action@master
+        if: always()
+        with:
+          image-ref: webhook-receiver:${{ github.sha }}
+          format: 'table'
+          severity: 'CRITICAL,HIGH'
+          vuln-type: 'os,library'
+          scanners: 'vuln,secret,config'
+
+  scan-pipeline-worker:
+    name: Scan pipeline-worker
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+      actions: read
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build pipeline-worker image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./services/pipeline-worker
+          load: true
+          tags: pipeline-worker:${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: pipeline-worker:${{ github.sha }}
+          format: 'sarif'
+          output: 'trivy-pipeline-worker.sarif'
+          severity: 'CRITICAL,HIGH'
+          exit-code: '1'
+          ignore-unfixed: false
+          vuln-type: 'os,library'
+          scanners: 'vuln,secret,config'
+
+      - name: Upload Trivy results to GitHub Security
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: 'trivy-pipeline-worker.sarif'
+          category: 'pipeline-worker'
+
+      - name: Run Trivy vulnerability scanner (table output)
+        uses: aquasecurity/trivy-action@master
+        if: always()
+        with:
+          image-ref: pipeline-worker:${{ github.sha }}
+          format: 'table'
+          severity: 'CRITICAL,HIGH'
+          vuln-type: 'os,library'
+          scanners: 'vuln,secret,config'
+
+  security-summary:
+    name: Security Scan Summary
+    runs-on: ubuntu-latest
+    needs: [scan-webhook-receiver, scan-pipeline-worker]
+    if: always()
+    steps:
+      - name: Check scan results
+        run: |
+          echo "Security scanning completed for all services"
+          echo "webhook-receiver: ${{ needs.scan-webhook-receiver.result }}"
+          echo "pipeline-worker: ${{ needs.scan-pipeline-worker.result }}"
+
+          if [ "${{ needs.scan-webhook-receiver.result }}" != "success" ] || [ "${{ needs.scan-pipeline-worker.result }}" != "success" ]; then
+            echo "::error::Security vulnerabilities detected. Check the Security tab for details."
+            exit 1
+          fi

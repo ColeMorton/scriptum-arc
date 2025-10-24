@@ -1,15 +1,11 @@
----
-**← [Product Requirements](../product/product-requirements-document.md)** | **[Back to Documentation Index](../index.md)** | **[Financial Projections](../financial/financial-projections-unit-economics.md)** →
----
-
 # Zixly - System Architecture Document
 
-> **Note**: This document describes our internal technical capabilities and delivery methodology for n8n service implementations. It is maintained for service delivery consistency and technical documentation purposes, not as product specifications.
+> **DevOps Automation Platform for Brisbane Tech Companies**
 
-**Version**: 1.0
-**Last Updated**: 2025-10-15
+**Version**: 2.0  
+**Last Updated**: 2025-01-27  
 **Owner**: Technical Architecture
-**Status**: Service Delivery Infrastructure
+**Status**: Active
 
 ---
 
@@ -17,18 +13,14 @@
 
 1. [Executive Summary](#executive-summary)
 2. [Architecture Overview](#architecture-overview)
-3. [C4 Model Documentation](#c4-model-documentation)
-4. [Technology Stack](#technology-stack)
+3. [Technology Stack](#technology-stack)
+4. [Pipeline Architecture](#pipeline-architecture)
 5. [Data Architecture](#data-architecture)
-6. [Integration Architecture](#integration-architecture)
-7. [Security Architecture](#security-architecture)
-8. [Infrastructure & Deployment](#infrastructure--deployment)
-9. [Performance & Scalability](#performance--scalability)
-10. [Reliability & Disaster Recovery](#reliability--disaster-recovery)
-11. [Monitoring & Observability](#monitoring--observability)
-12. [Development Workflow](#development-workflow)
-13. [Implementation Roadmap](#implementation-roadmap)
-14. [Technical Debt & Future Enhancements](#technical-debt--future-enhancements)
+6. [Security Architecture](#security-architecture)
+7. [Infrastructure & Deployment](#infrastructure--deployment)
+8. [Monitoring & Observability](#monitoring--observability)
+9. [Development Workflow](#development-workflow)
+10. [Implementation Roadmap](#implementation-roadmap)
 
 ---
 
@@ -36,169 +28,39 @@
 
 ### Purpose
 
-Zixly is an **open-source internal operations platform** for the Zixly service business that tracks and automates our own service delivery operations. This platform demonstrates "eating our own dogfood" by using the same self-hostable SME stack tools and workflows we recommend to clients, providing authentic expertise and continuous improvement of our service delivery capabilities.
+**Zixly is a DevOps automation service business** for Brisbane tech companies, using this internal operations platform to track service delivery and demonstrate cloud-native infrastructure patterns (Docker, Kubernetes, Terraform, AWS).
 
 ### Architecture Philosophy
 
-**Open-Source Internal Operations-First, Self-Hostable Stack, Service Business Optimized**
+**Cloud-Native, Event-Driven, Infrastructure as Code**
 
-- **Internal Operations Focus**: Built to track and optimize Zixly's own service delivery operations
-- **Open-Source Strategy**: Code available for demonstration and reuse by the community
-- **Single Tenant**: Only Zixly organization data (not multi-tenant SaaS)
-- **Service Business Model**: Zixly provides n8n automation services to clients
-- **Self-Hostable Stack**: Uses the complete SME stack we recommend to clients (n8n, Metabase, Nextcloud, etc.)
-- **Service Business Metrics**: Tracks billable hours, project velocity, client satisfaction, service delivery efficiency
-- **Authentic Expertise**: Daily usage of recommended tools provides genuine implementation knowledge
-- **Continuous Improvement**: Internal usage drives workflow optimization and new feature development
-- **Dogfooding Benefits**: Real-world proof of concept for client demonstrations and case studies
+- **DevOps Services**: Provide pipeline automation services to Brisbane tech companies
+- **Internal Operations**: Track Zixly's own service delivery (single-tenant platform)
+- **Open-Source**: Codebase available for demonstration and community benefit
+- **Cloud-Native**: Docker, Kubernetes, Terraform, AWS technologies
+- **Event-Driven**: Webhook-triggered pipeline orchestration
+- **Infrastructure as Code**: All infrastructure version-controlled with Terraform
+- **Full Observability**: Prometheus + Grafana monitoring stack
 
-### Business Model Clarification
+### Business Model
 
-**Zixly is NOT a multi-tenant SaaS platform for external customers.**
+**Service Business + Internal Operations + Open-Source**
 
-**Zixly IS an open-source internal operations platform for the Zixly service business.**
-
-- **Single Tenant**: Only Zixly organization data
-- **Internal Users**: Only Zixly team members
-- **Service Clients**: Businesses that hire Zixly for n8n automation services
-- **Open-Source**: Code available for demonstration and reuse
-- **Dogfooding**: Using our own tools to run our business
+- **Primary Business**: DevOps automation services ($5K - $60K projects)
+- **Internal Platform**: Single-tenant platform for tracking Zixly operations
+- **Open-Source Strategy**: Public codebase for demonstration and community
+- **Target Market**: Brisbane and South East Queensland tech businesses
 
 ### Key Architectural Decisions
 
-| Decision                                    | Rationale                                              | Trade-offs                               |
-| ------------------------------------------- | ------------------------------------------------------ | ---------------------------------------- |
-| **Next.js (App Router)** for frontend + API | Unified codebase, Vercel hosting, serverless functions | Vendor lock-in to Vercel ecosystem       |
-| **Prisma ORM** for data access              | Type safety, migration management, developer velocity  | Abstraction overhead for complex queries |
-| **Supabase PostgreSQL** for data warehouse  | Managed PostgreSQL, pgvector support, AU region        | Cost scales with data volume             |
-| **Self-hosted n8n** for ETL                 | No per-task fees, custom code nodes, full control      | Requires VPS management                  |
-| **Visx** for visualizations                 | D3-based custom charts, React-native                   | Steeper learning curve than Chart.js     |
-
----
-
-## n8n vs Web App Separation of Concerns
-
-### Core Principle: Complementary Architecture
-
-Zixly's architecture is designed with **clear separation of concerns** between n8n (workflow automation) and the web application (business intelligence). This eliminates duplication and leverages each platform's strengths.
-
-### What n8n Handles (Workflow Automation)
-
-**n8n's Core Responsibilities:**
-
-- **Workflow Orchestration**: Visual workflow builder, execution engine, scheduling
-- **API Integrations**: OAuth authentication, data extraction from 50+ business systems
-- **Data Transformation**: Complex ETL logic, data normalization, aggregation
-- **Custom TypeScript Nodes**: Industry-specific business logic, advanced data processing
-- **Scheduled Automation**: Cron-based triggers, event-driven workflows
-- **Workflow Management**: Execution monitoring, error handling, retry logic
-
-**n8n's Strengths:**
-
-- ✅ Visual workflow builder for non-technical users
-- ✅ Extensive API integration library (500+ connectors)
-- ✅ Custom code nodes for complex business logic
-- ✅ Self-hosted control and data sovereignty
-- ✅ No per-task fees or usage restrictions
-- ✅ Workflow portability and export capabilities
-
-### What Web App Handles (Business Intelligence)
-
-**Web App's Core Responsibilities:**
-
-- **Unified Business Intelligence**: Aggregates data from SME tools (Plane, Invoice Ninja, Metabase, etc.) into real-time dashboards
-- **Interactive Dashboards**: Real-time visualizations with drill-down capabilities (unlike static Metabase dashboards)
-- **Real-Time Communication**: WebSocket connections, live data updates (not available in SME tools)
-- **Multi-Tenant User Management**: Authentication, authorization, role-based access across all data sources
-- **Advanced Analytics**: ML models, predictive insights, statistical analysis (beyond Metabase capabilities)
-- **Mobile Integration**: React Native app, push notifications, offline sync (not available in SME tools)
-- **Data Presentation**: Visx charts, drill-down capabilities, filtering across multiple data sources
-
-**Web App's Strengths:**
-
-- ✅ Real-time WebSocket connections (n8n limitation)
-- ✅ Interactive business intelligence dashboards
-- ✅ Multi-tenant user authentication and RBAC
-- ✅ Mobile application development
-- ✅ Advanced analytics and ML model hosting
-- ✅ Rich user experience and collaboration features
-
-### Data Flow Architecture
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│                    n8n Platform (Workflow Automation)      │
-│  ┌─────────────────────────────────────────────────────┐   │
-│  │ • Workflow orchestration                            │   │
-│  │ • API integrations (Xero, HubSpot, etc.)           │   │
-│  │ • Data transformation and ETL                      │   │
-│  │ • Custom TypeScript nodes                          │   │
-│  │ • Scheduled automation                             │   │
-│  └─────────────────────────────────────────────────────┘   │
-└─────────────────────┬───────────────────────────────────────┘
-                      │ Writes processed data
-┌─────────────────────▼───────────────────────────────────────┐
-│              PostgreSQL Database (Data Warehouse)        │
-│  ┌─────────────────────────────────────────────────────┐   │
-│  │ • Business data (financials, leads, metrics)      │   │
-│  │ • Workflow metadata (UI display only)               │   │
-│  │ • Data sync status (freshness indicators)          │   │
-│  │ • Multi-tenant isolation (RLS)                     │   │
-│  └─────────────────────────────────────────────────────┘   │
-└─────────────────────┬───────────────────────────────────────┘
-                      │ Reads data for presentation
-┌─────────────────────▼───────────────────────────────────────┐
-│                Web Application (Business Intelligence)     │
-│  ┌─────────────────────────────────────────────────────┐   │
-│  │ • Interactive dashboards                            │   │
-│  │ • Real-time WebSocket updates                      │   │
-│  │ • Multi-tenant user management                     │   │
-│  │ • Advanced analytics and ML                        │   │
-│  │ • Mobile application                               │   │
-│  └─────────────────────────────────────────────────────┘   │
-└─────────────────────────────────────────────────────────────┘
-```
-
-### Integration Boundaries
-
-**Clear API Boundaries:**
-
-- **n8n → PostgreSQL**: n8n workflows write processed business data
-- **PostgreSQL → Web App**: Web app reads data for presentation and analytics
-- **Web App → n8n**: Web app NEVER triggers workflows directly (n8n handles all automation)
-- **Real-Time Updates**: PostgreSQL triggers → Supabase real-time → WebSocket → UI
-
-**What Web App NEVER Does:**
-
-- ❌ Workflow execution or management (n8n handles this)
-- ❌ API integrations or OAuth (n8n handles this)
-- ❌ Data transformation or ETL (n8n handles this)
-- ❌ Scheduled jobs or automation (n8n handles this)
-- ❌ Custom node development (n8n extensibility)
-
-**What n8n NEVER Does:**
-
-- ❌ Real-time WebSocket connections (web app limitation)
-- ❌ Interactive business intelligence dashboards (web app limitation)
-- ❌ Multi-tenant user management (web app limitation)
-- ❌ Mobile application development (web app limitation)
-- ❌ Advanced analytics and ML hosting (web app limitation)
-
-### Benefits of This Architecture
-
-**Technical Benefits:**
-
-- **Zero Duplication**: No overlap between n8n and web app responsibilities
-- **Leverage Strengths**: Each platform does what it does best
-- **Clear Boundaries**: Well-defined integration points and data flow
-- **Scalable**: n8n scales workflows, web app scales user experience
-
-**Business Benefits:**
-
-- **Faster Development**: No reinventing n8n's capabilities
-- **Lower Complexity**: Clear separation reduces cognitive load
-- **Better User Experience**: Focus on business intelligence and real-time features
-- **Defensible Moat**: Complementary architecture creates competitive advantage
+| Decision                            | Rationale                                       | Trade-offs                                 |
+| ----------------------------------- | ----------------------------------------------- | ------------------------------------------ |
+| **Docker Compose** → **Kubernetes** | Container orchestration for scalability         | Kubernetes complexity vs Docker simplicity |
+| **LocalStack + Terraform**          | Zero-cost AWS development, production-ready IaC | LocalStack limitations vs real AWS         |
+| **Redis/Bull + AWS SQS**            | Job queue flexibility (local vs cloud)          | Dual queue system complexity               |
+| **Express.js Webhooks**             | Lightweight, fast webhook receivers             | More custom code vs framework overhead     |
+| **Supabase PostgreSQL**             | Managed DB with AU region, pgvector support     | Vendor dependency vs self-hosted           |
+| **Prometheus + Grafana**            | Industry-standard observability                 | Setup complexity vs managed solutions      |
 
 ---
 
@@ -207,590 +69,346 @@ Zixly's architecture is designed with **clear separation of concerns** between n
 ### High-Level System Context
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                        Zixly                              │
-│                  (Business Intelligence Platform)                │
-│                                                                   │
-│  ┌────────────────┐  ┌──────────────┐  ┌────────────────────┐  │
-│  │   Dashboard    │  │   API Layer  │  │  ETL Orchestration │  │
-│  │   (Next.js)    │◄─┤  (Next.js    │◄─┤      (n8n)         │  │
-│  │                │  │   API Routes)│  │                    │  │
-│  └────────────────┘  └──────┬───────┘  └──────┬─────────────┘  │
-│                              │                  │                 │
-│                         ┌────▼──────────────────▼────┐           │
-│                         │   PostgreSQL (Supabase)    │           │
-│                         │   Data Warehouse           │           │
-│                         └────────────────────────────┘           │
-└─────────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────┐
+│                    Zixly Platform                            │
+│           (DevOps Automation + Internal Operations)          │
+│                                                               │
+│  ┌────────────────┐  ┌──────────────┐  ┌────────────────┐  │
+│  │   Dashboard    │  │   API Layer  │  │    Pipeline    │  │
+│  │   (Next.js)    │◄─┤  (Next.js    │◄─┤  Orchestration │  │
+│  │                │  │   API Routes)│  │   (Docker)     │  │
+│  └────────────────┘  └──────┬───────┘  └──────┬─────────┘  │
+│                              │                  │             │
+│                         ┌────▼──────────────────▼────┐       │
+│                         │   PostgreSQL (Supabase)    │       │
+│                         │   Data Warehouse           │       │
+│                         └────────────────────────────┘       │
+└─────────────────────────────────────────────────────────────┘
                                   │
-                                  │ OAuth / API Integrations
+                                  │ REST/GraphQL APIs
                                   ▼
-        ┌──────────┬──────────┬──────────┬──────────┬──────────┐
-        │   Xero   │ HubSpot  │  Asana   │ Shopify  │  Other   │
-        │  (AU)    │  (CRM)   │   (PM)   │  (Ecom)  │  (50+)   │
-        └──────────┴──────────┴──────────┴──────────┴──────────┘
+        ┌──────────┬──────────┬──────────┬──────────┐
+        │ Trading  │  Client  │   AWS    │  Other   │
+        │   API    │ Systems  │ Services │   APIs   │
+        └──────────┴──────────┴──────────┴──────────┘
 ```
 
 ### System Capabilities
 
-1. **Integration Infrastructure**: Automated connection to 50+ business systems via OAuth APIs
-2. **Data Ingestion**: Automated extraction and synchronization from connected systems
-3. **Data Transformation**: Complex ETL logic (normalization, aggregation, enrichment)
-4. **Data Storage**: Centralized PostgreSQL warehouse with optimized schemas
-5. **Data Presentation**: Bespoke React dashboards with interactive Visx charts
-6. **Alerting**: Threshold-based notifications (email, Slack) for anomaly detection
-7. **Authentication**: Supabase Auth with JWT, role-based access control
-8. **Multi-Tenancy**: Customer data isolation via tenant_id partitioning
-
----
-
-## n8n Platform Ownership Architecture
-
-### Tenant Isolation Model
-
-**Per-Tenant n8n Instances**: Each customer gets their own isolated n8n instance running on dedicated infrastructure, ensuring complete data sovereignty and workflow isolation.
-
-**Architecture Benefits**:
-
-- **Data Sovereignty**: Customer data never leaves their controlled environment
-- **Workflow Portability**: Workflow definitions are exportable and portable
-- **No Vendor Lock-in**: Customers can migrate workflows to other n8n instances
-- **Custom Extensions**: Full access to n8n's extensibility for custom business logic
-
-### Deployment Architecture
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│                    Zixly Platform                          │
-│                                                             │
-│  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────┐ │
-│  │   Tenant A      │  │   Tenant B      │  │   Tenant C   │ │
-│  │   n8n Instance  │  │   n8n Instance  │  │   n8n       │ │
-│  │   (Isolated)    │  │   (Isolated)    │  │   Instance  │ │
-│  └─────────────────┘  └─────────────────┘  └─────────────┘ │
-│           │                   │                   │         │
-│           └───────────────────┼───────────────────┘         │
-│                               │                             │
-│                    ┌──────────▼──────────┐                 │
-│                    │   Shared Dashboard  │                 │
-│                    │   (Next.js + React) │                 │
-│                    └─────────────────────┘                 │
-└─────────────────────────────────────────────────────────────┘
-```
-
-### Management Model Flexibility
-
-**Full Service**: Zixly manages all n8n operations, workflow development, and maintenance
-**Hybrid**: Customer gets n8n access with optional Zixly management services
-**Self-Service**: Customer owns and manages their n8n instance with Zixly support
-
-### Customer Data Control
-
-- **Workflow Definitions**: Stored in customer's n8n instance, fully exportable
-- **Integration Credentials**: Managed by customer within their n8n instance
-- **Data Processing**: All ETL operations run within customer's controlled environment
-- **Backup & Recovery**: Customer controls their own backup and disaster recovery
-
----
-
-## Advanced n8n Capabilities
-
-### Custom Node Development Strategy
-
-**Industry-Specific Nodes**: Zixly develops custom n8n nodes for Australian SME requirements that are impossible with generic automation tools.
-
-**Custom Node Examples**:
-
-```typescript
-// Australian Tax Office Integration
-- BAS reporting automation with ATO API
-- PAYG calculation and submission
-- Superannuation guarantee monitoring
-- GST compliance with automated reporting
-
-// Industry-Specific APIs
-- MYOB Advanced (payroll, superannuation, job costing)
-- Xero Advanced (project tracking, inventory, reporting)
-- Australian banking APIs (Open Banking integration)
-- Government services (ABN lookup, ASIC integration)
-```
-
-**Development Framework**:
-
-- TypeScript-based custom nodes for complex business logic
-- OAuth 2.0 integration patterns for Australian business systems
-- Error handling and retry logic for unreliable APIs
-- Data transformation and validation for Australian compliance requirements
-
-### ML/AI Integration Architecture
-
-**Predictive Analytics Workflows**:
-
-```typescript
-// Machine learning integration patterns
-- Customer churn prediction with behavioral data analysis
-- Cash flow forecasting with seasonal adjustment algorithms
-- Anomaly detection in financial transactions using statistical models
-- Lead scoring with conversion probability calculations
-- Price optimization based on market conditions and margin analysis
-```
-
-**Document Intelligence**:
-
-```typescript
-// AI-powered document processing
-- OCR + NLP for invoice data extraction and categorization
-- Contract analysis with risk assessment and key term extraction
-- Receipt processing with automated expense categorization
-- Email content analysis for lead qualification and routing
-- Automated report generation from multiple data sources
-```
-
-**Implementation Architecture**:
-
-- Python microservice for ML model training and inference
-- REST API integration with n8n workflows
-- Vector database (pgvector) for similarity search and embeddings
-- Real-time model serving with caching for performance
-
-### Real-Time Data Processing
-
-**WebSocket Integration**:
-
-```typescript
-// Real-time workflow capabilities
-- Live dashboard updates via WebSocket connections
-- Push notifications for critical business events
-- Real-time inventory tracking across multiple systems
-- Live cash flow monitoring with automated alerts
-- Operational KPI tracking with real-time responses
-```
-
-**Event-Driven Architecture**:
-
-```typescript
-// Reactive workflow patterns
-- Customer action triggers → multi-channel response automation
-- System failure detection → automated recovery workflows
-- Market condition changes → dynamic pricing adjustments
-- Inventory threshold breaches → automated reorder processes
-- Payment delays → collection workflow activation
-```
-
-### Document Processing Workflows
-
-**OCR + AI Integration**:
-
-```typescript
-// Document intelligence automation
-- Invoice processing with automated data entry
-- Contract analysis with key term extraction
-- Receipt categorization and expense tracking
-- Email attachment processing and routing
-- PDF report generation with real-time data integration
-```
-
-**Compliance Automation**:
-
-```typescript
-// Australian compliance workflows
-- ATO reporting automation (BAS, PAYG, Super)
-- WorkCover compliance tracking and reporting
-- Industry-specific regulatory compliance
-- Audit trail generation and documentation
-- Data retention and archival automation
-```
-
-### IoT Sensor Integration
-
-**Equipment Monitoring**:
-
-```typescript
-// IoT integration capabilities
-- Equipment monitoring with predictive maintenance alerts
-- Environmental sensors for compliance tracking (temperature, humidity)
-- GPS tracking for fleet management and job tracking
-- Security system integration with business operations
-- Smart building integration for energy optimization
-```
-
-**Mobile Device Integration**:
-
-```typescript
-// Mobile-first workflow capabilities
-- Photo capture → OCR processing → system update automation
-- GPS location → job tracking → client notification workflows
-- Voice-to-text → workflow trigger → automated response
-- Barcode scanning → inventory update → reorder trigger
-- Offline data collection → batch sync → real-time processing
-```
-
-### Advanced Workflow Patterns
-
-**Multi-Channel Customer Experience**:
-
-```typescript
-// End-to-end customer journey automation
-- Website lead capture → CRM qualification → proposal generation
-- Email marketing → behavior tracking → personalized follow-up
-- Social media monitoring → sentiment analysis → response automation
-- Support ticket creation → priority routing → resolution tracking
-- Customer feedback → satisfaction scoring → improvement workflows
-```
-
-**Business Intelligence Automation**:
-
-```typescript
-// Advanced analytics workflows
-- Financial data aggregation with automated reporting
-- Customer segmentation with behavioral analysis
-- Market trend analysis with competitive intelligence
-- Operational efficiency optimization with KPI tracking
-- Predictive modeling for business forecasting
-```
-
-### Integration Flexibility
-
-**API-First Architecture**:
-
-```typescript
-// Comprehensive integration capabilities
-- REST and GraphQL API support for any business system
-- Webhook integration for real-time event processing
-- OAuth 2.0 authentication with token management
-- Custom authentication for legacy systems
-- Rate limiting and error handling strategies
-```
-
-**Workflow Portability**:
-
-```typescript
-// Platform independence
-- Workflow definitions fully exportable to other n8n instances
-- No vendor lock-in with complete platform ownership
-- Migration tools for workflow portability
-- Version control for workflow definitions
-- Backup and recovery with workflow preservation
-```
-
----
-
-## C4 Model Documentation
-
-### Level 1: System Context Diagram
-
-**Actors**:
-
-- **SME Business Owner**: Primary user, consumes dashboards for decision-making
-- **Accountant/Bookkeeper**: Secondary user, validates financial data accuracy
-- **System Administrator**: Configures integrations, manages users (typically founder/IT)
-
-**External Systems**:
-
-- **Accounting Systems**: Xero, MYOB, QuickBooks (financial data source)
-- **CRM Systems**: HubSpot, Salesforce, Pipedrive (sales pipeline data)
-- **Project Management**: Asana, ClickUp, Jira (operational metrics)
-- **E-Commerce**: Shopify, WooCommerce (transaction data)
-- **Communication**: Slack, Microsoft Teams (alert destinations)
-
-**System Boundary**: Zixly platform (Next.js app + PostgreSQL + n8n)
-
----
-
-### Level 2: Container Diagram
-
-```
-┌─────────────────────────────────────────────────────────────────────┐
-│                         Zixly Platform                        │
-│                                                                       │
-│  ┌─────────────────────────────────────────────────────────────┐   │
-│  │  Web Application (Next.js 15 + React 19)                     │   │
-│  │  - SSR Dashboard Pages                                       │   │
-│  │  - Client-side Visx Charts                                   │   │
-│  │  - Supabase Auth Integration                                 │   │
-│  │  Deployment: Vercel (Edge Network)                           │   │
-│  └────────────────────────┬────────────────────────────────────┘   │
-│                            │ HTTPS                                   │
-│  ┌────────────────────────▼────────────────────────────────────┐   │
-│  │  API Layer (Next.js API Routes - Serverless Functions)      │   │
-│  │  - /api/kpis - Client KPI endpoints                         │   │
-│  │  - /api/financials - Financial data endpoints               │   │
-│  │  - /api/leads - Sales pipeline endpoints                    │   │
-│  │  - /api/metrics - Custom metrics endpoints                  │   │
-│  │  - /api/auth - Authentication flows                         │   │
-│  │  Deployment: Vercel Serverless (Auto-scaling)               │   │
-│  └────────────────────────┬────────────────────────────────────┘   │
-│                            │ Prisma Client                           │
-│  ┌────────────────────────▼────────────────────────────────────┐   │
-│  │  Database (PostgreSQL 15 + pgvector)                        │   │
-│  │  - Tables: ClientKPI, Financial, LeadEvent, CustomMetric    │   │
-│  │  - Indexes: Optimized for time-series queries               │   │
-│  │  - Row-Level Security (RLS) for multi-tenancy               │   │
-│  │  Deployment: Supabase (Sydney Region)                       │   │
-│  └────────────────────────▲────────────────────────────────────┘   │
-│                            │                                         │
-│  ┌────────────────────────┴────────────────────────────────────┐   │
-│  │  ETL Orchestrator (n8n - Dockerized)                        │   │
-│  │  - 50+ Integration Workflows                                │   │
-│  │  - Custom Code Nodes (TypeScript)                           │   │
-│  │  - Scheduled Triggers (cron-based)                          │   │
-│  │  - Error Handling & Retry Logic                             │   │
-│  │  Deployment: DigitalOcean Droplet (4GB RAM, Docker)         │   │
-│  └─────────────────────────────────────────────────────────────┘   │
-│                                                                       │
-└───────────────────────────────────────────────────────────────────┘
-```
-
-**Container Responsibilities**:
-
-1. **Web Application** (Next.js Frontend)
-   - Renders dashboard UI with SSR for initial load performance
-   - Fetches data from API layer using React Query (caching, optimistic updates)
-   - Implements Visx charts with interactive filtering
-   - Handles authentication state via Supabase Auth client
-
-2. **API Layer** (Next.js Serverless Functions)
-   - Validates JWT tokens from Supabase Auth
-   - Executes type-safe Prisma queries against PostgreSQL
-   - Formats API responses with standardized error handling
-   - Enforces rate limiting and request validation (Zod schemas)
-
-3. **Database** (Supabase PostgreSQL)
-   - Central data warehouse (single source of truth)
-   - Enforces data integrity via constraints and foreign keys
-   - Row-Level Security (RLS) ensures tenant isolation
-   - Stores vector embeddings (pgvector) for future RAG capabilities
-
-4. **ETL Orchestrator** (n8n)
-   - Scheduled workflows extract data from external APIs
-   - Custom TypeScript nodes transform and clean data
-   - Writes processed data to PostgreSQL via Prisma or direct SQL
-   - Logs errors to monitoring system, retries with exponential backoff
-
----
-
-### Level 3: Component Diagram (API Layer)
-
-```
-┌────────────────────────────────────────────────────────────┐
-│              API Layer (Next.js API Routes)                 │
-│                                                              │
-│  ┌──────────────────────────────────────────────────────┐  │
-│  │  Middleware Pipeline                                  │  │
-│  │  ┌─────────────┐  ┌──────────┐  ┌────────────────┐  │  │
-│  │  │ CORS Handler│→ │Auth Guard│→ │Rate Limiter    │  │  │
-│  │  └─────────────┘  └──────────┘  └────────────────┘  │  │
-│  └──────────────────────┬───────────────────────────────┘  │
-│                          ▼                                   │
-│  ┌──────────────────────────────────────────────────────┐  │
-│  │  Route Handlers                                       │  │
-│  │  ┌─────────────────────────────────────────────────┐ │  │
-│  │  │ GET /api/kpis                                    │ │  │
-│  │  │  → KPIController.listKPIs()                     │ │  │
-│  │  │    → KPIService.getKPIsForTenant(tenantId)      │ │  │
-│  │  │      → Prisma.clientKPI.findMany()              │ │  │
-│  │  └─────────────────────────────────────────────────┘ │  │
-│  │  ┌─────────────────────────────────────────────────┐ │  │
-│  │  │ GET /api/financials?startDate=X&endDate=Y       │ │  │
-│  │  │  → FinancialController.getFinancials()          │ │  │
-│  │  │    → QueryValidator.validate(schema)            │ │  │
-│  │  │    → FinancialService.getTimeSeries()           │ │  │
-│  │  │      → Prisma.financial.findMany(filters)       │ │  │
-│  │  └─────────────────────────────────────────────────┘ │  │
-│  │  ┌─────────────────────────────────────────────────┐ │  │
-│  │  │ POST /api/auth/callback                         │ │  │
-│  │  │  → AuthController.handleOAuthCallback()         │ │  │
-│  │  │    → Supabase.auth.exchangeCodeForSession()     │ │  │
-│  │  └─────────────────────────────────────────────────┘ │  │
-│  └──────────────────────────────────────────────────────┘  │
-│                                                              │
-│  ┌──────────────────────────────────────────────────────┐  │
-│  │  Shared Services                                      │  │
-│  │  - ErrorHandler: Standardized error responses        │  │
-│  │  - Logger: Structured logging to DataDog             │  │
-│  │  - CacheManager: Redis caching for frequent queries  │  │
-│  │  - MetricsCollector: Request timing, error rates     │  │
-│  └──────────────────────────────────────────────────────┘  │
-└────────────────────────────────────────────────────────────┘
-```
-
-**Component Patterns**:
-
-- **Controller Layer**: HTTP request handling, validation, response formatting
-- **Service Layer**: Business logic, data aggregation, complex calculations
-- **Repository Layer**: Abstracted via Prisma ORM (database queries)
-- **Middleware**: Cross-cutting concerns (auth, logging, rate limiting)
-
----
-
-### Level 4: Code Structure (Example: Financial API Endpoint)
-
-**File**: `app/api/financials/route.ts`
-
-```typescript
-// Middleware: Authentication guard
-export async function middleware(request: NextRequest) {
-  const token = request.headers.get('Authorization')?.replace('Bearer ', '')
-  const {
-    data: { user },
-    error,
-  } = await supabase.auth.getUser(token)
-
-  if (error || !user) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  }
-
-  // Attach tenant ID from user metadata
-  request.headers.set('X-Tenant-ID', user.user_metadata.tenant_id)
-}
-
-// Route handler
-export async function GET(request: NextRequest) {
-  const tenantId = request.headers.get('X-Tenant-ID')
-  const { searchParams } = new URL(request.url)
-
-  // Validation with Zod
-  const querySchema = z.object({
-    startDate: z.string().datetime(),
-    endDate: z.string().datetime(),
-    clientId: z.string().optional(),
-  })
-
-  const params = querySchema.parse({
-    startDate: searchParams.get('startDate'),
-    endDate: searchParams.get('endDate'),
-    clientId: searchParams.get('clientId'),
-  })
-
-  // Service layer call
-  const financials = await FinancialService.getTimeSeries(tenantId, params)
-
-  return NextResponse.json({ data: financials, count: financials.length })
-}
-```
-
-**File**: `lib/services/financial-service.ts`
-
-```typescript
-export class FinancialService {
-  static async getTimeSeries(
-    tenantId: string,
-    params: { startDate: string; endDate: string; clientId?: string }
-  ) {
-    return await prisma.financial.findMany({
-      where: {
-        clientKPI: { clientId: tenantId },
-        recordDate: {
-          gte: new Date(params.startDate),
-          lte: new Date(params.endDate),
-        },
-        ...(params.clientId && { clientKPIId: params.clientId }),
-      },
-      include: { clientKPI: true },
-      orderBy: { recordDate: 'asc' },
-    })
-  }
-}
-```
+1. **Webhook-Triggered Pipelines**: Event-driven job orchestration
+2. **Job Queue Management**: Redis/Bull (local) + AWS SQS (production)
+3. **Worker Pool**: Scalable Node.js workers for job processing
+4. **Data Storage**: PostgreSQL for job tracking, S3 for result datasets
+5. **Real-Time Dashboard**: Next.js with WebSocket updates
+6. **Full Observability**: Prometheus metrics + Grafana dashboards
+7. **Infrastructure as Code**: Terraform for all infrastructure
+8. **Local Development**: LocalStack for zero-cost AWS emulation
 
 ---
 
 ## Technology Stack
 
-### Frontend Stack
+### Current Stack (2025)
 
-| Layer             | Technology      | Version | Purpose                                              |
-| ----------------- | --------------- | ------- | ---------------------------------------------------- |
-| **Framework**     | Next.js         | 15.5.5  | React framework with SSR, App Router, serverless API |
-| **UI Library**    | React           | 19.1.0  | Component-based UI development                       |
-| **Styling**       | Tailwind CSS    | 4.x     | Utility-first CSS framework                          |
-| **Charts**        | Visx            | 3.x     | D3-based React chart library                         |
-| **Data Fetching** | React Query     | 5.x     | Client-side data caching and state management        |
-| **Forms**         | React Hook Form | 7.x     | Form validation and state management                 |
-| **Validation**    | Zod             | 3.x     | TypeScript-first schema validation                   |
-| **Date Handling** | date-fns        | 3.x     | Date manipulation and formatting                     |
+| Layer                 | Technology          | Version     | Purpose                         |
+| --------------------- | ------------------- | ----------- | ------------------------------- |
+| **Frontend**          | Next.js + React     | 15.5.5 / 19 | Pipeline monitoring dashboard   |
+| **Styling**           | Tailwind CSS        | 4.x         | Utility-first responsive design |
+| **Backend**           | Next.js API Routes  | 15.5.5      | Pipeline management APIs        |
+| **Database**          | PostgreSQL          | 15.x        | Job tracking and results        |
+| **ORM**               | Prisma              | 6.x         | Type-safe database access       |
+| **Auth**              | Supabase Auth       | Latest      | JWT authentication              |
+| **Orchestration**     | Docker Compose      | 24.x        | Local container orchestration   |
+| **Job Queue (Local)** | Redis + Bull        | 4.x         | Async job processing            |
+| **Job Queue (AWS)**   | AWS SQS             | -           | Production job processing       |
+| **Storage**           | AWS S3              | -           | Pipeline result datasets        |
+| **Secrets**           | AWS Secrets Manager | -           | Credential management           |
+| **Monitoring**        | Prometheus          | 2.x         | Metrics collection              |
+| **Dashboards**        | Grafana             | 10.x        | Metrics visualization           |
+| **Infrastructure**    | Terraform           | 1.6+        | Infrastructure as Code          |
+| **Local AWS**         | LocalStack          | 3.x         | Local AWS emulation             |
+| **CI/CD**             | GitHub Actions      | -           | Automated pipelines             |
+| **Cloud Platform**    | AWS (EKS/ECS)       | -           | Production (planned)            |
+| **Dashboard Hosting** | Vercel              | -           | Web application deployment      |
 
-### Backend Stack
+### Pipeline Architecture Stack
 
-| Layer             | Technology         | Version | Purpose                                         |
-| ----------------- | ------------------ | ------- | ----------------------------------------------- |
-| **Runtime**       | Node.js            | 20 LTS  | JavaScript runtime for serverless functions     |
-| **Language**      | TypeScript         | 5.x     | Type-safe development                           |
-| **ORM**           | Prisma             | 5.x     | Type-safe database client and migrations        |
-| **Database**      | PostgreSQL         | 15.x    | Relational database with pgvector extension     |
-| **Auth**          | Supabase Auth      | Latest  | JWT-based authentication and session management |
-| **API Framework** | Next.js API Routes | 15.5.5  | Serverless API endpoints                        |
+| Component              | Technology              | Purpose                           |
+| ---------------------- | ----------------------- | --------------------------------- |
+| **Webhook Receiver**   | Express.js + TypeScript | HTTP endpoint for webhook events  |
+| **Request Validation** | Zod                     | Schema validation and type safety |
+| **Job Queue**          | Bull + Redis (or SQS)   | Async job management              |
+| **Worker Pool**        | Node.js + Cluster       | Concurrent job processing         |
+| **API Client**         | Axios                   | External API integrations         |
+| **Logging**            | Winston                 | Structured logging                |
+| **Metrics**            | Prom-client             | Prometheus metrics export         |
 
-### ETL Stack
+---
 
-| Layer            | Technology            | Version | Purpose                                         |
-| ---------------- | --------------------- | ------- | ----------------------------------------------- |
-| **Orchestrator** | n8n                   | 1.x     | Workflow automation and ETL pipeline management |
-| **Runtime**      | Docker                | 24.x    | Containerization for consistent deployment      |
-| **Language**     | TypeScript/JavaScript | ES2022  | Custom code nodes for data transformation       |
-| **HTTP Client**  | Axios                 | 1.x     | API requests to external systems                |
+## Pipeline Architecture
 
-### Infrastructure & DevOps
+### Webhook-Triggered Pipeline Pattern
 
-| Layer                      | Technology           | Purpose                                        |
-| -------------------------- | -------------------- | ---------------------------------------------- |
-| **Hosting (Frontend/API)** | Vercel               | Next.js deployment, edge network, auto-scaling |
-| **Database Hosting**       | Supabase             | Managed PostgreSQL, Sydney region              |
-| **ETL Hosting**            | DigitalOcean Droplet | Docker container for n8n                       |
-| **Monitoring**             | DataDog              | APM, logs, error tracking                      |
-| **Error Tracking**         | Sentry               | Frontend/backend exception monitoring          |
-| **CDN**                    | Cloudflare           | DDoS protection, caching                       |
-| **Email**                  | SendGrid             | Transactional emails, alerts                   |
-| **Payment**                | Stripe               | Subscription billing                           |
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    Pipeline Architecture                     │
+│                                                               │
+│  [External System] ──POST→ [Webhook Receiver:3000]          │
+│                                      │                        │
+│                                      ↓ validate & enqueue    │
+│                               [Redis/SQS Queue]              │
+│                                      │                        │
+│                                      ↓ pick up job           │
+│                            [Pipeline Worker] (x2+)           │
+│                                      │                        │
+│                                      ↓ call external API     │
+│                            [External API]                    │
+│                                      │                        │
+│                                      ↓ webhook callback       │
+│                            [Webhook Receiver]                │
+│                                      │                        │
+│                                      ↓ fetch results         │
+│                            [External API]                    │
+│                                      │                        │
+│                                      ↓ store                 │
+│                            [PostgreSQL + S3]                 │
+│                                      │                        │
+│                                      ↓ notify                │
+│                            [Email/Slack]                     │
+│                                                               │
+│  Monitoring: [Prometheus] ←metrics─ [All Services]          │
+│                   │                                           │
+│                   └──→ [Grafana] (Dashboards)                │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### Pipeline Components
+
+#### 1. Webhook Receiver (Express.js)
+
+**File**: `services/webhook-receiver/src/server.ts`
+
+**Responsibilities**:
+
+- Accept incoming HTTP POST requests
+- Validate payloads with Zod schemas
+- Enqueue jobs to Redis/SQS
+- Store job metadata in PostgreSQL
+- Return 202 Accepted with job ID
+- Handle webhook callbacks from external APIs
+- Export Prometheus metrics
+
+**API Endpoints**:
+
+- `POST /webhook/trading-sweep` - Trigger trading strategy sweep
+- `POST /webhook/sweep-callback` - External API callback handler
+- `GET /webhook/jobs/:id` - Get job status
+- `GET /health` - Health check
+- `GET /metrics` - Prometheus metrics
+
+**Technology**:
+
+- Express.js for HTTP server
+- Zod for request validation
+- Bull for Redis queue management
+- Prisma for database access
+- Winston for structured logging
+- Helmet for security headers
+
+#### 2. Job Queue (Redis + Bull or AWS SQS)
+
+**Local Development** (Redis + Bull):
+
+```typescript
+// services/webhook-receiver/src/services/queue.ts
+import Bull from 'bull'
+
+const queue = new Bull('trading-sweeps', {
+  redis: {
+    host: process.env.REDIS_HOST || 'localhost',
+    port: 6379,
+  },
+  defaultJobOptions: {
+    attempts: 3,
+    backoff: {
+      type: 'exponential',
+      delay: 2000,
+    },
+    removeOnComplete: 100,
+    removeOnFail: 1000,
+  },
+})
+```
+
+**Production** (AWS SQS):
+
+```typescript
+// services/webhook-receiver/src/services/sqs-queue.ts
+import { SQSClient, SendMessageCommand } from '@aws-sdk/client-sqs'
+
+const sqsClient = new SQSClient({
+  region: 'ap-southeast-2',
+  endpoint: process.env.AWS_ENDPOINT_URL, // LocalStack or AWS
+})
+```
+
+**Features**:
+
+- Job retry with exponential backoff (3 attempts)
+- Dead letter queue for failed jobs
+- Job priority support
+- Job timeout (1 hour)
+- Metrics export (queue depth, processing rate)
+
+#### 3. Pipeline Worker (Node.js)
+
+**File**: `services/pipeline-worker/src/worker.ts`
+
+**Responsibilities**:
+
+- Poll job queue (Bull or SQS)
+- Execute job processing logic
+- Call external APIs
+- Store results in PostgreSQL + S3
+- Handle errors and retries
+- Send notifications on completion
+- Export processing metrics
+
+**Processing Flow**:
+
+1. Pick up job from queue
+2. Update job status to `RUNNING`
+3. Call external API (e.g., Trading API)
+4. Wait for webhook callback (poll database)
+5. Fetch results from external API
+6. Store results in PostgreSQL + S3
+7. Update job status to `COMPLETED`
+8. Send email/Slack notification
+9. Export metrics to Prometheus
+
+**Concurrency**:
+
+- Configurable worker pool (default: 2 replicas)
+- Horizontal scaling via Docker Compose/Kubernetes
+- Graceful shutdown (finish current jobs before exit)
+
+**Technology**:
+
+- Bull worker (Redis) or SQS polling (AWS)
+- Axios for HTTP requests
+- Prisma for database access
+- AWS SDK for S3 and Secrets Manager
+- Nodemailer for email notifications
+- Winston for logging
+
+#### 4. Result Storage
+
+**PostgreSQL** (Job metadata and small results):
+
+```prisma
+model PipelineJob {
+  id            String    @id @default(cuid())
+  tenantId      String
+  jobType       String
+  status        JobStatus // QUEUED, RUNNING, COMPLETED, FAILED
+  parameters    Json
+  result        Json?     // Summary results
+  metrics       Json?
+  errorMessage  String?
+  createdAt     DateTime
+  startedAt     DateTime?
+  completedAt   DateTime?
+
+  results       TradingSweepResult[]
+}
+
+model TradingSweepResult {
+  id                String   @id
+  jobId             String
+  sweepRunId        String
+  ticker            String
+  strategyType      String
+  score             Decimal
+  sharpeRatio       Decimal
+  totalReturnPct    Decimal
+  // ... more metrics
+}
+```
+
+**S3** (Large datasets):
+
+- Full result datasets stored in S3
+- Path: `s3://zixly-pipeline-results/{tenantId}/{jobId}/results.json`
+- Versioning enabled
+- Lifecycle: Archive after 30 days, delete after 365 days
+
+### Pipeline Patterns
+
+#### Pattern 1: Synchronous Webhook → Async Processing
+
+```
+Client ─POST→ Webhook Receiver ─202 Accepted (job_id)→ Client
+                    ↓ enqueue
+                 [Queue]
+                    ↓
+              [Worker Pool] ─process→ [Result Storage]
+                                          ↓
+Client ←poll /jobs/:id─ Webhook Receiver ←read─ [Database]
+```
+
+#### Pattern 2: External API Callback
+
+```
+Webhook Receiver ─trigger→ External API
+                              ↓ process (async)
+Webhook Receiver ←callback─ External API
+      ↓ fetch results
+External API ─results→ Webhook Receiver ─store→ [Database + S3]
+```
+
+#### Pattern 3: Long-Running Jobs
+
+```
+Worker ─start job→ Database (status: RUNNING)
+  ↓
+Worker ─call API→ External API (returns job_id)
+  ↓
+Worker ─poll status→ External API (every 10s, max 1 hour)
+  ↓ completed
+Worker ─fetch results→ External API
+  ↓
+Worker ─store→ Database + S3 (status: COMPLETED)
+```
 
 ---
 
 ## Data Architecture
 
-### Entity Relationships
+### Database Schema
 
-For a business-oriented explanation of the data model entities (Tenant, User, Client), including real-world examples and FAQ, see [Entity Relationship Explained](../concepts/entity-relationship-explained.md).
-
-### Database Schema (Prisma)
-
-**File**: `prisma/schema.prisma`
+**Core Models** (Prisma):
 
 ```prisma
-datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
-}
-
-generator client {
-  provider = "prisma-client-js"
-}
-
-// Multi-tenancy: All tables include tenantId for data isolation
+// Multi-tenancy foundation
 model Tenant {
-  id              String   @id @default(cuid())
-  name            String
-  industry        String?
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  id        String   @id @default(cuid())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  clientKPIs      ClientKPI[]
-  users           User[]
-
-  @@map("tenants")
+  users     User[]
+  jobs      PipelineJob[]
 }
 
 model User {
-  id              String   @id @default(cuid())
-  tenantId        String
-  email           String   @unique
-  role            UserRole @default(VIEWER)
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  id        String   @id @default(cuid())
+  tenantId  String
+  email     String   @unique
+  role      UserRole @default(VIEWER)
 
-  tenant          Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  tenant    Tenant   @relation(fields: [tenantId], references: [id])
 
   @@index([tenantId])
-  @@map("users")
 }
 
 enum UserRole {
@@ -799,269 +417,64 @@ enum UserRole {
   VIEWER
 }
 
-// Primary business entity
-model ClientKPI {
-  id              String   @id @default(cuid())
-  tenantId        String
-  clientId        String   // External client identifier (unique per tenant)
-  clientName      String
-  industry        String?
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+// Pipeline job tracking
+model PipelineJob {
+  id            String    @id @default(cuid())
+  tenantId      String
+  jobType       String
+  status        JobStatus
+  parameters    Json
+  result        Json?
+  metrics       Json?
+  errorMessage  String?
+  createdAt     DateTime  @default(now())
+  startedAt     DateTime?
+  completedAt   DateTime?
 
-  tenant          Tenant          @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  financials      Financial[]
-  leadEvents      LeadEvent[]
-  customMetrics   CustomMetric[]
+  tenant        Tenant    @relation(fields: [tenantId], references: [id])
 
-  @@unique([tenantId, clientId])
-  @@index([tenantId])
-  @@map("client_kpis")
+  @@index([tenantId, status])
+  @@index([jobType, status])
+  @@index([createdAt])
 }
 
-// Time-series financial data
-model Financial {
-  id              String   @id @default(cuid())
-  clientKPIId     String
-  recordDate      DateTime @db.Date
-  revenue         Decimal  @db.Decimal(12, 2)
-  expenses        Decimal  @db.Decimal(12, 2)
-  netProfit       Decimal  @db.Decimal(12, 2)
-  cashFlow        Decimal  @db.Decimal(12, 2)
-  currency        String   @default("AUD")
-  sourceSystem    String?  // e.g., "xero", "myob"
-  externalId      String?  // External system record ID
-  metadata        Json?    // Flexible storage for system-specific fields
-  createdAt       DateTime @default(now())
-
-  clientKPI       ClientKPI @relation(fields: [clientKPIId], references: [id], onDelete: Cascade)
-
-  @@unique([clientKPIId, recordDate, sourceSystem])
-  @@index([clientKPIId, recordDate])
-  @@index([recordDate])
-  @@map("financials")
-}
-
-// CRM/Sales pipeline tracking
-model LeadEvent {
-  id              String   @id @default(cuid())
-  clientKPIId     String
-  eventDate       DateTime
-  leadId          String   // External lead/deal identifier
-  stage           String   // e.g., "prospect", "qualified", "proposal", "closed-won"
-  value           Decimal? @db.Decimal(12, 2)
-  status          String   // e.g., "active", "stale", "lost"
-  sourceSystem    String?  // e.g., "hubspot", "pipedrive"
-  externalId      String?
-  metadata        Json?
-  createdAt       DateTime @default(now())
-
-  clientKPI       ClientKPI @relation(fields: [clientKPIId], references: [id], onDelete: Cascade)
-
-  @@index([clientKPIId, eventDate])
-  @@index([leadId])
-  @@index([stage, status])
-  @@map("lead_events")
-}
-
-// Flexible custom KPIs
-model CustomMetric {
-  id              String   @id @default(cuid())
-  clientKPIId     String
-  metricName      String   // e.g., "project_delivery_days", "customer_satisfaction"
-  metricValue     Decimal  @db.Decimal(12, 4)
-  unit            String?  // e.g., "days", "percent", "count"
-  recordDate      DateTime
-  sourceSystem    String?
-  metadata        Json?
-  embedding       Unsupported("vector(1536)")? // Future: OpenAI embeddings for RAG
-  createdAt       DateTime @default(now())
-
-  clientKPI       ClientKPI @relation(fields: [clientKPIId], references: [id], onDelete: Cascade)
-
-  @@index([clientKPIId, metricName, recordDate])
-  @@map("custom_metrics")
-}
-
-// Integration configuration (stores OAuth tokens securely)
-model Integration {
-  id              String   @id @default(cuid())
-  tenantId        String
-  provider        String   // e.g., "xero", "hubspot", "asana"
-  status          IntegrationStatus @default(PENDING)
-  accessToken     String   @db.Text // Encrypted at application layer
-  refreshToken    String?  @db.Text // Encrypted
-  expiresAt       DateTime?
-  metadata        Json?    // Provider-specific config
-  lastSyncAt      DateTime?
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-
-  @@unique([tenantId, provider])
-  @@index([tenantId])
-  @@map("integrations")
-}
-
-enum IntegrationStatus {
-  PENDING
-  ACTIVE
-  ERROR
-  DISABLED
+enum JobStatus {
+  QUEUED
+  RUNNING
+  COMPLETED
+  FAILED
+  CANCELLED
 }
 ```
 
-### Data Flow Architecture
+### Data Flow
 
 ```
-External API → n8n Workflow → Transform/Clean → PostgreSQL → API Layer → Dashboard
-
-Example: Xero Financial Data Flow
-───────────────────────────────────
-1. n8n Scheduled Trigger (daily at 2am AEST)
-2. Xero API: GET /api.xro/2.0/Reports/ProfitAndLoss
-3. Custom Code Node: Parse XML, normalize dates (UTC), convert to AUD
-4. Custom Code Node: Calculate derived metrics (netProfit = revenue - expenses)
-5. PostgreSQL Node: UPSERT into financials table (match on clientKPIId + recordDate)
-6. Error Handling: On failure, retry 3x with exponential backoff, log to Sentry
-7. Success: Update Integration.lastSyncAt timestamp
+External Trigger → Webhook Receiver → PostgreSQL (job metadata)
+                         ↓
+                    Redis/SQS Queue
+                         ↓
+                   Pipeline Worker → External API → Worker
+                         ↓
+              PostgreSQL + S3 (results storage)
+                         ↓
+              Next.js Dashboard (read-only access)
 ```
 
-### Data Retention & Archival
+### Row-Level Security (RLS)
 
-| Data Type                                  | Retention Period            | Archival Strategy                                |
-| ------------------------------------------ | --------------------------- | ------------------------------------------------ |
-| **Transactional Data** (Financials, Leads) | 7 years (AU tax compliance) | Annual export to S3, compress with gzip          |
-| **Custom Metrics**                         | 3 years                     | Aggregate to monthly averages after 1 year       |
-| **Audit Logs**                             | 2 years                     | Archive to cold storage (Glacier) after 6 months |
-| **User Sessions**                          | 90 days                     | Auto-delete via Supabase auth config             |
-| **Integration Tokens**                     | Until revoked               | Rotate every 6 months (forced re-auth)           |
+**Multi-Tenant Isolation** (PostgreSQL):
 
----
+```sql
+-- Enable RLS on all tables
+ALTER TABLE pipeline_jobs ENABLE ROW LEVEL SECURITY;
 
-## Integration Architecture
+-- Policy: Users can only access their tenant's data
+CREATE POLICY tenant_isolation_policy ON pipeline_jobs
+  USING (tenant_id = current_setting('app.tenant_id')::text);
 
-### OAuth 2.0 Integration Flow
-
-```
-┌─────────────┐                                      ┌──────────────┐
-│   User      │                                      │   Xero API   │
-│  (Browser)  │                                      │              │
-└──────┬──────┘                                      └──────▲───────┘
-       │                                                     │
-       │ 1. Click "Connect Xero"                           │
-       ▼                                                     │
-┌────────────────────────────────────┐                     │
-│  Zixly Dashboard            │                     │
-│  /integrations/xero/authorize      │                     │
-└────────────┬───────────────────────┘                     │
-             │                                              │
-             │ 2. Redirect to Xero OAuth                  │
-             │    with client_id, redirect_uri             │
-             └──────────────────────────────────────────────┘
-                                                            │
-             ┌──────────────────────────────────────────────┘
-             │ 3. User authorizes access
-             │
-             │ 4. Xero redirects with authorization code
-             ▼
-┌─────────────────────────────────────────┐
-│  /api/integrations/xero/callback        │
-│  1. Exchange code for access token      │
-│  2. Fetch Xero tenant ID                │
-│  3. Encrypt tokens with AES-256         │
-│  4. Store in Integration table          │
-│  5. Trigger initial data sync (n8n)     │
-└─────────────────────────────────────────┘
-```
-
-### Integration Registry
-
-**File**: `lib/integrations/registry.ts`
-
-```typescript
-export const INTEGRATION_REGISTRY = {
-  xero: {
-    name: 'Xero',
-    category: 'accounting',
-    authType: 'oauth2',
-    authUrl: 'https://login.xero.com/identity/connect/authorize',
-    tokenUrl: 'https://identity.xero.com/connect/token',
-    scopes: ['accounting.transactions.read', 'accounting.reports.read'],
-    dataSources: ['financials', 'invoices', 'expenses'],
-  },
-  hubspot: {
-    name: 'HubSpot',
-    category: 'crm',
-    authType: 'oauth2',
-    authUrl: 'https://app.hubspot.com/oauth/authorize',
-    tokenUrl: 'https://api.hubapi.com/oauth/v1/token',
-    scopes: ['crm.objects.contacts.read', 'crm.objects.deals.read'],
-    dataSources: ['leads', 'contacts', 'deals'],
-  },
-  // ... 50+ integrations
-}
-```
-
-### n8n Workflow Template (Xero Financials)
-
-**Workflow**: `n8n-workflows/xero-financials-sync.json`
-
-```json
-{
-  "name": "Xero Financials Daily Sync",
-  "nodes": [
-    {
-      "name": "Schedule Trigger",
-      "type": "n8n-nodes-base.cron",
-      "parameters": {
-        "triggerTimes": {
-          "item": [
-            {
-              "mode": "everyDay",
-              "hour": 2,
-              "minute": 0
-            }
-          ]
-        }
-      }
-    },
-    {
-      "name": "Get Xero Credentials",
-      "type": "n8n-nodes-base.postgres",
-      "parameters": {
-        "query": "SELECT access_token, tenant_id FROM integrations WHERE provider = 'xero' AND status = 'ACTIVE'"
-      }
-    },
-    {
-      "name": "Fetch Profit & Loss Report",
-      "type": "n8n-nodes-base.httpRequest",
-      "parameters": {
-        "url": "https://api.xero.com/api.xro/2.0/Reports/ProfitAndLoss",
-        "authentication": "genericCredentialType",
-        "headers": {
-          "Authorization": "Bearer {{$node['Get Xero Credentials'].json['access_token']}}",
-          "Xero-tenant-id": "{{$node['Get Xero Credentials'].json['tenant_id']}}"
-        }
-      }
-    },
-    {
-      "name": "Transform Data",
-      "type": "n8n-nodes-base.code",
-      "parameters": {
-        "language": "javaScript",
-        "code": "// Custom transformation logic\nconst report = $input.first().json.Reports[0];\nconst rows = report.Rows.find(r => r.RowType === 'Section' && r.Title === 'Income');\n\nreturn rows.Rows.map(row => ({\n  recordDate: new Date(),\n  revenue: parseFloat(row.Cells[1].Value),\n  expenses: parseFloat(row.Cells[2].Value),\n  netProfit: parseFloat(row.Cells[1].Value) - parseFloat(row.Cells[2].Value),\n  currency: 'AUD',\n  sourceSystem: 'xero'\n}));"
-      }
-    },
-    {
-      "name": "Upsert to PostgreSQL",
-      "type": "n8n-nodes-base.postgres",
-      "parameters": {
-        "operation": "executeQuery",
-        "query": "INSERT INTO financials (client_kpi_id, record_date, revenue, expenses, net_profit, currency, source_system) VALUES ($1, $2, $3, $4, $5, $6, $7) ON CONFLICT (client_kpi_id, record_date, source_system) DO UPDATE SET revenue = EXCLUDED.revenue, expenses = EXCLUDED.expenses, net_profit = EXCLUDED.net_profit"
-      }
-    }
-  ]
-}
+-- Set tenant context (in application middleware)
+SET app.tenant_id = 'tenant_xyz123';
 ```
 
 ---
@@ -1072,195 +485,57 @@ export const INTEGRATION_REGISTRY = {
 
 **Authentication**: Supabase Auth (JWT-based)
 
-```typescript
-// Middleware: app/middleware.ts
-export async function middleware(request: NextRequest) {
-  const token = request.cookies.get('sb-access-token')?.value
-
-  if (!token) {
-    return NextResponse.redirect(new URL('/login', request.url))
-  }
-
-  const {
-    data: { user },
-    error,
-  } = await supabase.auth.getUser(token)
-
-  if (error || !user) {
-    return NextResponse.redirect(new URL('/login', request.url))
-  }
-
-  // Attach user context to request headers
-  const requestHeaders = new Headers(request.headers)
-  requestHeaders.set('x-user-id', user.id)
-  requestHeaders.set('x-tenant-id', user.user_metadata.tenant_id)
-
-  return NextResponse.next({
-    request: { headers: requestHeaders },
-  })
-}
-```
-
 **Authorization**: Role-Based Access Control (RBAC)
 
-| Role       | Permissions                                                     |
-| ---------- | --------------------------------------------------------------- |
-| **ADMIN**  | Full access: manage integrations, users, billing, view all data |
-| **EDITOR** | Edit dashboards, view all data, cannot manage users or billing  |
-| **VIEWER** | Read-only access to dashboards                                  |
+| Role       | Permissions                                           |
+| ---------- | ----------------------------------------------------- |
+| **ADMIN**  | Full access: manage users, pipelines, view all data   |
+| **EDITOR** | Trigger pipelines, view all data, cannot manage users |
+| **VIEWER** | Read-only access to dashboards                        |
 
 ### Data Encryption
 
 **At Rest**:
 
-- PostgreSQL: AES-256 encryption enabled via Supabase
-- OAuth tokens: Encrypted with AES-256-GCM before storage (application-level)
-- Backups: Encrypted with AWS S3 server-side encryption (SSE-KMS)
+- PostgreSQL: AES-256 (Supabase managed)
+- S3: Server-side encryption (SSE-S3)
+- Secrets Manager: AWS managed encryption
 
 **In Transit**:
 
 - All API communication: TLS 1.3
-- Database connections: SSL enforced (Supabase requires SSL)
-- n8n webhooks: HTTPS only, verify TLS certificates
-
-**Encryption Implementation**:
-
-```typescript
-// lib/crypto/encryption.ts
-import { createCipheriv, createDecipheriv, randomBytes } from 'crypto'
-
-const ALGORITHM = 'aes-256-gcm'
-const KEY = Buffer.from(process.env.ENCRYPTION_KEY!, 'hex') // 32-byte key
-
-export function encrypt(plaintext: string): string {
-  const iv = randomBytes(16)
-  const cipher = createCipheriv(ALGORITHM, KEY, iv)
-
-  let encrypted = cipher.update(plaintext, 'utf8', 'hex')
-  encrypted += cipher.final('hex')
-
-  const authTag = cipher.getAuthTag()
-
-  // Format: iv:authTag:ciphertext
-  return `${iv.toString('hex')}:${authTag.toString('hex')}:${encrypted}`
-}
-
-export function decrypt(encryptedData: string): string {
-  const [ivHex, authTagHex, encrypted] = encryptedData.split(':')
-
-  const iv = Buffer.from(ivHex, 'hex')
-  const authTag = Buffer.from(authTagHex, 'hex')
-
-  const decipher = createDecipheriv(ALGORITHM, KEY, iv)
-  decipher.setAuthTag(authTag)
-
-  let decrypted = decipher.update(encrypted, 'hex', 'utf8')
-  decrypted += decipher.final('utf8')
-
-  return decrypted
-}
-```
-
-### Multi-Tenancy Isolation
-
-**Database-Level**: Row-Level Security (RLS) in PostgreSQL
-
-```sql
--- Enable RLS on all tenant-scoped tables
-ALTER TABLE client_kpis ENABLE ROW LEVEL SECURITY;
-ALTER TABLE financials ENABLE ROW LEVEL SECURITY;
-ALTER TABLE lead_events ENABLE ROW LEVEL SECURITY;
-ALTER TABLE custom_metrics ENABLE ROW LEVEL SECURITY;
-
--- Policy: Users can only access data for their tenant
-CREATE POLICY tenant_isolation_policy ON client_kpis
-  USING (tenant_id = current_setting('app.tenant_id')::text);
-
-CREATE POLICY tenant_isolation_policy ON financials
-  USING (client_kpi_id IN (
-    SELECT id FROM client_kpis WHERE tenant_id = current_setting('app.tenant_id')::text
-  ));
-
--- Set tenant context for each database session
--- (Called from API middleware before queries)
-SET app.tenant_id = 'tenant_xyz123';
-```
-
-**Application-Level**: Tenant ID validation in all queries
-
-```typescript
-// All Prisma queries automatically filter by tenant
-const financials = await prisma.financial.findMany({
-  where: {
-    clientKPI: {
-      tenantId: request.headers.get('x-tenant-id')!,
-    },
-    recordDate: { gte: startDate },
-  },
-})
-```
+- Database connections: SSL enforced
+- Internal services: mTLS (production)
 
 ### API Security
 
-**Rate Limiting**: 100 requests/minute per tenant (Vercel Edge Config)
-
-```typescript
-// lib/middleware/rate-limit.ts
-import { Ratelimit } from '@upstash/ratelimit'
-import { Redis } from '@upstash/redis'
-
-const ratelimit = new Ratelimit({
-  redis: Redis.fromEnv(),
-  limiter: Ratelimit.slidingWindow(100, '1 m'),
-})
-
-export async function rateLimitMiddleware(request: NextRequest) {
-  const tenantId = request.headers.get('x-tenant-id')!
-  const { success, limit, remaining } = await ratelimit.limit(tenantId)
-
-  if (!success) {
-    return NextResponse.json(
-      { error: 'Rate limit exceeded' },
-      { status: 429, headers: { 'X-RateLimit-Remaining': '0' } }
-    )
-  }
-
-  return NextResponse.next()
-}
-```
+**Rate Limiting**: 100 requests/minute per tenant (Upstash Redis)
 
 **Request Validation**: Zod schemas for all API inputs
 
+**CORS Policy**: Restricted to production domains
+
+**Security Headers**: Helmet.js in Express.js
+
+### Secrets Management
+
+**Local Development**: `.env.local` files (gitignored)
+
+**Production**: AWS Secrets Manager
+
 ```typescript
-// Prevent SQL injection, XSS, and invalid data
-const querySchema = z.object({
-  startDate: z.string().datetime(),
-  endDate: z.string().datetime(),
-  metric: z.enum(['revenue', 'profit', 'cashflow']),
+// services/pipeline-worker/src/services/secrets-manager.ts
+import { SecretsManagerClient, GetSecretValueCommand } from '@aws-sdk/client-secrets-manager'
+
+const client = new SecretsManagerClient({
+  region: 'ap-southeast-2',
+  endpoint: process.env.AWS_ENDPOINT_URL, // LocalStack or AWS
 })
 
-const validated = querySchema.safeParse(request.query)
-if (!validated.success) {
-  throw new ValidationError(validated.error)
-}
-```
-
-**CORS Policy**: Restrict to production domains
-
-```typescript
-// next.config.js
-module.exports = {
-  async headers() {
-    return [
-      {
-        source: '/api/:path*',
-        headers: [
-          { key: 'Access-Control-Allow-Origin', value: 'https://app.colemorton.com.au' },
-          { key: 'Access-Control-Allow-Methods', value: 'GET,POST,PUT,DELETE' },
-        ],
-      },
-    ]
-  },
+export async function getSecret(secretId: string): Promise<Record<string, string>> {
+  const command = new GetSecretValueCommand({ SecretId: secretId })
+  const response = await client.send(command)
+  return JSON.parse(response.SecretString!)
 }
 ```
 
@@ -1278,397 +553,322 @@ module.exports = {
 │  │  Vercel Edge Network (Global CDN)                  │    │
 │  │  - Next.js Frontend (SSR + Static)                 │    │
 │  │  - API Routes (Serverless Functions)               │    │
-│  │  - Auto-scaling: 0 to ∞ based on traffic           │    │
+│  │  - Auto-scaling: 0 to ∞                            │    │
 │  └────────────────────┬───────────────────────────────┘    │
-│                        │                                     │
 │                        │ SSL/TLS 1.3                        │
-│                        ▼                                     │
-│  ┌────────────────────────────────────────────────────┐    │
+│  ┌────────────────────▼────────────────────────────────┐   │
 │  │  Supabase (Sydney Region)                          │    │
 │  │  - PostgreSQL 15 (Primary + Replica)               │    │
 │  │  - Connection Pooling (PgBouncer)                  │    │
-│  │  - Automated Backups (Daily, 30-day retention)     │    │
+│  │  - Automated Backups (Daily)                       │    │
 │  └────────────────────────────────────────────────────┘    │
 │                                                              │
 │  ┌────────────────────────────────────────────────────┐    │
-│  │  DigitalOcean Droplet (Sydney)                     │    │
-│  │  - 4GB RAM, 2 vCPUs, 80GB SSD                      │    │
-│  │  - Docker: n8n container                           │    │
-│  │  - Volume: Persistent workflow/execution storage   │    │
-│  │  - Monitoring: Datadog agent                       │    │
+│  │  Docker Compose (Local) / ECS (Production)         │    │
+│  │  - Webhook Receiver (Express.js)                   │    │
+│  │  - Pipeline Worker (Node.js, 2+ replicas)          │    │
+│  │  - Redis (job queue)                               │    │
+│  │  - Prometheus (metrics)                            │    │
+│  │  - Grafana (dashboards)                            │    │
 │  └────────────────────────────────────────────────────┘    │
 │                                                              │
+│  ┌────────────────────────────────────────────────────┐    │
+│  │  AWS Services (LocalStack Local / AWS Production)  │    │
+│  │  - SQS (job queue)                                 │    │
+│  │  - S3 (result storage)                             │    │
+│  │  - Secrets Manager (credentials)                   │    │
+│  └────────────────────────────────────────────────────┘    │
 └────────────────────────────────────────────────────────────┘
 ```
 
-### Environment Configuration
+### Docker Compose Stack
 
-**Vercel Environment Variables**:
-
-```bash
-# Database
-DATABASE_URL="postgresql://..."
-DIRECT_URL="postgresql://..." # Direct connection (bypasses pooling for migrations)
-
-# Supabase
-NEXT_PUBLIC_SUPABASE_URL="https://xxx.supabase.co"
-NEXT_PUBLIC_SUPABASE_ANON_KEY="eyJ..."
-SUPABASE_SERVICE_ROLE_KEY="eyJ..." # Server-side only
-
-# Encryption
-ENCRYPTION_KEY="64-char-hex-string" # AES-256 key
-
-# Integrations (OAuth credentials)
-XERO_CLIENT_ID="..."
-XERO_CLIENT_SECRET="..."
-HUBSPOT_CLIENT_ID="..."
-HUBSPOT_CLIENT_SECRET="..."
-
-# External Services
-SENDGRID_API_KEY="SG...."
-STRIPE_SECRET_KEY="sk_live_..."
-DATADOG_API_KEY="..."
-
-# Rate Limiting
-UPSTASH_REDIS_REST_URL="https://..."
-UPSTASH_REDIS_REST_TOKEN="..."
-```
-
-**n8n Environment Variables** (Docker):
+**File**: `docker-compose.pipeline.yml`
 
 ```yaml
-# docker-compose.yml
 version: '3.8'
+
 services:
-  n8n:
-    image: n8nio/n8n:latest
+  redis:
+    image: redis:7-alpine
     ports:
-      - '5678:5678'
-    environment:
-      - N8N_BASIC_AUTH_ACTIVE=true
-      - N8N_BASIC_AUTH_USER=${N8N_USER}
-      - N8N_BASIC_AUTH_PASSWORD=${N8N_PASSWORD}
-      - N8N_HOST=n8n.colemorton.internal
-      - N8N_PROTOCOL=https
-      - DATABASE_TYPE=postgresdb
-      - DB_POSTGRESDB_HOST=${POSTGRES_HOST}
-      - DB_POSTGRESDB_PORT=5432
-      - DB_POSTGRESDB_DATABASE=n8n
-      - DB_POSTGRESDB_USER=${POSTGRES_USER}
-      - DB_POSTGRESDB_PASSWORD=${POSTGRES_PASSWORD}
-      - EXECUTIONS_DATA_PRUNE=true
-      - EXECUTIONS_DATA_MAX_AGE=168 # 7 days
+      - '6379:6379'
     volumes:
-      - n8n_data:/home/node/.n8n
-    restart: unless-stopped
-```
+      - redis_data:/data
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 10s
+      timeout: 3s
+      retries: 3
 
-### CI/CD Pipeline
+  webhook-receiver:
+    build: ./services/webhook-receiver
+    ports:
+      - '3000:3000'
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - REDIS_HOST=redis
+      - AWS_ENDPOINT_URL=http://localstack:4566
+    depends_on:
+      - redis
+      - localstack
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:3000/health']
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
-**GitHub Actions Workflow**: `.github/workflows/deploy.yml`
-
-```yaml
-name: Deploy to Production
-
-on:
-  push:
-    branches: [main]
-
-jobs:
+  pipeline-worker:
+    build: ./services/pipeline-worker
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - REDIS_HOST=redis
+      - AWS_ENDPOINT_URL=http://localstack:4566
+    depends_on:
+      - redis
+      - localstack
   deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
+      replicas: 2
+    healthcheck:
+      test: ['CMD', 'test', '-f', '/tmp/worker-healthy']
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '20'
-          cache: 'npm'
+  localstack:
+    image: localstack/localstack:latest
+    ports:
+      - '4566:4566'
+    environment:
+      - SERVICES=sqs,s3,secretsmanager
+      - DEBUG=1
+    volumes:
+      - localstack_data:/var/lib/localstack
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:4566/_localstack/health']
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
-      - name: Install dependencies
-        run: npm ci
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - '9090:9090'
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./prometheus/alerts.yml:/etc/prometheus/alerts.yml
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
 
-      - name: Run type check
-        run: npm run type-check
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - '3001:3000'
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD:-admin}
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning
+      - ./grafana/dashboards:/var/lib/grafana/dashboards
+      - grafana_data:/var/lib/grafana
 
-      - name: Run tests
-        run: npm test
-
-      - name: Run Prisma migrations
-        run: npx prisma migrate deploy
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-
-      - name: Deploy to Vercel
-        uses: amondnet/vercel-action@v25
-        with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-          vercel-args: '--prod'
+volumes:
+  redis_data:
+  localstack_data:
+  prometheus_data:
+  grafana_data:
 ```
 
----
+### Terraform Infrastructure
 
-## Performance & Scalability
+**LocalStack (Local Development)**:
 
-### Performance Targets
-
-| Metric                           | Target | Current (MVP) | Measurement     |
-| -------------------------------- | ------ | ------------- | --------------- |
-| **Dashboard Load Time (LCP)**    | <2.5s  | 1.8s          | Core Web Vitals |
-| **API Response Time (p95)**      | <500ms | 320ms         | DataDog APM     |
-| **Database Query Time (p95)**    | <100ms | 65ms          | Prisma metrics  |
-| **Time to Interactive (TTI)**    | <3.5s  | 2.9s          | Lighthouse      |
-| **First Contentful Paint (FCP)** | <1.8s  | 1.2s          | Core Web Vitals |
-
-### Scalability Strategy
-
-**Database Scaling**:
-
-1. **Vertical Scaling** (0-100 customers)
-   - Supabase: Start with Small instance (2GB RAM)
-   - Upgrade to Medium (4GB) at 50 customers
-   - Upgrade to Large (8GB) at 100 customers
-
-2. **Read Replicas** (100-500 customers)
-   - Add read replica for dashboard queries
-   - Write queries to primary, read queries to replica
-   - Prisma client configured with read/write splitting
-
-3. **Partitioning** (500+ customers)
-   - Time-based partitioning on `financials`, `lead_events` (monthly partitions)
-   - Tenant-based partitioning (shard by `tenant_id`)
-   - Archived data moved to cold storage (S3)
-
-**API Scaling**:
-
-- Vercel serverless functions auto-scale (no manual intervention)
-- Edge caching for static dashboard assets (Vercel Edge Network)
-- React Query client-side caching reduces API calls by ~60%
-
-**ETL Scaling**:
-
-- n8n: Upgrade to 8GB Droplet at 50 customers
-- Parallelize workflows (separate containers for different integrations)
-- At 200+ customers, migrate to n8n Cloud or Kubernetes cluster
-
-### Caching Strategy
-
-**Client-Side** (React Query):
-
-```typescript
-// 5-minute cache for dashboard data, stale-while-revalidate
-const { data: kpis } = useQuery({
-  queryKey: ['kpis', tenantId],
-  queryFn: () => fetchKPIs(tenantId),
-  staleTime: 5 * 60 * 1000, // 5 minutes
-  cacheTime: 10 * 60 * 1000, // 10 minutes
-})
-```
-
-**Server-Side** (Redis via Upstash):
-
-```typescript
-// Cache expensive aggregations
-const cacheKey = `financials:${tenantId}:${startDate}:${endDate}`
-const cached = await redis.get(cacheKey)
-
-if (cached) {
-  return JSON.parse(cached)
+```hcl
+# terraform/environments/local/main.tf
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 5.0"
+    }
+  }
 }
 
-const data = await computeExpensiveAggregation()
-await redis.set(cacheKey, JSON.stringify(data), { ex: 3600 }) // 1 hour TTL
+provider "aws" {
+  region                      = "ap-southeast-2"
+  access_key                  = "test"
+  secret_key                  = "test"
+  skip_credentials_validation = true
+  skip_metadata_api_check     = true
+  skip_requesting_account_id  = true
 
-return data
+  endpoints {
+    sqs             = "http://localhost:4566"
+    s3              = "http://localhost:4566"
+    secretsmanager  = "http://localhost:4566"
+  }
+}
+
+module "queue" {
+  source = "../../modules/queue"
+
+  queue_name = "zixly-trading-sweeps-local"
+  environment = "local"
+}
+
+module "storage" {
+  source = "../../modules/storage"
+
+  bucket_name = "zixly-pipeline-results-local"
+  environment = "local"
+}
+
+module "secrets" {
+  source = "../../modules/secrets"
+
+  secret_name = "zixly/trading-api-local"
+  environment = "local"
+}
 ```
 
-**CDN** (Vercel Edge):
+**AWS (Production)** - Same modules, different provider:
 
-- Static assets: Cached indefinitely (immutable filenames)
-- API routes: No caching (always fresh data)
-- Dashboard HTML: Cached for 60s (ISR - Incremental Static Regeneration)
+```hcl
+# terraform/environments/aws/main.tf
+provider "aws" {
+  region = "ap-southeast-2"
+  # Uses AWS credentials from environment
+}
 
----
+# Same modules, different configuration
+module "queue" {
+  source = "../../modules/queue"
 
-## Reliability & Disaster Recovery
-
-### Availability Targets
-
-| Component     | SLA    | Uptime Target | Downtime/Year |
-| ------------- | ------ | ------------- | ------------- |
-| **Dashboard** | 99.9%  | 3 nines       | 8.76 hours    |
-| **API**       | 99.9%  | 3 nines       | 8.76 hours    |
-| **Database**  | 99.95% | 3.5 nines     | 4.38 hours    |
-| **ETL (n8n)** | 99.5%  | 2.5 nines     | 43.8 hours    |
-
-### Backup Strategy
-
-**Database Backups** (Supabase Automated):
-
-- **Frequency**: Daily at 3am AEST
-- **Retention**: 30 days (Point-in-Time Recovery available)
-- **Location**: S3-compatible storage (Sydney region)
-- **Testing**: Monthly restore test to staging environment
-
-**Application Backups** (Git + Vercel):
-
-- **Code**: GitHub repository (main branch = production)
-- **Deployments**: Vercel maintains deployment history (instant rollback)
-- **Environment Variables**: Encrypted backup in 1Password
-
-**n8n Workflow Backups**:
-
-- **Frequency**: Weekly export of all workflows (JSON)
-- **Storage**: GitHub private repository (`n8n-workflows/`)
-- **Versioning**: Git history tracks workflow changes
-
-### Disaster Recovery Plan
-
-**Scenario 1: Database Failure**
-
-1. **Detection**: Supabase health check fails (monitored by DataDog)
-2. **Notification**: PagerDuty alert to on-call (founder)
-3. **Mitigation**:
-   - Supabase automatically fails over to replica (RTO: 30 seconds)
-   - If catastrophic failure, restore from latest backup (RTO: 2 hours)
-4. **Recovery**:
-   - Verify data integrity via checksum comparison
-   - Resume ETL workflows
-   - Customer notification if downtime >1 hour
-
-**Scenario 2: Vercel Outage**
-
-1. **Detection**: Vercel status page + synthetic monitoring alerts
-2. **Mitigation**:
-   - Wait for Vercel resolution (historical MTTR: 15 minutes)
-   - If extended (>1 hour), deploy to backup Netlify account
-3. **Recovery**:
-   - Update DNS to point to backup deployment
-   - RTO: 90 minutes (manual DNS propagation)
-
-**Scenario 3: Data Corruption (Bad ETL Logic)**
-
-1. **Detection**: Data anomaly alerts (e.g., revenue suddenly 10x normal)
-2. **Mitigation**:
-   - Pause affected n8n workflow
-   - Identify corrupt records via audit logs
-   - Delete corrupt data: `DELETE FROM financials WHERE created_at > '2025-01-15 14:00'`
-3. **Recovery**:
-   - Fix ETL workflow bug
-   - Re-run workflow for affected date range
-   - Customer notification + data validation report
-
-**Recovery Time Objectives (RTO) / Recovery Point Objectives (RPO)**:
-
-| Scenario                        | RTO                           | RPO                                |
-| ------------------------------- | ----------------------------- | ---------------------------------- |
-| Database failure                | 30 seconds (auto-failover)    | 5 minutes (replication lag)        |
-| Application deployment rollback | 2 minutes                     | 0 (instant rollback)               |
-| Complete data center loss       | 2 hours (backup restore)      | 24 hours (daily backups)           |
-| Data corruption                 | 4 hours (manual intervention) | Varies (depends on detection time) |
+  queue_name = "zixly-trading-sweeps-prod"
+  environment = "production"
+}
+```
 
 ---
 
 ## Monitoring & Observability
 
-### Monitoring Stack
+### Prometheus Metrics
 
-| Layer                                        | Tool                           | Purpose                                                   |
-| -------------------------------------------- | ------------------------------ | --------------------------------------------------------- |
-| **Application Performance Monitoring (APM)** | DataDog                        | Request tracing, performance metrics, error rates         |
-| **Error Tracking**                           | Sentry                         | Exception monitoring, stack traces, release tracking      |
-| **Uptime Monitoring**                        | Checkly                        | Synthetic monitoring, API health checks (5-min intervals) |
-| **Infrastructure Monitoring**                | DigitalOcean Metrics + DataDog | CPU, memory, disk, network for n8n Droplet                |
-| **Log Aggregation**                          | DataDog Logs                   | Centralized logging from Vercel + n8n + Supabase          |
-
-### Key Metrics Dashboard
-
-**DataDog Dashboard**: "Zixly Production Overview"
-
-**System Health**:
-
-- Request rate (requests/min)
-- Error rate (% of requests with 5xx)
-- Latency (p50, p95, p99)
-- Database connection pool utilization
-
-**Business Metrics**:
-
-- Active tenants (daily active users)
-- API calls per tenant (usage tracking)
-- ETL workflow success rate (%)
-- Data sync lag (time since last successful sync per integration)
-
-**Alerting Rules**:
-
-```yaml
-# datadog-alerts.yml
-- name: 'High API Error Rate'
-  query: 'avg(last_5m):sum:api.errors{env:production} > 10'
-  message: 'API error rate exceeded 10 errors/5min. Investigate immediately.'
-  priority: P1
-  notify: ['pagerduty', 'slack']
-
-- name: 'Database Connection Pool Exhausted'
-  query: 'avg(last_5m):max:postgres.connections.active{} / max:postgres.connections.max{} > 0.9'
-  message: 'Database connection pool at 90% capacity. Consider scaling.'
-  priority: P2
-  notify: ['slack']
-
-- name: 'ETL Workflow Failure'
-  query: 'sum(last_1h):n8n.workflow.failed{workflow:xero-financials} > 3'
-  message: 'Xero financials workflow failed 3+ times in 1 hour. Check n8n logs.'
-  priority: P2
-  notify: ['email', 'slack']
-
-- name: 'Dashboard Load Time Regression'
-  query: 'avg(last_15m):p95:browser.page.load_time{page:dashboard} > 3000'
-  message: 'Dashboard load time (p95) exceeded 3s. Performance degradation.'
-  priority: P3
-  notify: ['slack']
-```
-
-### Structured Logging
-
-**Log Format** (JSON):
+**Webhook Receiver Metrics**:
 
 ```typescript
-// lib/logger.ts
-import winston from 'winston'
+// services/webhook-receiver/src/services/metrics.ts
+import { Counter, Histogram, Gauge, register } from 'prom-client'
 
-export const logger = winston.createLogger({
-  level: 'info',
-  format: winston.format.combine(
-    winston.format.timestamp(),
-    winston.format.errors({ stack: true }),
-    winston.format.json()
-  ),
-  defaultMeta: { service: 'zixly-api' },
-  transports: [
-    new winston.transports.Console(),
-    new DatadogTransport({ apiKey: process.env.DATADOG_API_KEY }),
-  ],
+export const httpRequestDuration = new Histogram({
+  name: 'http_request_duration_seconds',
+  help: 'Duration of HTTP requests in seconds',
+  labelNames: ['method', 'route', 'status'],
+  buckets: [0.1, 0.3, 0.5, 0.7, 1, 3, 5, 7, 10],
 })
 
-// Usage in API route
-logger.info('Financial data fetched', {
-  tenantId,
-  recordCount: financials.length,
-  startDate,
-  endDate,
-  duration: Date.now() - startTime,
+export const pipelineJobsQueued = new Counter({
+  name: 'pipeline_jobs_queued_total',
+  help: 'Total number of jobs queued',
+  labelNames: ['job_type'],
+})
+
+export const pipelineJobs = new Gauge({
+  name: 'pipeline_jobs',
+  help: 'Current pipeline jobs by status',
+  labelNames: ['status'],
 })
 ```
 
-**Log Retention**:
+**Pipeline Worker Metrics**:
 
-- Info/Debug logs: 7 days
-- Warning logs: 30 days
-- Error logs: 90 days
-- Audit logs (auth, data access): 2 years
+```typescript
+// services/pipeline-worker/src/services/metrics.ts
+export const pipelineJobDuration = new Histogram({
+  name: 'pipeline_job_duration_seconds',
+  help: 'Duration of pipeline job processing',
+  labelNames: ['job_type', 'status'],
+  buckets: [1, 5, 10, 30, 60, 120, 300, 600],
+})
+
+export const pipelineJobsProcessed = new Counter({
+  name: 'pipeline_jobs_processed_total',
+  help: 'Total number of jobs processed',
+  labelNames: ['job_type', 'status'],
+})
+
+export const tradingApiLatency = new Histogram({
+  name: 'trading_api_latency_seconds',
+  help: 'Trading API request latency',
+  labelNames: ['endpoint'],
+  buckets: [0.5, 1, 2, 5, 10, 30],
+})
+```
+
+### Grafana Dashboards
+
+**Pipeline Overview Dashboard** (`grafana/dashboards/pipeline-overview.json`):
+
+- Total jobs queued (24h)
+- Success rate (24h)
+- P95 job duration
+- Active workers
+- Job flow over time
+- Error rate
+
+**Trading Pipeline Dashboard** (`grafana/dashboards/trading-pipeline.json`):
+
+- Trading sweep jobs by ticker
+- Execution time (p95)
+- Completion rate
+- API latency by endpoint
+- Error breakdown
+
+### Alert Rules
+
+**File**: `prometheus/alerts.yml`
+
+```yaml
+groups:
+  - name: pipeline_alerts
+    rules:
+      - alert: HighErrorRate
+        expr: rate(pipeline_jobs_processed_total{status="failed"}[5m]) > 0.1
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: 'High error rate detected'
+          description: 'Error rate is {{ $value }} jobs/sec'
+
+      - alert: QueueBacklog
+        expr: pipeline_jobs{status="queued"} > 100
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: 'Queue backlog detected'
+          description: '{{ $value }} jobs waiting in queue'
+
+      - alert: WorkerDown
+        expr: up{job="pipeline-worker"} == 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: 'Pipeline worker is down'
+
+      - alert: SlowExecution
+        expr: histogram_quantile(0.95, rate(pipeline_job_duration_seconds_bucket[5m])) > 300
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: 'Slow job execution'
+          description: 'P95 duration is {{ $value }}s'
+```
 
 ---
 
@@ -1678,455 +878,131 @@ logger.info('Financial data fetched', {
 
 ```bash
 # 1. Clone repository
-git clone git@github.com:colemorton/platform.git
-cd platform
+git clone https://github.com/colemorton/zixly.git
+cd zixly
 
 # 2. Install dependencies
 npm install
 
 # 3. Setup environment
-cp .env.example .env.local
-# Edit .env.local with local Supabase credentials
+cp .env.local.template .env.local
+# Edit .env.local with your Supabase credentials
 
 # 4. Run database migrations
-npx prisma migrate dev
+npm run db:migrate
 
-# 5. Seed development data
-npx prisma db seed
+# 5. Initialize LocalStack + Terraform
+./scripts/init-localstack-terraform.sh
 
-# 6. Start development server
+# 6. Start development server (Next.js)
 npm run dev
 # → http://localhost:3000
 
-# 7. Start n8n (optional, for ETL testing)
-docker-compose up n8n
-# → http://localhost:5678
+# 7. Start pipeline stack (separate terminal)
+docker-compose -f docker-compose.pipeline.yml up
+# → Webhook receiver: http://localhost:3000/webhook
+# → Grafana: http://localhost:3001
+# → Prometheus: http://localhost:9090
 ```
 
-### Git Workflow
-
-**Branch Strategy**: Trunk-based development
-
-- `main`: Production-ready code (auto-deploys to Vercel)
-- `feat/*`: Feature branches (merge via PR)
-- `fix/*`: Bug fixes (merge via PR)
-
-**Commit Convention**: Conventional Commits
+### Trigger a Pipeline Job
 
 ```bash
-feat(api): add financial aggregation endpoint
-fix(dashboard): correct chart date formatting
-chore(deps): upgrade Next.js to 15.5.5
+curl -X POST http://localhost:3000/webhook/trading-sweep \
+  -H "Content-Type: application/json" \
+  -d '{
+    "ticker": "BTC-USD",
+    "fast_range": [10, 20],
+    "slow_range": [20, 30],
+    "step": 5,
+    "strategy_type": "SMA"
+  }'
 ```
 
 ### Code Quality Standards
 
-**Pre-Commit Hooks** (Husky + lint-staged):
-
-```json
-// .husky/pre-commit
-{
-  "lint-staged": {
-    "*.{ts,tsx}": ["eslint --fix", "prettier --write"],
-    "*.prisma": ["prisma format"]
-  }
-}
-```
-
-**ESLint Configuration**:
-
-```json
-// .eslintrc.json
-{
-  "extends": ["next/core-web-vitals", "plugin:@typescript-eslint/recommended", "prettier"],
-  "rules": {
-    "@typescript-eslint/no-unused-vars": "error",
-    "@typescript-eslint/explicit-function-return-type": "warn",
-    "no-console": ["warn", { "allow": ["warn", "error"] }]
-  }
-}
-```
-
-**TypeScript Configuration**:
-
-```json
-// tsconfig.json
-{
-  "compilerOptions": {
-    "strict": true,
-    "noUncheckedIndexedAccess": true,
-    "noImplicitReturns": true,
-    "forceConsistentCasingInFileNames": true,
-    "paths": {
-      "@/*": ["./src/*"],
-      "@/lib/*": ["./src/lib/*"],
-      "@/components/*": ["./src/components/*"]
-    }
-  }
-}
-```
+- **TypeScript**: Strict mode enabled
+- **ESLint**: Next.js + TypeScript rules
+- **Prettier**: Code formatting
+- **Husky**: Pre-commit hooks
+- **Vitest**: Testing framework (275 tests, 70-75% coverage)
 
 ---
 
 ## Implementation Roadmap
 
-### MVP Phases Overview
+### Completed Phases
 
-The implementation follows a 4-phase approach optimized for solo senior full-stack developer velocity, spanning 18 weeks total.
+✅ **Phase 1: Data Foundation** (Weeks 1-4)
 
-| Phase                            | Duration | Focus Area                          | Key Deliverables                                                          | Success Gate                                            |
-| -------------------------------- | -------- | ----------------------------------- | ------------------------------------------------------------------------- | ------------------------------------------------------- |
-| **Phase 1: Data Foundation**     | 4 weeks  | Backend infrastructure & data layer | Supabase setup, Prisma schema, secure API routes, JWT auth                | All 4 core API endpoints functional with authentication |
-| **Phase 2: ETL & Orchestration** | 6 weeks  | Data ingestion pipelines            | n8n workflows, 3 core integrations (Xero, HubSpot, Asana), automated sync | Daily sync operational for all P1 integrations          |
-| **Phase 3: Visualization**       | 5 weeks  | Dashboard UI & charts               | Next.js dashboard, 4 Visx charts, interactivity, filtering                | <2.5s dashboard load time achieved                      |
-| **Phase 4: Operationalization**  | 3 weeks  | Production readiness                | Performance tuning, security audit, testing, monitoring                   | 99.9% uptime SLA met, compliance validated              |
+- Supabase PostgreSQL setup
+- Prisma schema and migrations
+- Supabase Auth integration
+- Core API endpoints
 
-**Total MVP Timeline**: 18 weeks (4.5 months)
+✅ **Phase 2: Infrastructure & Services** (Weeks 3-4)
 
-**Related Documentation**:
+- Docker Compose pipeline stack
+- Webhook receiver service
+- Pipeline worker service
+- Redis job queue
+- Prometheus + Grafana
 
-- Detailed phase plans: [Implementation Directory](../implementation/)
-- Product requirements: [Product Requirements Document](../product/product-requirements-document.md)
-- Product vision: [Product Specification](../specs/product-specification.md)
+✅ **Phase 1.5: LocalStack + Terraform** (Weeks 5-6)
 
----
+- Terraform modules (SQS, S3, Secrets Manager)
+- LocalStack integration
+- AWS SDK services
+- Zero-cost local development
 
-### Phase 1: Data Foundation (Weeks 1-4)
+### Current Phase
 
-**Objective**: Establish secure, scalable, type-safe backend and data layer
+🔄 **Phase 3: Dashboard & API** (Weeks 7-8)
 
-**Deliverables**:
+- Pipeline management API routes
+- Real-time dashboard with WebSocket
+- Job visualization components
+- Result display and CSV export
 
-1. **Project Setup & Integration** (Week 1)
-   - Initialize Next.js 15.5.5 with TypeScript, App Router
-   - Configure Vercel deployment pipeline
-   - Set up Supabase PostgreSQL (Sydney region)
-   - Environment variable management (.env.local, Vercel secrets)
+### Upcoming Phases
 
-2. **Core Schema Definition** (Week 1-2)
-   - Design Prisma schema (Tenant, ClientKPI, Financial, LeadEvent, CustomMetric, Integration)
-   - Implement multi-tenancy with Row-Level Security (RLS)
-   - Run migrations to Supabase
-   - Generate type-safe Prisma Client
+⏳ **Phase 4: Production Readiness** (Weeks 9-12)
 
-3. **RAG Readiness** (Week 2)
-   - Enable pgvector extension in Supabase
-   - Add vector embedding column to CustomMetric table
-   - Document future RAG architecture strategy
-
-4. **Secure API Endpoints** (Week 3-4)
-   - Implement Supabase Auth with JWT validation
-   - Create authentication middleware for API routes
-   - Build 4 core endpoints: `/api/kpis`, `/api/financials`, `/api/leads`, `/api/metrics`
-   - Add Zod request validation
-   - Implement error handling utilities
-
-**Success Criteria**:
-
-- ✅ Supabase operational with pgvector enabled
-- ✅ All core tables migrated with proper indexes
-- ✅ Prisma Client generating type-safe queries
-- ✅ JWT authentication protecting all API routes
-- ✅ API endpoints return valid data with tenant isolation enforced
+- Performance optimization
+- Security hardening
+- End-to-end testing
+- Kubernetes deployment
 
 ---
 
-### Phase 2: ETL & Orchestration (Weeks 5-10)
+## Performance Targets
 
-**Objective**: Implement robust, cost-effective data ingestion and transformation using n8n
-
-**Deliverables**:
-
-1. **n8n Self-Hosting** (Week 5)
-   - Deploy n8n via Docker on DigitalOcean Droplet (Sydney)
-   - Configure secure access with HTTPS and basic auth
-   - Set up PostgreSQL connection for workflow persistence
-   - Implement logging to DataDog
-
-2. **Core Connector Workflows** (Weeks 6-8)
-   - **Xero Integration**: Daily P&L report sync (financial data)
-   - **HubSpot Integration**: Daily deals/contacts sync (CRM pipeline)
-   - **Asana Integration**: Daily task completion metrics (operational data)
-   - OAuth 2.0 token management (refresh token rotation)
-   - Scheduled triggers (cron: daily at 2am AEST)
-
-3. **Custom ETL Logic** (Weeks 8-9)
-   - TypeScript code nodes for data transformation
-   - Date normalization (UTC timezone handling)
-   - Currency conversion (all to AUD)
-   - KPI aggregation calculations
-   - API pagination handling
-   - Retry logic with exponential backoff (3x attempts)
-
-4. **Data Loading & Integrity** (Week 10)
-   - Upsert logic (INSERT ... ON CONFLICT DO UPDATE)
-   - Data validation before write (fail-fast on schema violations)
-   - Sync status tracking (Integration.lastSyncAt updates)
-   - Error notification (email + Slack on 3+ consecutive failures)
-
-**Success Criteria**:
-
-- ✅ n8n operational on DigitalOcean with 99.5%+ uptime
-- ✅ Xero, HubSpot, Asana workflows running daily without manual intervention
-- ✅ < 1% error rate across all ETL workflows
-- ✅ Data integrity checks passing (no duplicate records, correct tenant isolation)
+| Metric                   | Target        | Current | Status |
+| ------------------------ | ------------- | ------- | ------ |
+| **API Response (p95)**   | <500ms        | 320ms   | ✅     |
+| **Job Processing (p95)** | <5min         | TBD     | 🔄     |
+| **Dashboard LCP**        | <2.5s         | 1.8s    | ✅     |
+| **Queue Throughput**     | >100 jobs/min | TBD     | 🔄     |
+| **Worker Utilization**   | >80%          | TBD     | 🔄     |
 
 ---
 
-### Phase 3: Visualization (Weeks 11-15)
+## Related Documentation
 
-**Objective**: Build premium, bespoke dashboard UI with interactive Visx charts
-
-**Deliverables**:
-
-1. **Dashboard UI Scaffolding** (Week 11)
-   - Responsive dashboard layout (Tailwind CSS)
-   - Navigation structure (sidebar, header, breadcrumbs)
-   - SSR for initial data fetch (Server Components)
-   - Client-side routing (App Router)
-
-2. **Data Fetching Layer** (Week 12)
-   - React Query setup (caching, optimistic updates)
-   - API client with TypeScript types (generated from API routes)
-   - Loading states and error boundaries
-   - Stale-while-revalidate caching (5-minute stale time)
-
-3. **Visx Chart Implementation** (Weeks 13-14)
-   - **Financial Performance Dashboard**: Revenue, expenses, profit trends (line + bar charts)
-   - **Sales Funnel Analysis**: Stage conversion rates (custom funnel visualization)
-   - **Cash Flow Tracking**: Monthly burn rate, runway projection (area chart)
-   - **Operational Efficiency**: Task completion metrics, project velocity (time-series)
-
-4. **Interactivity & UX** (Week 15)
-   - Date range filtering (last 7/30/90 days, custom range)
-   - Drill-down capability (click chart to view underlying data)
-   - Export functionality (CSV download)
-   - Responsive design (1024px+, tablet support 768px+)
-
-**Success Criteria**:
-
-- ✅ Dashboard Largest Contentful Paint (LCP) < 2.5 seconds
-- ✅ All 4 core charts rendering with real customer data
-- ✅ Interactive filtering functional without performance degradation
-- ✅ Lighthouse score > 90 (Performance, Accessibility, Best Practices)
+- **[Business Model](../business/business-model.md)** - Service business + internal operations + open-source
+- **[Architecture Decisions](./decisions/)** - ADRs for key technical choices
+- **[Pipeline Specifications](../pipelines/)** - Webhook pipelines and job patterns
+- **[Deployment Guide](../../DEPLOYMENT.md)** - Local and production deployment
+- **[Implementation Status](../../STATUS.md)** - Current progress and milestones
 
 ---
 
-### Phase 4: Operationalization (Weeks 16-18)
-
-**Objective**: Harden application, finalize deployment, prepare for production traffic
-
-**Deliverables**:
-
-1. **Container Finalization** (Week 16)
-   - Docker Compose configuration for n8n with persistent volumes
-   - Health check endpoints for monitoring
-   - Automated deployment scripts (Ansible/Terraform consideration)
-
-2. **Performance Tuning** (Week 16-17)
-   - Database query optimization (analyze slow queries, add missing indexes)
-   - Prisma query batching and caching
-   - API route optimization (reduce cold start times)
-   - Vercel Edge Function migration for high-traffic endpoints
-   - Image optimization (Next.js Image component, WebP format)
-
-3. **Security Hardening** (Week 17)
-   - Environment variable audit (no secrets in code)
-   - OAuth token encryption verification (AES-256-GCM)
-   - CORS policy enforcement (production domain whitelist)
-   - Rate limiting implementation (100 req/min per tenant)
-   - Australian Privacy Act compliance audit
-   - Penetration testing (OWASP Top 10 validation)
-
-4. **Testing & Documentation** (Week 18)
-   - End-to-end tests for critical workflows (Playwright)
-   - API integration tests (Vitest)
-   - Load testing (simulate 100 concurrent users, K6)
-   - System documentation update (architecture diagrams, runbooks)
-   - Developer onboarding guide (README, local setup instructions)
-
-**Success Criteria**:
-
-- ✅ 99.9% uptime SLA achieved in staging environment (7-day observation)
-- ✅ All performance targets met (API <500ms p95, Dashboard <2.5s LCP)
-- ✅ Security audit passing with zero critical/high vulnerabilities
-- ✅ Load tests passing at 2x expected traffic (100 concurrent users)
-- ✅ Automated backups operational (daily database, weekly workflow exports)
-
----
-
-### Post-MVP Roadmap (Months 5-12)
-
-**Months 5-7: Customer Acquisition**
-
-- Onboard first 5 paying customers
-- Refine sales process based on pilot feedback
-- Develop 1-2 customer case studies
-- Implement customer feedback loop (NPS surveys, feature requests)
-
-**Months 8-10: Feature Expansion**
-
-- Priority 2 integrations (Shopify, MYOB, Pipedrive)
-- Advanced alerting (Slack notifications, threshold-based triggers)
-- Dashboard sharing (read-only public links, PDF export)
-- Mobile web optimization (responsive <768px)
-
-**Months 11-12: Scale Preparation**
-
-- Automated customer onboarding workflow
-- Self-service integration configuration UI
-- Enterprise tier launch (dedicated support, custom SLA)
-- SOC 2 Type I audit initiation (if targeting enterprise)
-
----
-
-## Technical Debt & Future Enhancements
-
-### Known Technical Debt
-
-| Item                               | Impact | Effort | Priority | Mitigation Plan                                         |
-| ---------------------------------- | ------ | ------ | -------- | ------------------------------------------------------- |
-| **No automated E2E tests**         | High   | Medium | P1       | Implement Playwright tests for critical flows (Q2 2026) |
-| **n8n manual deployment**          | Medium | Low    | P2       | Create Terraform config for IaC (Q3 2026)               |
-| **No feature flags system**        | Medium | Medium | P2       | Integrate LaunchDarkly (Q4 2026)                        |
-| **Hard-coded integration configs** | Low    | Low    | P3       | Move to database-backed registry (Q1 2027)              |
-| **Single n8n instance**            | High   | High   | P1       | Implement n8n clustering at 100 customers               |
-
-### Future Architecture Enhancements
-
-**Phase 2 (Months 7-12)**:
-
-- **Real-time Data**: Implement WebSocket connections for live dashboard updates
-- **Advanced Analytics**: Add predictive models (forecasting, anomaly detection) via Python microservice
-- **White-Label**: Multi-domain support for agency partners
-
-**Phase 3 (Year 2)**:
-
-- **RAG Implementation**: Vector search on unstructured data (invoices, emails) using OpenAI embeddings
-- **Mobile App**: React Native app with offline-first architecture
-- **Advanced Alerting**: AI-powered insight generation (e.g., "Revenue 15% below forecast, investigate X")
-
-**Phase 4 (Year 3+)**:
-
-- **Multi-Region**: Deploy to US + EU regions for international expansion
-- **Enterprise SSO**: SAML/OIDC integration for enterprise customers
-- **Data Mesh**: Federated data architecture for customers with complex org structures
-
----
-
-## Appendix
-
-### Technology Decision Records (TDRs)
-
-**TDR-001: Why Next.js over Remix/Astro?**
-
-**Context**: Need full-stack framework with SSR and API routes
-
-**Decision**: Next.js App Router
-
-**Rationale**:
-
-- Vercel hosting provides best-in-class developer experience (zero-config deployments)
-- Largest ecosystem and community support
-- Built-in image optimization, edge runtime support
-- Team already familiar with React paradigm
-
-**Trade-offs**:
-
-- Vendor lock-in to Vercel (mitigation: can self-host on Node.js)
-- Framework complexity (App Router learning curve)
-
----
-
-**TDR-002: Why Self-Hosted n8n over Zapier/Make?**
-
-**Context**: Need ETL orchestration for high-volume data syncs in integration platform
-
-**Decision**: Self-hosted n8n on DigitalOcean
-
-**Rationale**:
-
-- Cost: Zapier charges per task ($0.01-0.03/task) = $500-1500/month at scale. n8n = $40/month VPS.
-- Flexibility: Custom TypeScript code nodes for complex transformations
-- Data residency: Data never leaves our infrastructure (compliance requirement)
-- Integration focus: n8n designed for connecting systems, not just simple automation
-
-**Trade-offs**:
-
-- Infrastructure management overhead (mitigation: Docker simplifies deployment)
-- Less polished UI than Zapier (acceptable for solo operator)
-
----
-
-**TDR-003: Why Supabase over AWS RDS?**
-
-**Context**: Need managed PostgreSQL with Australian data residency
-
-**Decision**: Supabase PostgreSQL (Sydney region)
-
-**Rationale**:
-
-- Zero-config pgvector support (required for future RAG features)
-- Built-in auth system (saves development time)
-- Superior developer experience (dashboard, migrations, backups)
-- Competitive pricing ($25/month startup vs $50+/month AWS RDS)
-
-**Trade-offs**:
-
-- Smaller company (vs AWS stability) - mitigation: export backups to S3
-- Limited customization of PostgreSQL config - acceptable for MVP
-
----
-
-### Glossary
-
-- **ARPA**: Average Revenue Per Account
-- **ETL**: Extract, Transform, Load (data pipeline process)
-- **JWT**: JSON Web Token (authentication token format)
-- **OAuth**: Open Authorization (delegated authorization framework)
-- **ORM**: Object-Relational Mapping (database abstraction layer)
-- **RAG**: Retrieval-Augmented Generation (AI technique using vector search)
-- **RBAC**: Role-Based Access Control
-- **RLS**: Row-Level Security (PostgreSQL feature)
-- **RTO**: Recovery Time Objective (max acceptable downtime)
-- **RPO**: Recovery Point Objective (max acceptable data loss)
-- **SSR**: Server-Side Rendering
-- **TDR**: Technology Decision Record
-
----
-
----
-
-## Database Documentation
-
-### Comprehensive Database Architecture
-
-For detailed database-specific documentation, see:
-
-**Schema & Design**:
-
-- [Database Schema Diagram](./database-schema-diagram.md) - Complete ERD with tables, relationships, indexes
-- [Row-Level Security Policies](./row-level-security-policies.md) - PostgreSQL RLS DDL for multi-tenant isolation
-
-**Operations & Maintenance**:
-
-- [Database Migrations Strategy](./database-migrations.md) - Prisma migration workflow, testing, rollback procedures
-- [Database Monitoring](./database-monitoring.md) - DataDog queries, alerts, performance troubleshooting
-
-**Advanced Features**:
-
-- [RAG Strategy](./rag-strategy.md) - pgvector configuration, embedding generation, similarity search
-
-**Schema Version**: 1.0 (MVP)
-**Last Schema Update**: 2025-10-15
-
----
-
-**Document End**
-
-**Review Cycle**: Quarterly or after major architecture changes
-**Next Review**: 2026-01-15
-**Change History**:
-
-- 2025-10-15: Initial version (v1.0) - MVP architecture documented
-- 2025-10-15: Added database documentation cross-references
+**Document Version**: 2.0  
+**Last Updated**: 2025-01-27  
+**Maintained By**: Zixly Technical Architecture  
+**Review Cycle**: Monthly
+
+**Previous Versions**:
+
+- v1.0: Original architecture (n8n-focused SME stack model)
+- v2.0: Updated to reflect Docker/Kubernetes/Terraform DevOps automation model (current)

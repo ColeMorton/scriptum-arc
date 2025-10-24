@@ -1,15 +1,18 @@
 # Zixly Troubleshooting Guide
 
+> **⚠️ PARTIALLY OUTDATED**: Some troubleshooting guides reference the old n8n architecture. Docker service troubleshooting and general infrastructure issues remain relevant, but n8n-specific workflow troubleshooting is obsolete.
+>
+> **Status**: Mixed (Docker guides current, n8n guides outdated)  
+> **Last Updated**: 2025-01-27
+
 **Version**: 1.0  
-**Last Updated**: 2025-01-27  
-**Owner**: Technical Operations  
-**Status**: Active Guide
+**Owner**: Technical Operations
 
 ---
 
 ## Overview
 
-This directory contains troubleshooting guides for common issues encountered when setting up and operating the Zixly internal operations platform. These guides provide step-by-step solutions for typical problems.
+This directory contains troubleshooting guides for common issues encountered when setting up and operating the Zixly platform. Docker and infrastructure guides are current, but workflow automation troubleshooting needs updating for the new Docker pipeline architecture.
 
 ---
 
@@ -25,15 +28,13 @@ This directory contains troubleshooting guides for common issues encountered whe
 - SSL version errors → Use STARTTLS on port 587
 - Connection failures → Check firewall and network settings
 
-### [n8n Workflow Errors](n8n-workflow-errors.md)
+### ~~n8n Workflow Errors~~ (Deprecated)
 
-**Common Issues**: Workflow execution failures, credential validation, API connectivity
+**⚠️ OBSOLETE**: This guide was for the old n8n architecture. For current pipeline troubleshooting, see:
 
-**Quick Solutions**:
-
-- Workflow not executing → Check trigger configuration
-- Credential errors → Verify API keys and tokens
-- Node failures → Review error logs and data validation
+- [Pipeline Services Documentation](../pipelines/)
+- [System Architecture - Pipeline Architecture](../architecture/system-architecture.md#pipeline-architecture)
+- Check webhook receiver and worker logs for current pipeline issues
 
 ### [Docker Service Issues](docker-services.md)
 
@@ -52,26 +53,27 @@ This directory contains troubleshooting guides for common issues encountered whe
 ### Check Service Status
 
 ```bash
-# Check all Zixly services
-docker-compose -f docker-compose.n8n.yml ps
+# Check pipeline services
+docker-compose -f docker-compose.pipeline.yml ps
 
 # Check specific service logs
-docker-compose -f docker-compose.n8n.yml logs n8n
-docker-compose -f docker-compose.n8n.yml logs postgres
-docker-compose -f docker-compose.n8n.yml logs redis
+docker-compose -f docker-compose.pipeline.yml logs webhook-receiver
+docker-compose -f docker-compose.pipeline.yml logs pipeline-worker
+docker-compose -f docker-compose.pipeline.yml logs redis
+docker-compose -f docker-compose.pipeline.yml logs localstack
 ```
 
 ### Test Network Connectivity
 
 ```bash
-# Test n8n interface
-curl http://localhost:5678/healthz
+# Test webhook receiver
+curl http://localhost:3000/health
 
 # Test SMTP connection
 telnet smtp-mail.outlook.com 587
 
 # Test database connection
-docker exec zixly-n8n-postgres pg_isready -U n8n
+docker exec zixly-pipeline services-postgres pg_isready -U pipeline services
 ```
 
 ### Check Resource Usage
@@ -107,7 +109,7 @@ free -h
 
 - **Pattern**: "Node execution failed" or "Workflow stopped"
 - **Common Cause**: Invalid data, API endpoint issues, credential problems
-- **Guide**: [n8n Workflow Errors](n8n-workflow-errors.md)
+- **Guide**: Check webhook receiver and pipeline worker logs for errors
 
 ---
 
@@ -117,7 +119,7 @@ free -h
 
 1. **Read the error message** carefully
 2. **Check the logs** for additional context
-3. **Identify which component** is failing (n8n, database, email, etc.)
+3. **Identify which component** is failing (webhook receiver, pipeline worker, database, etc.)
 
 ### Step 2: Check Common Solutions
 

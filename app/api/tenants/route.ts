@@ -60,7 +60,7 @@ export async function GET() {
       tenant: {
         id: tenant.id,
         name: tenant.name, // "Zixly"
-        industry: tenant.industry, // "n8n Automation Services"
+        industry: tenant.industry, // "pipeline Automation Services"
         createdAt: tenant.createdAt,
         stats: {
           teamMembers: tenant._count.users, // Zixly team size

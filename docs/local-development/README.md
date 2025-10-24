@@ -10,7 +10,7 @@
 
 2. **Configure credentials**:
    - Update `.env.local` with your values
-   - Configure n8n credentials in the interface
+   - Configure pipeline services credentials in the interface
 
 3. **Start the stack**:
 
@@ -19,7 +19,7 @@
    ```
 
 4. **Access services**:
-   - n8n: http://localhost:5678
+   - pipeline services: http://localhost:5678
    - Plane: http://localhost:8000
    - PostgreSQL: localhost:5432
    - Redis: localhost:6379
@@ -27,10 +27,10 @@
 5. **Configure Plane**:
    - Complete setup wizard
    - Generate API token
-   - Update n8n credentials
+   - Update pipeline services credentials
 
 6. **Import smoke test workflow**:
-   - Import `plane-smoke-test.json` in n8n
+   - Import `plane-smoke-test.json` in pipeline services
    - Configure credentials
    - Execute workflow
 
@@ -40,7 +40,7 @@
 
 1. Start stack: `./scripts/start-local.sh`
 2. Make changes to workflows
-3. Test changes in n8n
+3. Test changes in pipeline services
 4. Stop stack: `./scripts/stop-local.sh`
 
 ### Clean Development

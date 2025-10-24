@@ -1,0 +1,56 @@
+variable "project_name" {
+  description = "Project name for resource naming"
+  type        = string
+  default     = "zixly"
+}
+
+variable "environment" {
+  description = "Environment name (dev, staging, prod)"
+  type        = string
+  default     = "prod"
+}
+
+variable "aws_region" {
+  description = "AWS region for resources"
+  type        = string
+  default     = "ap-southeast-2" # Sydney
+}
+
+variable "trading_api_key" {
+  description = "Trading API authentication key"
+  type        = string
+  sensitive   = true
+}
+
+variable "trading_api_url" {
+  description = "Trading API base URL"
+  type        = string
+}
+
+variable "smtp_host" {
+  description = "SMTP server hostname"
+  type        = string
+}
+
+variable "smtp_port" {
+  description = "SMTP server port"
+  type        = number
+}
+
+variable "smtp_user" {
+  description = "SMTP authentication username"
+  type        = string
+  sensitive   = true
+}
+
+variable "smtp_password" {
+  description = "SMTP authentication password"
+  type        = string
+  sensitive   = true
+}
+
+variable "smtp_from" {
+  description = "SMTP from email address"
+  type        = string
+}
+

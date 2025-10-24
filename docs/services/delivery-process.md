@@ -9,7 +9,7 @@
 
 ## Overview
 
-This document outlines Zixly's standardized service delivery process for n8n automation implementations. Our proven methodology ensures consistent, high-quality service delivery while maintaining flexibility for client-specific needs.
+This document outlines Zixly's standardized service delivery process for DevOps automation implementations. Our proven methodology ensures consistent, high-quality service delivery while maintaining flexibility for client-specific needs.
 
 ---
 
@@ -74,7 +74,7 @@ This document outlines Zixly's standardized service delivery process for n8n aut
 
 ---
 
-## Phase 2: n8n Platform Setup (Week 2)
+## Phase 2: pipeline Platform Setup (Week 2)
 
 ### 2.1 Infrastructure Preparation
 
@@ -89,7 +89,7 @@ This document outlines Zixly's standardized service delivery process for n8n aut
 
 **Deliverables**:
 
-- Secure n8n instance
+- Secure pipeline instance
 - Backup procedures
 - Monitoring dashboard
 - Security documentation
@@ -100,14 +100,14 @@ This document outlines Zixly's standardized service delivery process for n8n aut
 
 **Activities**:
 
-- n8n platform configuration
+- pipeline platform configuration
 - User account setup
 - Basic security settings
 - Initial workflow templates
 
 **Deliverables**:
 
-- Configured n8n platform
+- Configured pipeline platform
 - User accounts and permissions
 - Basic workflow templates
 - Configuration documentation
@@ -198,7 +198,7 @@ This document outlines Zixly's standardized service delivery process for n8n aut
 
 **Activities**:
 
-- n8n platform overview
+- pipeline platform overview
 - Workflow management training
 - Integration management
 - Troubleshooting procedures

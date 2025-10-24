@@ -14,8 +14,29 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-  title: 'Zixly - Business Intelligence Platform',
-  description: 'Bespoke Business Intelligence for Australian SMEs',
+  title: 'Zixly - DevOps Automation Services | Brisbane | Docker, Kubernetes, Terraform',
+  description:
+    'Brisbane-based DevOps automation services for tech companies. Docker, Kubernetes, AWS EKS infrastructure implementation. Reduce cloud costs 20-50%. Production-grade reliability.',
+  keywords: [
+    'DevOps',
+    'Brisbane',
+    'Docker',
+    'Kubernetes',
+    'Terraform',
+    'AWS',
+    'CI/CD',
+    'Infrastructure as Code',
+    'Cloud Native',
+    'Automation',
+  ],
+  authors: [{ name: 'Zixly' }],
+  openGraph: {
+    title: 'Zixly - DevOps Automation Services for Brisbane Tech Companies',
+    description:
+      'Expert Docker, Kubernetes, Terraform implementation. Reduce cloud costs 20-50%. Production-grade infrastructure.',
+    type: 'website',
+    locale: 'en_AU',
+  },
 }
 
 export default function RootLayout({

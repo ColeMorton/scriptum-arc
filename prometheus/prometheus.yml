@@ -1,0 +1,72 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  external_labels:
+    cluster: 'zixly-pipeline-local'
+    environment: 'development'
+
+# Alertmanager configuration (optional)
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets: []
+
+# Load rules once and periodically evaluate them
+rule_files:
+  - 'alerts.yml'
+
+# Scrape configurations
+scrape_configs:
+  # Prometheus self-monitoring
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+        labels:
+          service: 'prometheus'
+
+  # Webhook Receiver metrics
+  - job_name: 'webhook-receiver'
+    static_configs:
+      - targets: ['webhook-receiver:3000']
+        labels:
+          service: 'webhook-receiver'
+          component: 'api'
+    metrics_path: '/metrics'
+    scrape_interval: 10s
+
+  # Pipeline Worker metrics
+  - job_name: 'pipeline-worker'
+    dns_sd_configs:
+      - names:
+          - 'pipeline-worker'
+        type: 'A'
+        port: 3000
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __address__
+        replacement: '${1}:3000'
+      - source_labels: [__address__]
+        target_label: instance
+    metrics_path: '/metrics'
+    scrape_interval: 10s
+
+  # Redis metrics (via redis_exporter - optional)
+  # Uncomment if redis_exporter is added to docker-compose
+  # - job_name: 'redis'
+  #   static_configs:
+  #     - targets: ['redis-exporter:9121']
+  #       labels:
+  #         service: 'redis'
+
+  # Trading API metrics (if available)
+  - job_name: 'trading-api'
+    static_configs:
+      - targets: ['host.docker.internal:8000']
+        labels:
+          service: 'trading-api'
+          component: 'external'
+    metrics_path: '/metrics'
+    scrape_interval: 30s
+    scrape_timeout: 10s
+    # Skip if trading API doesn't expose metrics
+    honor_labels: true

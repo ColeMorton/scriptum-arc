@@ -9,13 +9,13 @@
 
 ## General Questions
 
-### What is n8n?
+### What is DevOps infrastructure?
 
-n8n is an open-source workflow automation platform that connects different systems and automates business processes. Unlike Zapier or Make, n8n is self-hosted, giving you complete control over your automation platform and data.
+DevOps infrastructure is an open-source workflow automation platform that connects different systems and automates business processes. Unlike managed cloud services, DevOps infrastructure is self-hosted, giving you complete control over your automation platform and data.
 
-### Why choose n8n over Zapier or Make?
+### Why choose DevOps infrastructure over managed cloud services?
 
-- **Platform Ownership**: You own your n8n instance and data
+- **Platform Ownership**: You own your DevOps infrastructure instance and data
 - **No Vendor Lock-in**: Export and migrate your workflows anytime
 - **Unlimited Scale**: No per-task pricing limits
 - **Custom Development**: TypeScript nodes for complex business logic
@@ -26,7 +26,7 @@ n8n is an open-source workflow automation platform that connects different syste
 - **Brisbane-Based Expertise**: Local team with Australian business knowledge
 - **Platform Ownership Model**: You own your automation platform
 - **Flexible Engagement**: Project-based or ongoing support options
-- **Complete Stack Services**: n8n plus 20+ self-hostable tools
+- **Complete Stack Services**: DevOps infrastructure plus 20+ self-hostable tools
 - **Proven Methodology**: Successful implementations across Brisbane SMEs
 
 ---
@@ -35,7 +35,7 @@ n8n is an open-source workflow automation platform that connects different syste
 
 ### What services do you offer?
 
-- **n8n Platform Setup**: Complete implementation on your infrastructure
+- **DevOps infrastructure Platform Setup**: Complete implementation on your infrastructure
 - **Custom Workflow Development**: Bespoke workflows for your business processes
 - **Integration Services**: Connect your existing systems (Xero, HubSpot, etc.)
 - **Training & Support**: Comprehensive training and ongoing assistance
@@ -43,7 +43,7 @@ n8n is an open-source workflow automation platform that connects different syste
 
 ### How much does it cost?
 
-Our services range from $2,500 for basic n8n setup to $30,000+ for comprehensive automation platforms. Most clients invest $5,000-$15,000 for a complete solution. We offer flexible engagement options including project-based fees and monthly retainers.
+Our services range from $2,500 for basic DevOps infrastructure setup to $30,000+ for comprehensive automation platforms. Most clients invest $5,000-$15,000 for a complete solution. We offer flexible engagement options including project-based fees and monthly retainers.
 
 ### How long does implementation take?
 
@@ -81,11 +81,11 @@ We can integrate with 50+ business systems including:
 
 ### Is my data secure?
 
-Absolutely. Your n8n instance runs on your infrastructure, so you have complete control over your data. We implement security best practices including encryption, secure authentication, and regular backups.
+Absolutely. Your DevOps infrastructure instance runs on your infrastructure, so you have complete control over your data. We implement security best practices including encryption, secure authentication, and regular backups.
 
 ### Can I export my workflows?
 
-Yes, you own your n8n instance and can export all workflows, data, and configurations at any time. There's no vendor lock-in.
+Yes, you own your DevOps infrastructure instance and can export all workflows, data, and configurations at any time. There's no vendor lock-in.
 
 ---
 
@@ -173,7 +173,7 @@ Yes, we offer flexible payment terms:
 
 ### Can I start small and expand later?
 
-Absolutely. Many clients start with basic n8n automation and expand to additional tools and workflows over time. Our flexible engagement model allows you to scale up or down as needed.
+Absolutely. Many clients start with basic DevOps automation and expand to additional tools and workflows over time. Our flexible engagement model allows you to scale up or down as needed.
 
 ---
 
@@ -219,7 +219,7 @@ Yes, we provide comprehensive training including:
 - **Business Process Overview**: Current workflows and pain points
 - **System Information**: What systems you currently use
 - **Automation Goals**: What you want to achieve
-- **Questions**: Any specific questions about n8n or our services
+- **Questions**: Any specific questions about DevOps infrastructure or our services
 
 ### How do I contact you?
 
@@ -230,7 +230,7 @@ Yes, we provide comprehensive training including:
 
 ---
 
-**Ready to automate your business with n8n?**
+**Ready to automate your business with DevOps infrastructure?**
 
 [Book Your Free Consultation](#) | [Download Service Guide](#) | [View Case Studies](#)
 

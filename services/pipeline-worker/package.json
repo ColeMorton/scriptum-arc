@@ -1,0 +1,48 @@
+{
+  "name": "@zixly/pipeline-worker",
+  "version": "1.0.0",
+  "description": "Pipeline worker service for processing Zixly automation jobs",
+  "main": "dist/worker.js",
+  "scripts": {
+    "dev": "tsx watch src/worker.ts",
+    "build": "tsc",
+    "start": "node dist/worker.js",
+    "test": "vitest",
+    "lint": "eslint src --ext .ts",
+    "type-check": "tsc --noEmit"
+  },
+  "keywords": [
+    "worker",
+    "bull",
+    "typescript",
+    "devops",
+    "pipeline"
+  ],
+  "author": "Zixly",
+  "license": "Private",
+  "dependencies": {
+    "@prisma/client": "^6.1.0",
+    "@aws-sdk/client-sqs": "^3.400.0",
+    "@aws-sdk/client-s3": "^3.400.0",
+    "@aws-sdk/client-secrets-manager": "^3.400.0",
+    "bull": "^4.12.2",
+    "axios": "^1.6.5",
+    "nodemailer": "^6.9.8",
+    "winston": "^3.11.0",
+    "prom-client": "^15.1.0",
+    "dotenv": "^16.4.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "@types/nodemailer": "^6.4.14",
+    "tsx": "^4.7.0",
+    "typescript": "^5.3.3",
+    "vitest": "^1.2.0",
+    "eslint": "^8.56.0",
+    "@typescript-eslint/eslint-plugin": "^6.19.0",
+    "@typescript-eslint/parser": "^6.19.0"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}

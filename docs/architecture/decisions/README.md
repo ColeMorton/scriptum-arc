@@ -15,28 +15,34 @@ Each ADR follows this structure:
 ## ADR Index
 
 - [ADR-001: Multi-Tenant Architecture](./adr-001-multi-tenant-architecture.md)
-- [ADR-002: n8n vs Web App Separation](./adr-002-n8n-web-app-separation.md)
 - [ADR-003: Real-Time Data Strategy](./adr-003-real-time-data-strategy.md)
 - [ADR-004: Mobile App Architecture](./adr-004-mobile-app-architecture.md)
 - [ADR-005: Open-Source Strategy](./adr-005-open-source-strategy.md)
+- [ADR-006: Kubernetes Pipeline Orchestration](./adr-006-kubernetes-pipeline-orchestration.md)
+- [ADR-007: Webhook Event-Driven Pipeline Architecture](./adr-007-webhook-event-architecture.md)
+- [ADR-008: Local Docker Compose First Strategy](./adr-008-local-docker-first-strategy.md)
+- [ADR-009: LocalStack + Terraform Phase](./adr-009-localstack-terraform-phase.md)
 
 ## Business Context
 
-**Zixly is an open-source internal operations platform for the Zixly service business.**
+**Zixly is a DevOps automation platform for Brisbane businesses.**
 
 This platform:
 
-- Tracks Zixly's service delivery operations
-- Demonstrates "eating our own dogfood" with the self-hostable SME stack
-- Provides authentic expertise and continuous improvement
-- Is open-source for demonstration and reuse purposes
+- Provides webhook-triggered data analysis pipelines
+- Demonstrates cloud-native infrastructure patterns
+- Showcases Docker, Kubernetes, Terraform, and AWS expertise
+- Is open-source for portfolio demonstration and reuse purposes
 
 ## Decision Categories
 
 ### Architecture Decisions
 
 - **Multi-tenant vs Single-tenant**: Internal operations platform
-- **n8n vs Web App separation**: Clear boundaries and responsibilities
+- **Pipeline orchestration**: Kubernetes Jobs vs other orchestration tools
+- **Event architecture**: Webhook-driven vs polling-based pipelines
+- **Local-first strategy**: Docker Compose MVP before cloud deployment
+- **Infrastructure as Code**: Terraform with LocalStack for local development
 - **Real-time data strategy**: WebSocket vs polling approaches
 - **Mobile app architecture**: React Native vs native development
 
@@ -44,8 +50,10 @@ This platform:
 
 - **Database choice**: PostgreSQL with Supabase
 - **Authentication**: Supabase Auth vs custom solution
-- **Deployment**: Docker vs serverless
-- **Monitoring**: DataDog vs custom solution
+- **Deployment**: Docker Compose → Kubernetes → AWS EKS progression
+- **Monitoring**: Prometheus + Grafana observability stack
+- **Queue System**: Redis/Bull vs AWS SQS for job processing
+- **Infrastructure**: LocalStack for local AWS emulation
 
 ### Business Decisions
 
@@ -95,10 +103,10 @@ This platform:
 
 ### Business Principles
 
-- **Internal Operations**: Focus on Zixly service business
-- **Open-Source**: Enable community contribution
-- **Authentic Expertise**: Demonstrate real-world usage
-- **Competitive Advantage**: Unique market positioning
+- **DevOps Automation**: Focus on Brisbane tech market
+- **Open-Source**: Enable portfolio demonstration and reuse
+- **Cloud-Native Patterns**: Demonstrate modern infrastructure practices
+- **Competitive Advantage**: Local Brisbane DevOps expertise
 
 ### Implementation Principles
 

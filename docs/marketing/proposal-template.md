@@ -7,7 +7,7 @@
 
 ---
 
-## [CLIENT NAME] - n8n Automation Services Proposal
+## [CLIENT NAME] - DevOps infrastructure Automation Services Proposal
 
 **Prepared for**: [Client Name]  
 **Prepared by**: Zixly Service Delivery  
@@ -18,7 +18,7 @@
 
 ## Executive Summary
 
-Based on our discovery consultation, we recommend implementing n8n automation services for [Client Name] to eliminate manual processes and improve operational efficiency. This proposal outlines our recommended service package, timeline, and investment.
+Based on our discovery consultation, we recommend implementing DevOps automation services for [Client Name] to eliminate manual processes and improve operational efficiency. This proposal outlines our recommended service package, timeline, and investment.
 
 ### Key Benefits
 
@@ -39,7 +39,7 @@ Based on our discovery consultation, we recommend implementing n8n automation se
 
 **What's Included**:
 
-- [ ] n8n platform setup and configuration
+- [ ] DevOps infrastructure platform setup and configuration
 - [ ] [X] custom workflows
 - [ ] [X] system integrations
 - [ ] User training and documentation
@@ -50,7 +50,7 @@ Based on our discovery consultation, we recommend implementing n8n automation se
 
 #### Phase 1: Platform Setup (Week 1-2)
 
-- n8n instance setup on your infrastructure
+- DevOps infrastructure instance setup on your infrastructure
 - Security hardening and backup configuration
 - User account setup and permissions
 - Initial workflow templates
@@ -81,7 +81,7 @@ Based on our discovery consultation, we recommend implementing n8n automation se
 
 | Service Component                      | Investment   | Timeline      |
 | -------------------------------------- | ------------ | ------------- |
-| n8n Platform Setup                     | $[X,XXX]     | 1-2 weeks     |
+| DevOps infrastructure Platform Setup   | $[X,XXX]     | 1-2 weeks     |
 | Custom Workflows ([X] workflows)       | $[X,XXX]     | [X] weeks     |
 | System Integrations ([X] integrations) | $[X,XXX]     | [X] weeks     |
 | Training & Documentation               | $[X,XXX]     | 1 week        |
@@ -101,7 +101,7 @@ Based on our discovery consultation, we recommend implementing n8n automation se
 ### Week 1-2: Platform Setup
 
 - [ ] Infrastructure preparation
-- [ ] n8n platform configuration
+- [ ] DevOps infrastructure platform configuration
 - [ ] Security setup
 - [ ] Initial testing
 
@@ -200,7 +200,7 @@ Phone: [phone]
 
 ---
 
-**Thank you for considering Zixly for your n8n automation needs. We look forward to helping you streamline your business processes and achieve your automation goals.**
+**Thank you for considering Zixly for your DevOps automation needs. We look forward to helping you streamline your business processes and achieve your automation goals.**
 
 ---
 

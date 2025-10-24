@@ -9,19 +9,19 @@
 
 ## Overview
 
-Zixly provides expert n8n automation services for Brisbane and South East Queensland SMEs. We help businesses implement, configure, and manage their own n8n automation platforms with complete ownership and control.
+Zixly provides expert DevOps automation services for Brisbane and South East Queensland SMEs. We help businesses implement, configure, and manage their own DevOps automation platforms with complete ownership and control.
 
 ---
 
 ## Core Service Offerings
 
-### 1. n8n Platform Setup & Configuration
+### 1. pipeline Platform Setup & Configuration
 
-**Service**: Complete n8n platform implementation on your infrastructure
+**Service**: Complete pipeline platform implementation on your infrastructure
 
 **What's Included**:
 
-- n8n instance setup and configuration
+- pipeline instance setup and configuration
 - Security hardening and backup configuration
 - Initial workflow templates for your business
 - User training and documentation
@@ -35,7 +35,7 @@ Zixly provides expert n8n automation services for Brisbane and South East Queens
 
 ### 2. Custom Workflow Development
 
-**Service**: Bespoke n8n workflows tailored to your business processes
+**Service**: Bespoke pipelines tailored to your business processes
 
 **What's Included**:
 
@@ -53,7 +53,7 @@ Zixly provides expert n8n automation services for Brisbane and South East Queens
 
 ### 3. Integration Services
 
-**Service**: Connect your business systems to n8n workflows
+**Service**: Connect your business systems to pipelines
 
 **What's Included**:
 
@@ -71,7 +71,7 @@ Zixly provides expert n8n automation services for Brisbane and South East Queens
 
 ### 4. Monthly Management & Support
 
-**Service**: Ongoing n8n platform management and optimization
+**Service**: Ongoing pipeline platform management and optimization
 
 **What's Included**:
 
@@ -113,7 +113,7 @@ Zixly provides expert n8n automation services for Brisbane and South East Queens
 
 - Tool selection and planning
 - Installation and configuration
-- Integration with existing n8n workflows
+- Integration with existing pipelines
 - User training and documentation
 - Ongoing management (optional)
 
@@ -128,7 +128,7 @@ Zixly provides expert n8n automation services for Brisbane and South East Queens
 
 **Investment**: $5,000 - $25,000 per tool
 **Timeline**: 2-6 weeks per tool
-**Best For**: Businesses ready to expand beyond n8n automation
+**Best For**: Businesses ready to expand beyond DevOps automation
 
 ---
 
@@ -138,7 +138,7 @@ Zixly provides expert n8n automation services for Brisbane and South East Queens
 
 **Perfect for**: Small businesses (1-10 employees)
 
-- n8n platform setup
+- pipeline platform setup
 - 3-5 basic workflows
 - 1 integration (Xero or CRM)
 - Basic training
@@ -150,7 +150,7 @@ Zixly provides expert n8n automation services for Brisbane and South East Queens
 
 **Perfect for**: Growing businesses (10-50 employees)
 
-- n8n platform setup
+- pipeline platform setup
 - 5-10 custom workflows
 - 2-3 integrations
 - Advanced training
@@ -163,7 +163,7 @@ Zixly provides expert n8n automation services for Brisbane and South East Queens
 
 **Perfect for**: Established businesses (50+ employees)
 
-- n8n platform setup
+- pipeline platform setup
 - Unlimited workflows
 - Multiple integrations
 - Full stack expansion (Metabase, Nextcloud, etc.)
@@ -223,7 +223,7 @@ Zixly provides expert n8n automation services for Brisbane and South East Queens
 
 ### ✅ Platform Ownership
 
-- You own your n8n instance
+- You own your pipeline instance
 - No vendor lock-in
 - Complete data control
 - Export and migrate anytime
@@ -255,7 +255,7 @@ Zixly provides expert n8n automation services for Brisbane and South East Queens
 
 ### Free Consultation
 
-Book a 30-minute discovery call to discuss your automation needs and explore how n8n can transform your business processes.
+Book a 30-minute discovery call to discuss your automation needs and explore how pipeline can transform your business processes.
 
 **What to Expect**:
 
@@ -274,7 +274,7 @@ Book a 30-minute discovery call to discuss your automation needs and explore how
 
 ---
 
-**Ready to automate your business with n8n?**
+**Ready to automate your business with pipeline?**
 
 [Book Your Free Consultation](#) | [View Case Studies](#) | [Download Service Guide](#)
 

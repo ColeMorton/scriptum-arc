@@ -1,347 +1,128 @@
-# n8n vs Web App Separation of Concerns
+# Pipeline Services vs Dashboard Separation of Concerns
 
-**Version**: 1.1  
+**Version**: 2.0  
 **Last Updated**: 2025-01-27  
 **Owner**: Technical Architecture  
 **Status**: Defined
 
 ---
 
-## BUSINESS CONTEXT: INTERNAL OPERATIONS PLATFORM
+## Business Context: DevOps Automation Service
 
-**Zixly is an open-source internal operations platform for the Zixly service business.**
-
-This platform:
-
-- Tracks Zixly's service delivery operations
-- Demonstrates "eating our own dogfood" with the self-hostable SME stack
-- Provides authentic expertise and continuous improvement
-- Is open-source for demonstration and reuse purposes
+**Zixly is a DevOps automation service business** for Brisbane tech companies, using this internal operations platform to track service delivery and demonstrate cloud-native infrastructure patterns (Docker, Kubernetes, Terraform, AWS).
 
 ---
 
 ## Overview
 
-This document defines the clear boundaries between n8n (workflow automation platform) and Zixly's web application (business intelligence platform). The separation ensures zero duplication, leverages each platform's strengths, and creates a complementary architecture that scales efficiently.
+This document defines the clear boundaries between **Pipeline Services** (webhook receiver + workers) and **Dashboard Application** (Next.js monitoring UI). The separation ensures:
+
+- **Zero duplication** of responsibilities
+- **Clear data flow** patterns
+- **Independent scalability** of each component
+- **Focused development** on core strengths
 
 ---
 
 ## Core Principle: Complementary Architecture
 
-**Philosophy**: Each platform does what it does best, with zero overlap in responsibilities.
+**Philosophy**: Each system does what it does best, with zero overlap in responsibilities.
 
-- **n8n**: Workflow automation, data movement, API integrations
-- **Web App**: Business intelligence, user experience, real-time communication, analytics
-
----
-
-## CURRENT IMPLEMENTATION STATUS
-
-### ✅ IMPLEMENTED (Web App)
-
-- Basic dashboard UI with static charts
-- Multi-tenant authentication (Supabase Auth) - single tenant (Zixly)
-- API endpoints for data retrieval
-- Static data visualization
-- Basic UI components
-- Internal operations data tracking
-
-### ❌ NOT IMPLEMENTED (Web App)
-
-- Real-time WebSocket connections
-- Live dashboard updates
-- Interactive filtering and drill-down
-- Advanced analytics and ML
-- Mobile application
-
-### ❌ NOT IMPLEMENTED (n8n)
-
-- n8n deployment and configuration
-- Workflow execution engine
-- OAuth integrations (Xero, HubSpot, Asana)
-- Custom TypeScript nodes
-- Automated data sync workflows
+- **Pipeline Services**: Job orchestration, async processing, external API integration
+- **Dashboard**: Business intelligence, real-time monitoring, user interface
 
 ---
 
-## INTERNAL OPERATIONS FOCUS
+## System Boundaries
 
-### What We Track (Zixly Service Business):
+### Pipeline Services Responsibilities
 
-- **Service Clients**: Businesses using Zixly for n8n automation
-- **Project Performance**: Service delivery metrics and timelines
-- **Financial Performance**: Revenue, expenses, profit from service delivery
-- **Team Productivity**: Billable hours, project velocity, efficiency
-- **Client Satisfaction**: NPS scores, retention rates, feedback
+**What Pipeline Services Handle** (Webhook Receiver + Workers):
 
-### Data Flow (Internal Operations):
+#### Job Orchestration
 
-```
-Zixly Service Clients → n8n Workflows → PostgreSQL → Dashboard → Zixly Team
-```
+- **Webhook endpoints**: Accept incoming HTTP POST requests
+- **Request validation**: Zod schema validation and type safety
+- **Job enqueueing**: Queue jobs to Redis/Bull or AWS SQS
+- **Job metadata tracking**: Store job status in PostgreSQL
+- **Job callbacks**: Handle webhook callbacks from external APIs
 
-### Open-Source Benefits:
+#### Async Processing
 
-- **Transparency**: Clients can see our actual operations
-- **Trust Building**: Open codebase demonstrates confidence
-- **Demonstration**: Live system shows capabilities to potential clients
-- **Community**: Sharing knowledge and reusable patterns
+- **Worker pool management**: Scalable Node.js workers
+- **Job execution**: Process queued jobs with retry logic
+- **External API calls**: Integrate with trading APIs, client systems
+- **Result storage**: Save results to PostgreSQL + S3
+- **Notifications**: Send email/Slack alerts on completion
 
----
+#### Metrics & Monitoring
 
-## Detailed Separation of Concerns
+- **Prometheus metrics**: Export job processing metrics
+- **Structured logging**: Winston for job execution logs
+- **Health checks**: Endpoint monitoring for orchestration
+- **Error tracking**: Capture and log job failures
 
-### n8n Platform Responsibilities
+#### Infrastructure
 
-#### ✅ What n8n Handles (Workflow Automation)
+- **Docker Compose**: Local container orchestration
+- **Kubernetes**: Production scaling (planned)
+- **AWS Services**: SQS, S3, Secrets Manager integration
+- **LocalStack**: Zero-cost local AWS emulation
 
-**Workflow Orchestration:**
+**Technology Stack**:
 
-- Visual workflow builder and execution engine
-- Workflow scheduling and cron-based triggers
-- Workflow execution monitoring and error handling
-- Workflow retry logic and failure recovery
-- Workflow versioning and deployment
-
-**API Integrations:**
-
-- OAuth 2.0 authentication with 50+ business systems
-- API rate limiting and error handling
-- Data extraction from external systems (Xero, HubSpot, Asana, etc.)
-- Webhook handling for real-time data updates
-- API pagination and bulk data processing
-
-**Data Transformation:**
-
-- Complex ETL logic and data normalization
-- Data aggregation and enrichment
-- Currency conversion and timezone handling
-- Data validation and quality checks
-- Custom business logic via TypeScript nodes
-
-**Automation Management:**
-
-- Scheduled job execution
-- Event-driven workflow triggers
-- Workflow dependency management
-- Custom node development and deployment
-- Integration configuration and management
-
-#### ❌ What n8n Cannot Do (Web App Limitations)
-
-**Real-Time Communication:**
-
-- ❌ Persistent WebSocket connections to frontend clients
-- ❌ Real-time push notifications to mobile devices
-- ❌ Live dashboard updates without page refresh
-- ❌ Multi-user collaboration features
-- ❌ Real-time data streaming to UI components
-
-**User Interface & Experience:**
-
-- ❌ Interactive business intelligence dashboards
-- ❌ Rich data visualization with drill-down capabilities
-- ❌ Mobile-responsive user interfaces
-- ❌ Multi-tenant user management and RBAC
-- ❌ Custom business intelligence workflows
-
-**Advanced Analytics:**
-
-- ❌ Machine learning model hosting and inference
-- ❌ Statistical analysis and predictive analytics
-- ❌ Complex data correlation and trend analysis
-- ❌ Business intelligence calculations
-- ❌ Anomaly detection and forecasting
-
-**Mobile Integration:**
-
-- ❌ Mobile application development
-- ❌ Native device feature integration (camera, GPS, sensors)
-- ❌ Offline data synchronization
-- ❌ Mobile push notification management
-- ❌ Cross-platform mobile app development
+- Express.js (webhook receiver)
+- Bull + Redis (job queue)
+- Node.js (workers)
+- Prisma (database access)
+- AWS SDK (cloud services)
+- Prometheus (metrics)
 
 ---
 
-### Web Application Responsibilities
+### Dashboard Responsibilities
 
-#### ✅ What Web App Handles (Business Intelligence)
+**What Dashboard Handles** (Next.js Application):
 
-**Business Intelligence UI:**
+#### Business Intelligence UI
 
-- Interactive dashboards with Visx charts
-- Real-time data visualization and filtering
-- Drill-down capabilities and data exploration
-- Custom KPI tracking and monitoring
-- Business context presentation and insights
+- **Interactive dashboards**: Real-time job monitoring
+- **Data visualization**: Charts, graphs, job timelines
+- **Job status display**: Current and historical job tracking
+- **Result exploration**: View and download job results
+- **Filter and search**: Query job history and results
 
-**Real-Time Communication:**
+#### Real-Time Communication
 
-- WebSocket connections for live data updates
-- Real-time push notifications to users
-- Live dashboard updates without page refresh
-- Multi-user collaboration and presence
-- Real-time data synchronization across clients
+- **WebSocket updates**: Live job status updates
+- **Push notifications**: Browser notifications for job completion
+- **Real-time metrics**: Dashboard auto-refresh as data changes
+- **SSE (Server-Sent Events)**: Real-time job progress streaming
 
-**Multi-Tenant User Management:**
+#### User Management
 
-- User authentication and authorization
-- Role-based access control (RBAC)
-- Tenant isolation and data security
-- User session management
-- Permission-based data access controls
+- **Authentication**: Supabase Auth (JWT-based)
+- **Authorization**: Role-based access control (RBAC)
+- **Multi-tenant isolation**: Row-level security (RLS)
+- **User session management**: Secure session handling
+- **Audit logging**: User action tracking
 
-**Advanced Analytics:**
+#### API Endpoints (Read-Only)
 
-- Machine learning model hosting and serving
-- Predictive analytics and forecasting
-- Statistical analysis and trend detection
-- Anomaly detection and alerting
-- Business intelligence calculations
+- **Job status API**: GET /api/pipelines/jobs/:id
+- **Job history API**: GET /api/pipelines/jobs
+- **Result retrieval API**: GET /api/pipelines/results/:id
+- **Metrics API**: GET /api/service-metrics
+- **Health check API**: GET /api/health
 
-**Mobile Integration:**
+**Technology Stack**:
 
-- React Native mobile application
-- Native device feature integration
-- Offline-first data access
-- Mobile push notification system
-- Cross-platform mobile development
-
-#### ❌ What Web App Never Does (n8n Responsibilities)
-
-**Workflow Management:**
-
-- ❌ Workflow execution or orchestration
-- ❌ Workflow scheduling or cron management
-- ❌ Workflow monitoring or error handling
-- ❌ Custom node development
-- ❌ Workflow versioning or deployment
-
-**API Integrations:**
-
-- ❌ OAuth authentication with external systems
-- ❌ API rate limiting or error handling
-- ❌ Data extraction from business systems
-- ❌ Webhook handling or processing
-- ❌ Integration configuration or management
-
-**Data Transformation:**
-
-- ❌ ETL logic or data transformation
-- ❌ Data aggregation or enrichment
-- ❌ Currency conversion or timezone handling
-- ❌ Data validation or quality checks
-- ❌ Custom business logic implementation
-
-**Automation:**
-
-- ❌ Scheduled job execution
-- ❌ Event-driven automation
-- ❌ Workflow dependency management
-- ❌ Integration automation
-- ❌ Data synchronization workflows
-
----
-
-## SME Tools in the Architecture
-
-### SME Tools as Data Sources
-
-**Core Principle**: SME tools provide domain-specific functionality and serve as **data sources** for the unified Next.js BI dashboard. They do NOT replace the Next.js application's BI capabilities.
-
-#### SME Tool Responsibilities
-
-**Plane (Project Management):**
-
-- ✅ Project and task management interface
-- ✅ Sprint planning and issue tracking
-- ✅ Team collaboration on projects
-- ❌ NOT a replacement for Next.js service delivery dashboard
-- **Data Flow**: Plane data → n8n → PostgreSQL → Next.js dashboard
-
-**Invoice Ninja (Billing):**
-
-- ✅ Invoice generation and payment tracking
-- ✅ Client billing management
-- ✅ Payment status tracking
-- ❌ NOT a replacement for Next.js financial reporting
-- **Data Flow**: Invoice data → n8n → PostgreSQL → Next.js dashboard
-
-**Metabase (Static Analytics):**
-
-- ✅ Ad-hoc SQL queries and static reports
-- ✅ Pre-built dashboard templates
-- ✅ Business intelligence for technical users
-- ❌ NOT a replacement for Next.js real-time BI dashboards
-- ❌ No real-time updates, limited interactivity
-- **Use Case**: Complementary tool for data exploration, not primary BI layer
-
-**Integration Pattern:**
-
-```
-┌──────────────────────────────────────────────────────┐
-│                    SME Tools Layer                    │
-│  (Domain-Specific Data Sources & Operations)         │
-│                                                       │
-│  Plane    Invoice Ninja    Metabase    Chatwoot     │
-│  Mautic   Nextcloud        Xero        Others        │
-└────────────────────┬─────────────────────────────────┘
-                     │ APIs & Webhooks
-┌────────────────────▼─────────────────────────────────┐
-│              n8n (Integration Layer)                  │
-│  - Extracts data from SME tools                      │
-│  - Transforms and normalizes data                    │
-│  - Loads into PostgreSQL data warehouse              │
-└────────────────────┬─────────────────────────────────┘
-                     │ Writes to Database
-┌────────────────────▼─────────────────────────────────┐
-│         Supabase PostgreSQL (Data Warehouse)         │
-│  - Centralized business data storage                 │
-│  - Real-time subscriptions                           │
-│  - Row-level security for multi-tenancy             │
-└────────────────────┬─────────────────────────────────┘
-                     │ Reads from Database
-┌────────────────────▼─────────────────────────────────┐
-│        Next.js Application (Unified BI Layer)        │
-│  - Real-time interactive dashboards                  │
-│  - Aggregates data from ALL SME tools                │
-│  - WebSocket live updates                            │
-│  - Advanced analytics and ML models                  │
-│  - Mobile app with offline sync                      │
-└──────────────────────────────────────────────────────┘
-```
-
-### Why Next.js Cannot Be Replaced by SME Tools
-
-**Real-Time Capabilities:**
-
-- SME tools lack WebSocket connections for live updates
-- Next.js provides real-time dashboard refreshes as data changes
-- Metabase requires manual refresh, no push notifications
-
-**Unified View:**
-
-- SME tools are siloed (Plane doesn't show Invoice Ninja data)
-- Next.js aggregates data from ALL sources into unified dashboards
-- Cross-functional insights require centralized BI layer
-
-**Advanced Analytics:**
-
-- SME tools lack ML model hosting and predictive analytics
-- Next.js provides statistical analysis, forecasting, anomaly detection
-- Custom business logic and KPI calculations
-
-**Multi-Tenant Architecture:**
-
-- SME tools have limited multi-tenancy support
-- Next.js provides RBAC, row-level security, tenant isolation
-- User authentication and authorization across all data sources
-
-**Mobile Integration:**
-
-- SME tools lack native mobile apps or have limited functionality
-- Next.js React Native app provides offline sync and push notifications
-- Unified mobile experience across all business operations
+- Next.js 15 (App Router)
+- React 19 (UI components)
+- Tailwind CSS (styling)
+- Supabase (auth + database)
+- Visx (charts)
+- WebSocket (real-time)
 
 ---
 
@@ -349,143 +130,167 @@ Zixly Service Clients → n8n Workflows → PostgreSQL → Dashboard → Zixly T
 
 ### Clear Data Flow Patterns
 
-**n8n → PostgreSQL (Write Operations):**
+#### Write Operations (Pipeline Services → PostgreSQL)
 
 ```
-External APIs → n8n Workflows → Data Transformation → PostgreSQL
+External Trigger → Webhook Receiver → Redis/SQS Queue
+                         ↓
+                  Pipeline Worker → External API
+                         ↓
+              PostgreSQL + S3 (Results Storage)
 ```
 
-**PostgreSQL → Web App (Read Operations):**
+#### Read Operations (Dashboard ← PostgreSQL)
 
 ```
-PostgreSQL → Web App API → Business Intelligence UI → User
+PostgreSQL → Next.js API Routes → Dashboard UI → User
 ```
 
-**Real-Time Updates:**
+#### Real-Time Updates
 
 ```
-n8n Workflow Completion → PostgreSQL Update → Supabase Real-time → WebSocket → UI Update
+Pipeline Worker → PostgreSQL Update → Supabase Realtime → WebSocket → Dashboard Update
 ```
 
 ### Integration Points
 
-**Single Integration Point:**
+**Single Shared Resource**: PostgreSQL Database
 
-- **PostgreSQL Database**: The only shared resource between n8n and web app
-- **n8n writes**: Processed business data, workflow metadata, sync status
-- **Web app reads**: Business data for presentation, metadata for UI, status for indicators
+- **Pipeline Services writes**: Job metadata, job status, job results
+- **Dashboard reads**: Job tracking, result display, status indicators
 
-**No Direct Communication:**
+**No Direct Communication**:
 
-- ❌ Web app NEVER calls n8n APIs directly
-- ❌ n8n NEVER calls web app APIs directly
-- ❌ No workflow execution from web app
-- ❌ No data transformation in web app
+- ❌ Dashboard NEVER triggers jobs directly (uses webhook receiver)
+- ❌ Pipeline services NEVER calls dashboard APIs
+- ❌ No job execution from dashboard
+- ❌ No data transformation in dashboard
 
 ---
 
 ## API Boundaries
 
-### Web App API Endpoints (Read-Only)
+### Pipeline Services API Endpoints (Write Operations)
 
-**Business Intelligence APIs:**
-
-```typescript
-GET / api / dashboards // Read aggregated business data
-GET / api / kpis // Read KPI metrics and trends
-GET / api / analytics // Read analytics and insights
-GET / api / reports // Read business reports
-```
-
-**Data Status APIs:**
+**Webhook Endpoints**:
 
 ```typescript
-GET / api / sync - status // Read data freshness indicators
-GET / api / workflow - status // Read workflow metadata (UI only)
-GET / api / data - sources // Read integration status
+POST / webhook / trading - sweep // Trigger trading strategy sweep
+POST / webhook / sweep - callback // Handle external API callbacks
+POST / webhook / generic - job // Generic job trigger
 ```
 
-**Real-Time APIs:**
+**Management Endpoints**:
 
 ```typescript
-WebSocket / api / notifications // Real-time updates and alerts
-WebSocket / api / dashboard // Live dashboard data
+GET  /webhook/jobs/:id            // Get job status (for internal use)
+GET  /health                      // Health check
+GET  /metrics                     // Prometheus metrics
 ```
 
-### What Web App APIs NEVER Include
+### Dashboard API Endpoints (Read Operations)
 
-**Workflow Management (n8n handles):**
+**Job Management APIs**:
 
-- ❌ POST /api/workflows/execute
-- ❌ POST /api/workflows/schedule
-- ❌ PUT /api/workflows/configure
-- ❌ DELETE /api/workflows/delete
+```typescript
+GET /api/pipelines/jobs           // List all jobs (filtered, paginated)
+GET /api/pipelines/jobs/:id       // Get specific job details
+GET /api/pipelines/results/:id    // Get job results
+```
 
-**Integration Management (n8n handles):**
+**Monitoring APIs**:
 
-- ❌ POST /api/integrations/connect
-- ❌ PUT /api/integrations/configure
-- ❌ POST /api/integrations/sync
-- ❌ DELETE /api/integrations/disconnect
+```typescript
+GET / api / service - metrics // System metrics
+GET / api / dashboards // Dashboard configurations
+GET / api / sync - status // Data freshness indicators
+```
 
-**Data Transformation (n8n handles):**
+**Real-Time APIs**:
+
+```typescript
+WebSocket / api / jobs / subscribe // Subscribe to job updates
+```
+
+### What Dashboard APIs NEVER Include
+
+**Job Execution (Pipeline Services handles)**:
+
+- ❌ POST /api/jobs/execute
+- ❌ POST /api/jobs/cancel
+- ❌ PUT /api/jobs/retry
+
+**External API Integration (Pipeline Services handles)**:
+
+- ❌ POST /api/integrations/call
+- ❌ POST /api/external/fetch
+- ❌ POST /api/data/process
+
+**Data Transformation (Pipeline Services handles)**:
 
 - ❌ POST /api/data/transform
-- ❌ POST /api/data/process
 - ❌ POST /api/etl/execute
 
 ---
 
 ## Database Schema Boundaries
 
-### Tables n8n Writes To
+### Tables Pipeline Services Writes To
 
-**Business Data (n8n workflows write, web app reads):**
+**Job Tracking** (Pipeline services writes, dashboard reads):
 
 ```prisma
-model Financial {
-  // n8n workflows write financial data
-  // Web app reads for dashboards
+model PipelineJob {
+  id            String    @id @default(cuid())
+  tenantId      String
+  jobType       String
+  status        JobStatus // QUEUED, RUNNING, COMPLETED, FAILED
+  parameters    Json
+  result        Json?
+  metrics       Json?
+  errorMessage  String?
+  createdAt     DateTime
+  startedAt     DateTime?
+  completedAt   DateTime?
+
+  // Pipeline services writes all fields
+  // Dashboard reads all fields
 }
 
-model LeadEvent {
-  // n8n workflows write CRM data
-  // Web app reads for sales analytics
-}
+model TradingSweepResult {
+  id                String   @id
+  jobId             String
+  ticker            String
+  strategyType      String
+  score             Decimal
+  // ... more fields
 
-model CustomMetric {
-  // n8n workflows write KPI data
-  // Web app reads for business intelligence
+  // Pipeline services writes result data
+  // Dashboard reads for display
 }
 ```
 
-**Workflow Metadata (UI display only):**
+### Tables Dashboard Writes To
 
-```prisma
-model WorkflowMetadata {
-  // n8n writes workflow info for UI display
-  // Web app reads for workflow status indicators
-}
-
-model DataSyncStatus {
-  // n8n writes sync status for UI indicators
-  // Web app reads for data freshness display
-}
-```
-
-### Tables Web App Writes To
-
-**User Management (web app writes, n8n never touches):**
+**User Management** (Dashboard writes, pipeline services never touches):
 
 ```prisma
 model User {
-  // Web app manages user authentication
-  // n8n never accesses user data
+  id        String   @id
+  tenantId  String
+  email     String
+  role      UserRole
+
+  // Dashboard manages user data
+  // Pipeline services uses tenantId for data isolation only
 }
 
 model Tenant {
-  // Web app manages tenant configuration
-  // n8n uses tenant_id for data isolation only
+  id        String   @id
+  name      String
+
+  // Dashboard manages tenant configuration
+  // Pipeline services filters data by tenant_id
 }
 ```
 
@@ -495,59 +300,121 @@ model Tenant {
 
 ### Development Principles
 
-**For n8n Development:**
+**For Pipeline Services Development**:
 
-- Focus on workflow automation and data movement
-- Use custom TypeScript nodes for complex business logic
+- Focus on job orchestration and async processing
 - Implement robust error handling and retry logic
-- Design for scalability and performance
-- Maintain workflow portability and exportability
+- Design for horizontal scalability (multiple workers)
+- Export Prometheus metrics for all operations
+- Use structured logging (Winston) for debugging
 
-**For Web App Development:**
+**For Dashboard Development**:
 
-- Focus on user experience and business intelligence
-- Implement real-time communication and WebSocket connections
+- Focus on user experience and data visualization
+- Implement real-time communication (WebSockets)
 - Build responsive and mobile-optimized interfaces
-- Develop advanced analytics and ML capabilities
 - Ensure multi-tenant security and isolation
+- Use read-only database access (no writes)
 
 ### Code Organization
 
-**n8n Code Structure:**
+**Pipeline Services Code Structure**:
 
 ```
-n8n/
-├── workflows/           // Workflow definitions
-├── custom-nodes/       // TypeScript custom nodes
-├── credentials/        // OAuth and API credentials
-└── executions/        // Workflow execution logs
+services/
+├── webhook-receiver/
+│   ├── src/
+│   │   ├── server.ts           // Express.js HTTP server
+│   │   ├── routes/             // Webhook endpoints
+│   │   ├── services/           // Queue, database, metrics
+│   │   └── middleware/         // Validation, auth, logging
+│   ├── Dockerfile
+│   └── package.json
+└── pipeline-worker/
+    ├── src/
+    │   ├── worker.ts           // Job processor
+    │   ├── jobs/               // Job handlers
+    │   ├── services/           // External APIs, storage
+    │   └── utils/              // Helpers, logging
+    ├── Dockerfile
+    └── package.json
 ```
 
-**Web App Code Structure:**
+**Dashboard Code Structure**:
 
 ```
 app/
-├── api/               // Read-only API endpoints
-├── components/        // Business intelligence UI
-├── lib/              // Analytics and ML services
-└── mobile/           // React Native mobile app
+├── api/                        // Read-only API routes
+│   ├── pipelines/
+│   ├── service-metrics/
+│   └── dashboards/
+├── dashboard/                  // UI pages
+│   └── jobs/
+├── components/                 // React components
+│   ├── pipelines/
+│   └── charts/
+└── lib/                        // Utilities
+    ├── supabase/
+    └── websocket-client.ts
 ```
 
 ### Testing Boundaries
 
-**n8n Testing:**
+**Pipeline Services Testing**:
 
-- Workflow execution and data transformation
-- API integration and error handling
-- Custom node functionality
-- Workflow scheduling and triggers
+- Job enqueueing and processing
+- External API integration and error handling
+- Job retry logic and failure scenarios
+- Webhook validation and security
+- Metrics export and health checks
 
-**Web App Testing:**
+**Dashboard Testing**:
 
 - User interface and user experience
-- Real-time communication and WebSocket connections
-- Business intelligence and analytics
-- Mobile application functionality
+- Real-time communication and WebSocket updates
+- Data visualization and filtering
+- Authentication and authorization
+- API endpoint responses
+
+---
+
+## Anti-Patterns to Avoid
+
+### ❌ Dashboard Anti-Patterns
+
+**DO NOT build in dashboard**:
+
+- Job execution or orchestration
+- External API integrations
+- Data transformation logic
+- Scheduled jobs or automation
+- Worker pool management
+
+**DO NOT duplicate pipeline services functionality**:
+
+- Webhook handling
+- Job queue management
+- Job processing logic
+- External API clients
+- Retry and error handling
+
+### ❌ Pipeline Services Anti-Patterns
+
+**DO NOT build in pipeline services**:
+
+- User interface components
+- User authentication and RBAC
+- Data visualization dashboards
+- Real-time WebSocket servers (for UI)
+- Multi-tenant user management
+
+**DO NOT duplicate dashboard functionality**:
+
+- Business intelligence UI
+- Interactive charts and graphs
+- User session management
+- Dashboard configuration
+- UI state management
 
 ---
 
@@ -555,95 +422,73 @@ app/
 
 ### Technical Benefits
 
-**Zero Duplication:**
+**Zero Duplication**:
 
-- No overlap between n8n and web app responsibilities
-- Each platform focuses on its core strengths
+- No overlap between pipeline services and dashboard responsibilities
+- Each system focuses on its core strengths
 - Reduced complexity and maintenance overhead
 
-**Leverage Platform Strengths:**
+**Independent Scaling**:
 
-- n8n excels at workflow automation and data movement
-- Web app excels at user experience and business intelligence
-- Complementary capabilities create powerful combination
+- Scale workers horizontally for job processing
+- Scale dashboard separately for UI traffic
+- Different resource requirements (CPU vs memory)
 
-**Clear Boundaries:**
+**Clear Boundaries**:
 
-- Well-defined integration points and data flow
+- Well-defined integration points (PostgreSQL)
+- Single data flow direction (write → read)
 - Easy to understand and maintain
-- Reduced cognitive load for developers
 
-**Scalable Architecture:**
+**Resilience**:
 
-- n8n scales workflow execution and data processing
-- Web app scales user experience and real-time features
-- Independent scaling based on usage patterns
+- Dashboard failure doesn't affect job processing
+- Pipeline service failure doesn't affect monitoring
+- Graceful degradation
 
 ### Business Benefits
 
-**Faster Development:**
+**Faster Development**:
 
-- No reinventing n8n's existing capabilities
 - Focus on unique value proposition
-- Reduced time to market
+- Leverage existing patterns (Express.js, Next.js)
+- Reduced cognitive load for developers
 
-**Better User Experience:**
+**Better User Experience**:
 
-- Dedicated focus on business intelligence
-- Real-time features and mobile integration
-- Advanced analytics and predictive insights
+- Dedicated focus on monitoring and visualization
+- Real-time updates without polling
+- Responsive and mobile-optimized interface
 
-**Defensible Competitive Advantage:**
-
-- Complementary architecture creates moat
-- Difficult for competitors to replicate
-- Platform ownership provides control
-
-**Cost Efficiency:**
+**Cost Efficiency**:
 
 - No duplication of development effort
-- Leverage open-source n8n platform
-- Focus resources on differentiation
+- Efficient resource utilization
+- Scale components independently based on usage
 
 ---
 
-## Anti-Patterns to Avoid
+## Migration from Old Architecture
 
-### ❌ Web App Anti-Patterns
+### Previous Architecture (v1.0 - n8n-based)
 
-**DO NOT build in web app:**
+The previous architecture used n8n for workflow automation. This has been completely replaced with Docker-based pipeline services.
 
-- Workflow execution or management
-- API integrations or OAuth handling
-- Data transformation or ETL logic
-- Scheduled jobs or automation
-- Custom node development
+**What Changed**:
 
-**DO NOT duplicate n8n functionality:**
+- ❌ Removed: n8n workflow platform
+- ✅ Added: Express.js webhook receiver
+- ✅ Added: Node.js pipeline workers
+- ✅ Added: Redis/Bull job queue
+- ✅ Added: Prometheus metrics
 
-- Workflow builder UI
-- Integration configuration
-- Workflow monitoring
-- Data processing logic
-- Automation scheduling
+**Why Changed**:
 
-### ❌ n8n Anti-Patterns
-
-**DO NOT build in n8n:**
-
-- User interface components
-- Real-time WebSocket connections
-- Mobile application features
-- Advanced analytics hosting
-- Multi-tenant user management
-
-**DO NOT duplicate web app functionality:**
-
-- Business intelligence dashboards
-- User authentication and authorization
-- Mobile push notifications
-- Real-time data visualization
-- Advanced analytics and ML
+- Greater control over job orchestration
+- Lower operational costs (no per-task fees)
+- Better integration with cloud-native tooling
+- More flexibility for custom business logic
+- Aligns with DevOps automation service business
 
 ---
 
@@ -651,15 +496,28 @@ app/
 
 This separation of concerns creates a **complementary architecture** where:
 
-- **n8n handles**: Workflow automation, data movement, API integrations
-- **Web app handles**: Business intelligence, user experience, real-time communication
+- **Pipeline Services handle**: Job orchestration, async processing, external API integration
+- **Dashboard handles**: Business intelligence, real-time monitoring, user experience
 
-The result is a **powerful combination** that leverages each platform's strengths while avoiding duplication and complexity. This architecture provides:
+The result is a **powerful combination** that:
 
-1. **Clear boundaries** between platforms
-2. **Zero duplication** of functionality
-3. **Leverage strengths** of each platform
-4. **Scalable architecture** for growth
-5. **Defensible competitive advantage**
+1. **Leverages platform strengths** (Express.js + Next.js)
+2. **Maintains clear boundaries** (write vs read)
+3. **Scales independently** (workers vs UI)
+4. **Provides resilience** (failure isolation)
+5. **Enables focused development** (backend vs frontend)
 
-This approach ensures Zixly delivers maximum value to customers while maintaining technical excellence and business differentiation.
+This architecture ensures Zixly delivers maximum value while maintaining technical excellence and business differentiation.
+
+---
+
+**Version History**:
+
+- v1.0: Original architecture (n8n-based workflow automation)
+- v2.0: Updated architecture (Docker-based pipeline services) - Current
+
+**Related Documentation**:
+
+- [System Architecture](./system-architecture.md)
+- [Pipeline Architecture](../pipelines/)
+- [Implementation Plan](../implementation/plan.md)

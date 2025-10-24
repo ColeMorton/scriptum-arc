@@ -32,12 +32,12 @@ The MVP follows a 4-phase approach spanning 18 weeks, optimized for solo senior 
 ### 📋 Phase 2: ETL & Orchestration (Weeks 5-10)
 
 **Status**: Planned
-**Focus**: Data ingestion pipelines, n8n workflows, integrations
+**Focus**: Data ingestion pipelines, Pipeline Workflows, integrations
 **File**: phase-2-etl-orchestration.md (planned)
 
 **Key Deliverables**:
 
-- Self-hosted n8n on DigitalOcean (Docker)
+- Self-hosted pipeline services on DigitalOcean (Docker)
 - 3 core integrations (Xero, HubSpot, Asana)
 - OAuth 2.0 token management
 - Automated daily/hourly sync workflows
@@ -93,7 +93,7 @@ The MVP follows a 4-phase approach spanning 18 weeks, optimized for solo senior 
 **Architecture & Technical**:
 
 - [System Architecture](../architecture/system-architecture.md) - C4 diagrams, technology stack, security architecture, implementation roadmap
-- [Integration Registry](../integrations/) - n8n workflows, SME software comparison
+- [Integration Registry](../integrations/) - Pipeline Workflows, SME software comparison
 
 **Business & GTM**:
 
@@ -122,9 +122,9 @@ Per [CLAUDE.md](../../.claude/CLAUDE.md) global instructions:
 
 **Solo-Operator Optimization**:
 
-- ✅ **Unified TypeScript** - No context switching (Next.js, Prisma, n8n code nodes)
+- ✅ **Unified TypeScript** - No context switching (Next.js, Prisma, pipeline services code nodes)
 - ✅ **Managed Services** - Zero DevOps overhead (Vercel, Supabase, Docker)
-- ✅ **Automation-First** - n8n workflows reduce manual configuration
+- ✅ **Automation-First** - Pipeline Workflows reduce manual configuration
 
 ---
 

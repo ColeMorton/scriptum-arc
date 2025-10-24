@@ -1,103 +1,174 @@
 # Zixly
 
-> **n8n Automation Services for Brisbane SMEs**
+> **DevOps Automation Services for Brisbane Businesses**
 
 [![Next.js](https://img.shields.io/badge/Next.js-15.5.5-black?style=flat-square&logo=next.js)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue?style=flat-square&logo=typescript)](https://www.typescriptlang.org/)
-[![n8n](https://img.shields.io/badge/n8n-Automation-FF6D01?style=flat-square&logo=n8n)](https://n8n.io/)
+[![Kubernetes](https://img.shields.io/badge/Kubernetes-Orchestration-326CE5?style=flat-square&logo=kubernetes)](https://kubernetes.io/)
 [![Docker](https://img.shields.io/badge/Docker-Containerization-2496ED?style=flat-square&logo=docker)](https://docker.com/)
+[![AWS](https://img.shields.io/badge/AWS-Cloud-FF9900?style=flat-square&logo=amazon-aws)](https://aws.amazon.com/)
+[![Terraform](https://img.shields.io/badge/Terraform-IaC-7B42BC?style=flat-square&logo=terraform)](https://terraform.io/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.x-38B2AC?style=flat-square&logo=tailwind-css)](https://tailwindcss.com/)
 [![Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?style=flat-square&logo=vercel)](https://vercel.com/cole-mortons-projects/zixly)
 [![Documentation](https://img.shields.io/badge/Documentation-GitHub%20Pages-blue?style=flat-square&logo=github)](https://colemorton.github.io/zixly/)
 
-**Zixly** provides expert n8n automation services for Brisbane and South East Queensland SMEs. We help businesses implement, configure, and manage their own n8n automation platforms with complete ownership and control. Our service-based approach eliminates vendor lock-in while delivering enterprise-grade automation capabilities.
+**Zixly** provides expert DevOps automation services for Brisbane and South East Queensland businesses. We help organizations implement cloud-native infrastructure, automated CI/CD pipelines, and webhook-triggered data analysis workflows. Our service-based approach leverages modern DevOps practices with Docker, Kubernetes, Terraform, and AWS.
 
 ## 🎯 Service Value Proposition
 
-**"Expert n8n Automation Services for Brisbane SMEs"**
+**"Expert DevOps Automation Services for Brisbane Businesses"**
 
-- **Platform Ownership**: You own your n8n instance, workflows, and data. No vendor lock-in, export anytime
-- **Brisbane-Based Expertise**: Local team with deep n8n knowledge and Australian business understanding
-- **Flexible Service Options**: Full-service management, hybrid support, or self-service with training
-- **Complete Stack Services**: n8n automation plus 20+ self-hostable tools (Metabase, Nextcloud, Chatwoot, etc.)
-- **Proven Methodology**: Successful implementations across Brisbane SMEs with measurable ROI
+- **Cloud-Native Infrastructure**: Modern infrastructure automation with Docker, Kubernetes, and AWS
+- **Brisbane-Based Expertise**: Local team with deep DevOps knowledge and Australian business understanding
+- **Webhook-Triggered Pipelines**: Event-driven data analysis workflows for real-time insights
+- **Infrastructure as Code**: Terraform-managed infrastructure for repeatability and version control
+- **CI/CD Automation**: Automated deployment pipelines with GitHub Actions and GitOps practices
+- **Full Observability**: Prometheus and Grafana monitoring for complete system visibility
 
 ## 🏗️ Service Architecture
 
 ### Service Delivery Stack
 
-| Layer          | Technology                | Purpose                             |
-| -------------- | ------------------------- | ----------------------------------- |
-| **Frontend**   | Next.js 15.5.5 + React 19 | Service website and client portal   |
-| **Styling**    | Tailwind CSS 4.x          | Utility-first responsive design     |
-| **Backend**    | Next.js API Routes        | Service management and client APIs  |
-| **Database**   | PostgreSQL (Supabase)     | Client data and project management  |
-| **ORM**        | Prisma 6.x                | Type-safe database access           |
-| **Auth**       | Supabase Auth             | Client authentication and access    |
-| **Automation** | n8n (Docker)              | Client workflow automation platform |
-| **Hosting**    | Vercel                    | Service website deployment          |
+| Layer                 | Technology                | Purpose                                |
+| --------------------- | ------------------------- | -------------------------------------- |
+| **Frontend**          | Next.js 15.5.5 + React 19 | Pipeline monitoring dashboard          |
+| **Styling**           | Tailwind CSS 4.x          | Utility-first responsive design        |
+| **Backend**           | Next.js API Routes        | Pipeline management APIs               |
+| **Database**          | PostgreSQL (Supabase)     | Pipeline results and job tracking      |
+| **ORM**               | Prisma 6.x                | Type-safe database access              |
+| **Auth**              | Supabase Auth             | User authentication and access control |
+| **Orchestration**     | Docker Compose/Kubernetes | Container orchestration                |
+| **Job Queue**         | SQS (LocalStack/AWS)      | Async job processing                   |
+| **Storage**           | S3 (LocalStack/AWS)       | Pipeline result datasets               |
+| **Secrets**           | Secrets Manager           | Credential management                  |
+| **Monitoring**        | Prometheus + Grafana      | Metrics and observability              |
+| **Infrastructure**    | Terraform + LocalStack    | Infrastructure as Code (local & AWS)   |
+| **CI/CD**             | GitHub Actions            | Automated deployment pipelines         |
+| **Cloud Platform**    | AWS (EKS/ECS)             | Production cloud infrastructure        |
+| **Dashboard Hosting** | Vercel                    | Web application deployment             |
 
-### Service Delivery Model
+### Pipeline Architecture
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                        Zixly Service Platform               │
+│                    Zixly Pipeline Platform                   │
 │                                                               │
-│  ┌────────────────┐  ┌──────────────┐  ┌────────────────────┐ │
-│  │   Service      │  │   Client     │  │   n8n Platform     │ │
-│  │   Website      │  │   Portal     │  │   (Client-owned)   │ │
-│  │   (Next.js)    │  │   (Next.js)  │  │   (Docker)         │ │
-│  └────────────────┘  └──────┬───────┘  └──────┬─────────────┘ │
-│                             │                  │               │
-│                        ┌────▼──────────────────▼────┐         │
-│                        │   PostgreSQL (Supabase)    │         │
-│                        │   Service Management       │         │
-│                        └────────────────────────────┘         │
+│  ┌──────────────┐     ┌──────────────┐     ┌──────────────┐ │
+│  │   Webhook    │────▶│  Redis Job   │────▶│   Pipeline   │ │
+│  │   Receiver   │     │    Queue     │     │    Worker    │ │
+│  │  (Express)   │     │   (Bull)     │     │   (Node.js)  │ │
+│  └──────────────┘     └──────────────┘     └──────┬───────┘ │
+│         │                                           │         │
+│         │                                           ▼         │
+│         │                                  ┌────────────────┐ │
+│         │                                  │  External API  │ │
+│         │                                  │ (Trading API)  │ │
+│         │                                  └────────┬───────┘ │
+│         │                                           │         │
+│         │              ┌────────────────────────────┘         │
+│         ▼              ▼                                      │
+│  ┌───────────────────────────────┐                           │
+│  │   PostgreSQL (Supabase)       │                           │
+│  │   Job Tracking & Results      │                           │
+│  └───────────────┬───────────────┘                           │
+│                  │                                            │
+│                  ▼                                            │
+│  ┌───────────────────────────────┐                           │
+│  │   Next.js Dashboard           │                           │
+│  │   Pipeline Monitoring & Control│                          │
+│  └───────────────────────────────┘                           │
 └─────────────────────────────────────────────────────────────┘
-                              │
-                              │ Service Delivery
-                              ▼
-        ┌──────────┬──────────┬──────────┬──────────┬──────────┐
-        │  n8n     │ Metabase │Nextcloud │Chatwoot  │  Other   │
-        │Automation│   (BI)   │ (Files)  │(Support) │ (20+)    │
-        └──────────┴──────────┴──────────┴──────────┴──────────┘
+                      │
+        ┌─────────────┼─────────────┐
+        ▼             ▼             ▼
+   Prometheus     Grafana      GitHub Actions
+   (Metrics)    (Dashboards)     (CI/CD)
 ```
 
-## 🚀 Service Operations
+## 🚀 Quick Start
+
+### Local Development
+
+```bash
+# Clone repository
+git clone https://github.com/colemorton/zixly.git
+cd zixly
+
+# Install dependencies
+npm install
+
+# Setup environment
+cp .env.local.template .env.local
+# Edit .env.local with your Supabase credentials
+
+# Run database migrations
+npm run db:migrate
+
+# Initialize LocalStack + Terraform (AWS services emulation)
+./scripts/init-localstack-terraform.sh
+# Creates SQS queue, S3 bucket, and Secrets Manager
+
+# Start development server
+npm run dev
+# → http://localhost:3000
+
+# Start pipeline stack (separate terminal)
+docker-compose -f docker-compose.pipeline.yml up
+# → Webhook receiver: http://localhost:3000/webhook
+# → Grafana: http://localhost:3001
+# → Prometheus: http://localhost:9090
+# → LocalStack: http://localhost:4566
+```
+
+### Trigger a Pipeline Job
+
+```bash
+# Manual trigger via API
+curl -X POST http://localhost:3000/api/pipelines/trigger \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -d '{
+    "ticker": "BTC-USD",
+    "fast_range": [10, 20],
+    "slow_range": [20, 30],
+    "step": 5,
+    "strategy_type": "SMA"
+  }'
+```
 
 ### Service Delivery Process
 
-1. **Discovery Consultation** (Free)
-   - Business process analysis
-   - Automation opportunity assessment
-   - Technical requirements review
+1. **Infrastructure Assessment** (Free)
+   - Current infrastructure review
+   - DevOps maturity assessment
+   - Automation opportunities identification
    - Service recommendations
 
-2. **Project Implementation**
-   - n8n platform setup and configuration
-   - Custom workflow development
-   - System integrations
-   - Testing and validation
+2. **Pipeline Implementation**
+   - Docker containerization
+   - Kubernetes deployment setup
+   - CI/CD pipeline configuration
+   - Monitoring and observability setup
 
-3. **Training & Handover**
-   - User training sessions
-   - Documentation and best practices
-   - Knowledge transfer
-   - Support procedures
+3. **Documentation & Training**
+   - Infrastructure as Code documentation
+   - Team DevOps training
+   - Runbook creation
+   - Best practices transfer
 
-4. **Ongoing Support** (Optional)
-   - Platform monitoring
+4. **Managed Services** (Optional)
+   - 24/7 infrastructure monitoring
+   - Incident response and resolution
    - Performance optimization
-   - New workflow development
-   - Priority support
+   - Security updates and patches
 
 ### Service Packages
 
-| Package          | Investment        | Timeline   | Best For                               |
-| ---------------- | ----------------- | ---------- | -------------------------------------- |
-| **Starter**      | $3,500 - $5,000   | 2-4 weeks  | Small businesses (1-10 employees)      |
-| **Professional** | $7,500 - $12,000  | 4-8 weeks  | Growing businesses (10-50 employees)   |
-| **Enterprise**   | $15,000 - $30,000 | 8-16 weeks | Established businesses (50+ employees) |
+| Package               | Investment        | Timeline    | Best For                          |
+| --------------------- | ----------------- | ----------- | --------------------------------- |
+| **Pipeline MVP**      | $5,000 - $8,000   | 2-4 weeks   | Single webhook-triggered pipeline |
+| **DevOps Foundation** | $12,000 - $20,000 | 6-8 weeks   | Full CI/CD + monitoring setup     |
+| **Enterprise Cloud**  | $30,000 - $60,000 | 12-16 weeks | Multi-tenant AWS infrastructure   |
 
 ### Development Commands
 
@@ -119,66 +190,69 @@ npm run db:reset         # Reset database (WARNING: destroys data)
 
 ### Core Service Offerings
 
-- **🔧 n8n Platform Setup**: Complete n8n implementation with security hardening and backup configuration
-- **⚡ Custom Workflow Development**: Bespoke n8n workflows tailored to your business processes
-- **🔗 System Integration**: Connect Xero, HubSpot, Asana, Shopify, and 50+ business systems
-- **📚 Training & Knowledge Transfer**: Comprehensive training for your team with documentation
-- **🛠️ Ongoing Support**: Platform monitoring, optimization, and new workflow development
-- **📱 Complete Stack Services**: Expand beyond n8n with Metabase, Nextcloud, Chatwoot, and 20+ tools
+- **🐳 Container Orchestration**: Docker and Kubernetes infrastructure for scalable applications
+- **⚡ Webhook Pipelines**: Event-driven data analysis workflows with real-time processing
+- **🔗 API Integration**: Connect external APIs with secure authentication and error handling
+- **📚 Infrastructure as Code**: Terraform modules for repeatable, version-controlled infrastructure
+- **🛠️ CI/CD Automation**: GitHub Actions pipelines for automated testing and deployment
+- **📊 Observability**: Prometheus metrics and Grafana dashboards for complete visibility
+- **☁️ AWS Cloud**: EKS/ECS deployment with production-grade security and scaling
 
-### Service Integration Ecosystem
+### Example Pipeline Implementations
 
-**n8n Automation Platform**: Connect and automate data flow between business systems
+**Webhook-Triggered Data Analysis Pipeline**: Real-time processing for trading strategy optimization
 
-| Priority | Integration | Category     | Automation Value                  | Service Investment |
-| -------- | ----------- | ------------ | --------------------------------- | ------------------ |
-| **P1**   | Xero        | Accounting   | Automated financial reporting     | $500 - $2,000      |
-| **P1**   | HubSpot     | CRM          | Lead management automation        | $500 - $2,000      |
-| **P1**   | Asana       | Project Mgmt | Task and project automation       | $500 - $2,000      |
-| **P2**   | Shopify     | E-Commerce   | Order processing automation       | $1,000 - $3,000    |
-| **P2**   | MYOB        | Accounting   | Alternative accounting automation | $500 - $2,000      |
-| **P2**   | Pipedrive   | CRM          | Alternative CRM automation        | $500 - $2,000      |
+| Component            | Technology           | Purpose                          | Delivery Time |
+| -------------------- | -------------------- | -------------------------------- | ------------- |
+| **Webhook Receiver** | Express.js           | Accept incoming webhook requests | 1-2 days      |
+| **Job Queue**        | Redis + Bull         | Async task processing            | 1-2 days      |
+| **Pipeline Worker**  | Node.js + Prisma     | Execute analysis jobs            | 3-5 days      |
+| **Results Storage**  | PostgreSQL           | Store analysis results           | 1-2 days      |
+| **Monitoring**       | Prometheus + Grafana | Track pipeline metrics           | 2-3 days      |
+| **Dashboard**        | Next.js + React      | View results and job status      | 3-5 days      |
 
 ## 🎨 Service Delivery Examples
 
-### n8n Workflow Automation
+### DevOps Pipeline Automation
 
-- **Lead Management**: Automated lead capture from website forms to CRM
-- **Financial Reporting**: Automated data sync from Xero to business intelligence tools
-- **Project Management**: Automated task creation and status updates
-- **Customer Communication**: Automated email sequences and follow-ups
+- **Trading Strategy Analysis**: Webhook-triggered backtesting with parameter optimization
+- **Data ETL Pipelines**: Extract, transform, load workflows with error handling and retries
+- **ML Model Inference**: Containerized machine learning pipelines with model versioning
+- **Real-Time Processing**: Stream processing for high-frequency data analysis
 
-### Complete Stack Implementation
+### Infrastructure Automation
 
-- **n8n + Metabase**: Automated data pipelines with business intelligence dashboards
-- **n8n + Nextcloud**: File management automation with collaborative workflows
-- **n8n + Chatwoot**: Customer support automation with ticketing workflows
-- **n8n + Mautic**: Marketing automation with lead nurturing sequences
+- **Docker Compose**: Multi-container local development environments
+- **Kubernetes Deployment**: Production-grade container orchestration on AWS EKS
+- **Terraform Modules**: Reusable infrastructure components for rapid deployment
+- **CI/CD Pipelines**: Automated testing, building, and deployment workflows
 
 ## 🔒 Security & Compliance
 
-- **Platform Ownership**: You own your n8n instance and data. No vendor lock-in
-- **Australian Data Residency**: All client data stored in Australian infrastructure
-- **Privacy Act Compliance**: Full compliance with Australian Privacy Act 1988
-- **Data Sovereignty**: Complete control over your automation platform and workflows
-- **Encryption**: AES-256 at rest, TLS 1.3 in transit
-- **Secure Integrations**: OAuth 2.0 for safe system connections
+- **Infrastructure Security**: AWS security best practices with IAM roles and security groups
+- **Container Security**: Image scanning and vulnerability detection with Trivy
+- **Secrets Management**: AWS Secrets Manager for sensitive credentials
+- **Network Security**: VPC isolation and private subnets for internal services
+- **Data Encryption**: AES-256 at rest, TLS 1.3 in transit for all communications
+- **Access Control**: Role-based access control (RBAC) with Kubernetes and AWS IAM
+- **Audit Logging**: Complete audit trail for all infrastructure changes via CloudTrail
+- **Compliance**: SOC 2 readiness with documented security controls
 
 ## 📈 Service Business Model
 
 ### Service Investment Tiers
 
-| Tier             | Investment Range  | Timeline   | Target Customer                        |
-| ---------------- | ----------------- | ---------- | -------------------------------------- |
-| **Starter**      | $3,500 - $5,000   | 2-4 weeks  | Small businesses (1-10 employees)      |
-| **Professional** | $7,500 - $12,000  | 4-8 weeks  | Growing businesses (10-50 employees)   |
-| **Enterprise**   | $15,000 - $30,000 | 8-16 weeks | Established businesses (50+ employees) |
+| Tier                  | Investment Range  | Timeline    | Target Customer                   |
+| --------------------- | ----------------- | ----------- | --------------------------------- |
+| **Pipeline MVP**      | $5,000 - $8,000   | 2-4 weeks   | Startups and small teams          |
+| **DevOps Foundation** | $12,000 - $20,000 | 6-8 weeks   | Growing tech companies            |
+| **Enterprise Cloud**  | $30,000 - $60,000 | 12-16 weeks | Established businesses with scale |
 
 ### Target Market
 
-- **Primary**: Brisbane and South East Queensland SMEs
-- **Industries**: Professional Services, Construction, E-commerce, Retail
-- **Personas**: Business Owners, Operations Managers, IT Managers
+- **Primary**: Brisbane and South East Queensland tech businesses
+- **Industries**: FinTech, Data Analytics, SaaS, E-commerce
+- **Personas**: CTOs, DevOps Engineers, Engineering Managers, Data Scientists
 
 ## 🛠️ Development
 
@@ -186,22 +260,33 @@ npm run db:reset         # Reset database (WARNING: destroys data)
 
 ```
 zixly/
-├── app/                    # Next.js App Router
-│   ├── api/               # API routes
-│   ├── dashboard/         # Dashboard pages
-│   └── globals.css        # Global styles
-├── lib/                   # Shared utilities
-│   ├── prisma.ts         # Database client
-│   └── supabase/         # Auth configuration
-├── prisma/               # Database schema & migrations
-│   ├── schema.prisma     # Prisma schema
-│   └── seed.ts          # Development data
-├── docs/                 # Comprehensive documentation
-│   ├── architecture/     # Technical architecture
-│   ├── product/          # Product requirements
-│   ├── financial/        # Business model & projections
-│   └── sales/           # Go-to-market strategy
-└── middleware.ts        # Next.js middleware
+├── app/                      # Next.js App Router
+│   ├── api/                 # API routes
+│   │   └── pipelines/      # Pipeline management APIs
+│   ├── pipelines/          # Pipeline dashboard pages
+│   └── globals.css         # Global styles
+├── services/                # Pipeline microservices
+│   ├── webhook-receiver/   # Express.js webhook service
+│   │   ├── src/
+│   │   ├── Dockerfile
+│   │   └── package.json
+│   └── pipeline-worker/    # Job processing worker
+│       ├── src/
+│       ├── Dockerfile
+│       └── package.json
+├── lib/                     # Shared utilities
+│   ├── prisma.ts           # Database client
+│   └── supabase/           # Auth configuration
+├── prisma/                  # Database schema & migrations
+│   ├── schema.prisma       # Prisma schema with pipeline models
+│   └── seed.ts             # Development data
+├── docs/                    # Comprehensive documentation
+│   ├── architecture/       # Technical architecture & ADRs
+│   ├── pipelines/          # Pipeline specifications
+│   ├── business/           # Business model
+│   └── implementation/     # Phase plans
+├── docker-compose.pipeline.yml  # Pipeline stack
+└── middleware.ts            # Next.js middleware
 ```
 
 ### Code Quality
@@ -212,58 +297,61 @@ zixly/
 - **Husky**: Pre-commit hooks for quality gates
 - **Prisma**: Type-safe database queries
 
-## 📚 Service Documentation
+## 📚 Documentation
 
-Comprehensive service documentation is available in the `/docs` directory:
+Comprehensive documentation is available in the `/docs` directory:
 
-- **[📖 Service Catalog](./docs/services/service-catalog.md)** - Complete service offerings and packages
-- **[🔧 Delivery Process](./docs/services/delivery-process.md)** - Service delivery methodology
-- **[👥 Client Onboarding](./docs/services/client-onboarding.md)** - Client onboarding process
-- **[💰 Service Business Model](./docs/financial/service-business-model.md)** - Service revenue model and targets
-- **[📊 Self-Hostable Stack](./docs/Comprehensive%20self-hostable%20SME%20stack.md)** - Complete tool ecosystem
-- **[🏗️ System Architecture](./docs/architecture/system-architecture.md)** - Technical delivery capabilities
+- **[🏗️ System Architecture](./docs/architecture/system-architecture.md)** - Pipeline architecture and infrastructure
+- **[📋 Pipeline Specifications](./docs/pipelines/)** - Webhook pipelines and API integrations
+- **[🔧 Architecture Decisions](./docs/architecture/decisions/)** - ADRs for technical choices
+- **[💰 Business Model](./docs/business/business-model-clarification.md)** - Service model and positioning
+- **[📊 Implementation Plans](./docs/implementation/)** - Phase-by-phase roadmap
+- **[🚀 Deployment Guide](./DEPLOYMENT.md)** - Local and production deployment
 
-## 🚀 Service Operations
+## 🚀 Infrastructure
 
-### Service Delivery Infrastructure
+### Pipeline Stack Components
 
-- **Service Website**: Vercel (Edge Network)
-- **Client Management**: Supabase PostgreSQL (Sydney region)
-- **n8n Platforms**: Client-owned infrastructure (Docker + n8n)
-- **Monitoring**: Service delivery tracking and client support
-- **Documentation**: GitHub Pages for service materials
+- **Dashboard**: Vercel (Edge Network) - Next.js application
+- **Database**: Supabase PostgreSQL (Sydney region) - Job tracking and results
+- **Job Queue**: Redis + Bull - Async task processing
+- **Webhook Receiver**: Express.js - Event ingestion
+- **Pipeline Worker**: Node.js + Prisma - Job execution
+- **Monitoring**: Prometheus + Grafana - Metrics and observability
+- **Cloud Platform**: AWS EKS (Production) - Container orchestration
 
-### Service Delivery Pipeline
+### DevOps Pipeline Workflow
 
 ```yaml
-# Service delivery workflow
-- Client consultation and discovery
-- Project scoping and proposal
-- n8n platform implementation
-- Workflow development and testing
-- Training and knowledge transfer
-- Ongoing support and optimization
+# Webhook-triggered pipeline
+1. External system sends webhook → Webhook Receiver
+2. Validate payload and create job → Redis Queue
+3. Pipeline Worker picks up job → Execute analysis
+4. Store results in PostgreSQL → Update job status
+5. Send notifications → Email/Slack alerts
+6. Dashboard displays results → Real-time monitoring
 ```
 
-## 📊 Service Performance Targets
+## 📊 Performance Targets
 
-| Metric                        | Target  | Current |
-| ----------------------------- | ------- | ------- |
-| **Service Website Load Time** | <2.5s   | 1.8s    |
-| **Client Response Time**      | <24hrs  | 12hrs   |
-| **Project Delivery Time**     | On-time | 95%     |
-| **Client Satisfaction**       | 90%+    | 95%     |
+| Metric                      | Target | Status  |
+| --------------------------- | ------ | ------- |
+| **Pipeline Latency (p95)**  | <5s    | MVP     |
+| **Job Success Rate**        | >99%   | MVP     |
+| **Dashboard Load Time**     | <2.5s  | ✅ 1.8s |
+| **API Response Time (p95)** | <500ms | MVP     |
+| **Container Start Time**    | <10s   | MVP     |
 
-## 🤝 Service Team
+## 🤝 About Zixly
 
-This is a Brisbane-based service business focused on n8n automation expertise. The architecture is designed to deliver high-quality service while maintaining efficient operations.
+Brisbane-based DevOps automation services focused on helping businesses implement cloud-native infrastructure and data analysis pipelines.
 
 ### Service Principles
 
-- **Client-First**: Every decision prioritizes client success and value
-- **Platform Ownership**: Clients own their n8n instances and data
-- **Local Expertise**: Brisbane-based team with Australian business knowledge
-- **Proven Methodology**: Standardized processes for consistent service delivery
+- **Infrastructure as Code**: All infrastructure version-controlled and repeatable
+- **Event-Driven Architecture**: Webhook-triggered pipelines for real-time processing
+- **Full Observability**: Complete visibility into system performance and health
+- **Local Expertise**: Brisbane-based team with Australian cloud infrastructure knowledge
 
 ## 📄 License
 
@@ -271,4 +359,6 @@ Private - All rights reserved
 
 ---
 
-**Built with ❤️ for Brisbane SMEs**
+**Built with ❤️ for Brisbane Tech Businesses**
+
+_Empowering organizations with cloud-native DevOps automation_

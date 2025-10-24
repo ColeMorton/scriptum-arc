@@ -17,6 +17,23 @@ if ! docker info > /dev/null 2>&1; then
     exit 1
 fi
 
+# Check if required ports are available
+check_port() {
+    local port=$1
+    local service=$2
+    if lsof -i :$port > /dev/null 2>&1; then
+        echo "❌ Port $port is already in use (required for $service)"
+        echo "   Please stop the service using port $port or check for conflicts"
+        exit 1
+    fi
+}
+
+echo "🔍 Checking port availability..."
+check_port 5433 "PostgreSQL"
+check_port 6380 "Redis"
+check_port 5678 "pipeline"
+echo "✅ All required ports are available"
+
 # Create necessary directories
 mkdir -p letsencrypt init-scripts
 
@@ -45,29 +62,25 @@ else
     echo "❌ Redis health check failed"
 fi
 
-# Check n8n
+# Check pipeline
 if curl -f -s http://localhost:5678/healthz > /dev/null; then
-    echo "✅ n8n is healthy"
+    echo "✅ pipeline is healthy"
 else
-    echo "❌ n8n health check failed"
+    echo "❌ pipeline health check failed"
 fi
 
-# Check Plane
-if curl -f -s http://localhost:8000/health > /dev/null; then
-    echo "✅ Plane is healthy"
-else
-    echo "❌ Plane health check failed"
-fi
+# Note: Plane service commented out to avoid conflict with Trading API (port 8000)
 
 echo "🎉 Zixly local stack is running!"
 echo ""
 echo "📋 Service URLs:"
-echo "  - n8n: http://localhost:5678"
-echo "  - Plane: http://localhost:8000"
-echo "  - PostgreSQL: localhost:5432"
-echo "  - Redis: localhost:6379"
+echo "  - pipeline: http://localhost:5678"
+echo "  - PostgreSQL: localhost:5433 (host port, container uses 5432)"
+echo "  - Redis: localhost:6380 (host port, container uses 6379)"
+echo "  - Trading API: http://localhost:8000 (separate stack)"
 echo ""
 echo "🔧 Next steps:"
-echo "  1. Configure Plane workspace and generate API token"
-echo "  2. Import Plane smoke test workflow in n8n"
-echo "  3. Run smoke test to validate integration"
+echo "  1. Import Pipeline workflows from ./pipeline-workflows/internal/"
+echo "  2. Configure Trading API credentials in Pipeline"
+echo "  3. Test Pipeline workflows connecting to Trading API"
+echo "  4. Access Pipeline at http://localhost:5678 with credentials from .env.local"

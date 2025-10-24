@@ -1,15 +1,21 @@
 # Zixly Internal Operations Guide
 
+> **⚠️ PARTIALLY OUTDATED**: This document describes operational workflows that were built using the old n8n architecture. The conceptual data model and business processes remain valid, but the automation implementation details (n8n workflows) need to be rebuilt using Docker-based pipeline services.
+>
+> **Status**: Reference Document (Automation sections outdated)  
+> **Last Updated**: 2025-01-27  
+> **Action Required**: Rebuild automation workflows using webhook receiver + workers
+
 **Version**: 1.0  
-**Last Updated**: 2025-01-27  
-**Owner**: Service Operations  
-**Status**: Active Guide
+**Owner**: Service Operations
 
 ---
 
 ## Overview
 
-This document explains how Zixly uses its own platform to run the Zixly service business. This "dogfooding" approach provides authentic expertise and continuous improvement of our service delivery capabilities while demonstrating the value of the self-hostable SME stack to potential clients.
+This document explains how Zixly uses its own platform to run the Zixly service business. This "dogfooding" approach provides authentic expertise and continuous improvement of our service delivery capabilities while demonstrating the value of cloud-native infrastructure patterns to potential clients.
+
+**Note**: The automation workflows described in this document reference n8n, which has been replaced with Docker-based pipeline services. The business processes and data models are still accurate, but the implementation details need updating.
 
 ---
 
@@ -19,7 +25,7 @@ This document explains how Zixly uses its own platform to run the Zixly service 
 
 **What We Track:**
 
-- **Service Clients**: Businesses using Zixly for n8n automation services
+- **Service Clients**: Businesses using Zixly for DevOps automation services
 - **Service Revenue**: Revenue from Starter, Professional, and Enterprise packages
 - **Service Costs**: Consultant time, tools, infrastructure costs
 - **Service Metrics**: Project velocity, client satisfaction, delivery efficiency
@@ -33,7 +39,7 @@ This document explains how Zixly uses its own platform to run the Zixly service 
 **LeadEvent**: Zixly sales pipeline (leads for service contracts)
 **CustomMetric**: Internal KPIs (billable hours, project velocity, client satisfaction)
 **Integration**: Zixly's own system integrations (Xero, Plane, Nextcloud, etc.)
-**WorkflowMetadata**: Internal n8n workflows for Zixly operations
+**WorkflowMetadata**: Internal pipelines for Zixly operations
 **DataSyncStatus**: Internal data sync health monitoring
 
 ---
@@ -52,7 +58,7 @@ This document explains how Zixly uses its own platform to run the Zixly service 
 **Tools Used:**
 
 - **Plane**: Project management and task tracking
-- **n8n**: Automated project status updates
+- **pipeline services**: Automated project status updates
 - **Custom Metrics**: Project velocity, delivery efficiency
 
 ### Financial Operations
@@ -68,7 +74,7 @@ This document explains how Zixly uses its own platform to run the Zixly service 
 
 - **Xero**: Accounting and financial management
 - **Invoice Ninja**: Client billing and payment tracking
-- **n8n**: Automated financial reporting and Xero sync
+- **pipeline services**: Automated financial reporting and Xero sync
 
 ### Client Support
 
@@ -82,7 +88,7 @@ This document explains how Zixly uses its own platform to run the Zixly service 
 **Tools Used:**
 
 - **Chatwoot**: Client support and communication
-- **n8n**: Automated support workflows
+- **pipeline services**: Automated support workflows
 - **Custom Metrics**: Satisfaction tracking, response times
 
 ### Sales & Marketing
@@ -97,7 +103,7 @@ This document explains how Zixly uses its own platform to run the Zixly service 
 **Tools Used:**
 
 - **Mautic**: Marketing automation and lead nurturing
-- **n8n**: Lead scoring and sales automation
+- **pipeline services**: Lead scoring and sales automation
 - **Custom Metrics**: Lead velocity, conversion rates
 
 ---
@@ -106,7 +112,7 @@ This document explains how Zixly uses its own platform to run the Zixly service 
 
 ### Core Tools in Use
 
-1. **n8n (Automation Hub)**
+1. **pipeline services (Automation Hub)**
    - Client onboarding workflows
    - Time tracking automation
    - Financial reporting workflows
@@ -150,7 +156,7 @@ This document explains how Zixly uses its own platform to run the Zixly service 
 
 ### Integration Architecture
 
-**n8n as the Central Hub:**
+**pipeline services as the Central Hub:**
 
 - Connects all tools via APIs and webhooks
 - Automates data flow between systems
@@ -160,28 +166,28 @@ This document explains how Zixly uses its own platform to run the Zixly service 
 **Data Flow:**
 
 ```
-Client Action → n8n Workflow → Tool Integration → Database Update → Dashboard Refresh
+Client Action → pipeline → Tool Integration → Database Update → Dashboard Refresh
 ```
 
 **Example Workflows:**
 
 1. **New Client Onboarding**
-   - Client signs up → n8n creates Plane project
-   - n8n creates Nextcloud folder structure
-   - n8n sends welcome email via Mautic
-   - n8n updates financial records
+   - Client signs up → pipeline services creates Plane project
+   - pipeline services creates Nextcloud folder structure
+   - pipeline services sends welcome email via Mautic
+   - pipeline services updates financial records
 
 2. **Time Tracking Sync**
    - Consultant logs hours in Plane
-   - n8n syncs to financial records
-   - n8n updates project profitability
-   - n8n generates client reports
+   - pipeline services syncs to financial records
+   - pipeline services updates project profitability
+   - pipeline services generates client reports
 
 3. **Support Ticket Automation**
    - Client submits ticket in Chatwoot
-   - n8n creates task in Plane
-   - n8n notifies team via Slack
-   - n8n tracks response time metrics
+   - pipeline services creates task in Plane
+   - pipeline services notifies team via Slack
+   - pipeline services tracks response time metrics
 
 ---
 
@@ -309,7 +315,7 @@ Client Action → n8n Workflow → Tool Integration → Database Update → Dash
 
 ### Phase 2: Core Tools (Weeks 5-8)
 
-- n8n deployment for internal automation
+- pipeline services deployment for internal automation
 - Plane for project management
 - Nextcloud for file management
 

@@ -1,6 +1,6 @@
 # Row-Level Security (RLS) Policies
 
-> **Note**: This document describes our internal security architecture and multi-tenant data isolation for n8n service implementations. It is maintained for service delivery consistency and technical documentation purposes.
+> **Note**: This document describes our internal security architecture and multi-tenant data isolation for pipeline services service implementations. It is maintained for service delivery consistency and technical documentation purposes.
 
 **Version**: 1.0
 **Last Updated**: 2025-10-15

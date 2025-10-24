@@ -1,264 +1,172 @@
 # Missing Features Implementation Roadmap
 
 **Last Updated**: 2025-01-27  
-**Status**: Planning Phase  
+**Status**: Active Development  
 **Owner**: Technical Architecture
 
 ---
 
 ## BUSINESS CONTEXT
 
-**Zixly is an open-source internal operations platform for the Zixly service business.**
+**Zixly is a DevOps automation platform for Brisbane businesses.**
 
-This roadmap outlines the implementation of missing features that are documented but not yet implemented, prioritized for internal operations optimization and open-source readiness.
+This roadmap outlines remaining features to be implemented beyond the core webhook-triggered pipeline infrastructure (Phase 1, 2, and 1.5 complete as of 2025-01-27).
 
 ---
 
-## PRIORITY 1: CORE INFRASTRUCTURE (Weeks 1-4)
+## CURRENT STATUS
 
-### n8n Deployment
+### ✅ COMPLETED (Phase 1, 2, 1.5)
 
-**Status**: Not implemented  
-**Priority**: Critical  
-**Effort**: 2 weeks  
-**Dependencies**: Docker, DigitalOcean setup
+- Docker Compose pipeline infrastructure
+- Webhook receiver (Express.js)
+- Pipeline worker (Bull/SQS)
+- Redis job queue
+- LocalStack + Terraform (AWS emulation)
+- SQS, S3, Secrets Manager integration
+- Prometheus + Grafana observability
+- Trading API pipeline integration
+- Basic dashboard UI
 
-**Deliverables**:
+### 🔄 IN PROGRESS
 
-- n8n Docker container deployment
-- Basic workflow execution
-- OAuth credential management
-- Workflow monitoring and logging
+- Dashboard API routes for job management
+- Real-time job status updates
+- Result visualization components
 
-**Success Criteria**:
+---
 
-- n8n accessible at configured URL
-- Basic workflow execution functional
-- OAuth credentials securely stored
-- Workflow logs accessible
+## PRIORITY 1: DASHBOARD & API COMPLETION (Weeks 1-2)
 
-**Implementation Steps**:
+### Pipeline Management API
 
-1. Set up DigitalOcean droplet
-2. Install Docker and Docker Compose
-3. Deploy n8n container
-4. Configure OAuth credentials
-5. Test basic workflow execution
-
-### Real-Time WebSocket Connections
-
-**Status**: Not implemented  
+**Status**: In Progress  
 **Priority**: Critical  
 **Effort**: 1 week  
-**Dependencies**: Supabase real-time, WebSocket setup
+**Dependencies**: Existing webhook receiver and database schema
 
 **Deliverables**:
 
-- WebSocket server implementation
-- Real-time data subscriptions
-- Live dashboard updates
-- Connection management
+- GET /api/pipelines - List jobs with filtering
+- POST /api/pipelines - Trigger new job
+- GET /api/pipelines/[id] - Get job details and results
+- DELETE /api/pipelines/[id] - Cancel running job
+- API authentication and authorization
 
 **Success Criteria**:
 
-- WebSocket connections established
-- Real-time data updates working
-- Dashboard refreshes automatically
-- Connection errors handled gracefully
+- All API endpoints functional
+- Jobs can be triggered from dashboard
+- Job status and results displayed
+- Authentication working with Supabase JWT
 
 **Implementation Steps**:
 
-1. Implement WebSocket server
-2. Configure Supabase real-time subscriptions
-3. Update dashboard components
-4. Add connection status indicators
+1. Create Next.js API routes in `/app/api/pipelines/`
+2. Implement Prisma queries for job data
+3. Add Supabase auth middleware
+4. Test API endpoints
+5. Document API with OpenAPI spec
+
+---
+
+### Real-Time Dashboard Updates
+
+**Status**: Not implemented  
+**Priority**: High  
+**Effort**: 1 week  
+**Dependencies**: Supabase real-time subscriptions
+
+**Deliverables**:
+
+- WebSocket connection to Supabase
+- Real-time job status updates
+- Live dashboard refresh
+- Connection state management
+
+**Success Criteria**:
+
+- Dashboard updates automatically when job status changes
+- WebSocket connections stable
+- Connection errors handled gracefully
+- Updates within 1 second of status change
+
+**Implementation Steps**:
+
+1. Implement Supabase real-time subscriptions
+2. Update React components with WebSocket listeners
+3. Add connection status indicators
+4. Handle reconnection logic
 5. Test real-time updates
 
 ---
 
-## PRIORITY 2: DATA INTEGRATION (Weeks 5-8)
+## PRIORITY 2: VISUALIZATION & UX (Weeks 3-4)
 
-### Xero Integration
-
-**Status**: Not implemented  
-**Priority**: High  
-**Effort**: 2 weeks  
-**Dependencies**: n8n deployment, OAuth setup
-
-**Deliverables**:
-
-- Xero OAuth authentication
-- Financial data sync workflows
-- Error handling and retry logic
-- Data validation and quality checks
-
-**Success Criteria**:
-
-- Xero OAuth flow functional
-- Financial data syncing daily
-- Error handling robust
-- Data quality validated
-
-**Implementation Steps**:
-
-1. Set up Xero OAuth credentials
-2. Create n8n workflow for Xero API
-3. Implement data transformation logic
-4. Add error handling and retry logic
-5. Test data sync accuracy
-
-### HubSpot Integration
-
-**Status**: Not implemented  
-**Priority**: High  
-**Effort**: 2 weeks  
-**Dependencies**: n8n deployment, OAuth setup
-
-**Deliverables**:
-
-- HubSpot OAuth authentication
-- CRM data sync workflows
-- Lead event processing
-- Contact and deal tracking
-
-**Success Criteria**:
-
-- HubSpot OAuth flow functional
-- CRM data syncing daily
-- Lead events processed
-- Contact data accurate
-
-**Implementation Steps**:
-
-1. Set up HubSpot OAuth credentials
-2. Create n8n workflow for HubSpot API
-3. Implement lead event processing
-4. Add contact and deal tracking
-5. Test data sync accuracy
-
-### Asana Integration
-
-**Status**: Not implemented  
-**Priority**: Medium  
-**Effort**: 1 week  
-**Dependencies**: n8n deployment, OAuth setup
-
-**Deliverables**:
-
-- Asana OAuth authentication
-- Project data sync workflows
-- Task and milestone tracking
-- Progress monitoring
-
-**Success Criteria**:
-
-- Asana OAuth flow functional
-- Project data syncing daily
-- Tasks and milestones tracked
-- Progress monitoring working
-
-**Implementation Steps**:
-
-1. Set up Asana OAuth credentials
-2. Create n8n workflow for Asana API
-3. Implement project data sync
-4. Add task and milestone tracking
-5. Test data sync accuracy
-
----
-
-## PRIORITY 3: ADVANCED FEATURES (Weeks 9-12)
-
-### Interactive Dashboard Features
+### Result Visualization Components
 
 **Status**: Partially implemented  
 **Priority**: High  
-**Effort**: 2 weeks  
-**Dependencies**: Real-time connections
+**Effort**: 1 week  
+**Dependencies**: API routes complete
+
+**Deliverables**:
+
+- Charts for trading sweep results (Sharpe ratio, returns, drawdown)
+- Table views with sorting and filtering
+- Comparison views for multiple sweeps
+- Export results to CSV
+
+**Success Criteria**:
+
+- Results displayed in clear, actionable visualizations
+- Charts interactive (hover, zoom)
+- Tables sortable and filterable
+- CSV export functional
+
+**Implementation Steps**:
+
+1. Implement result charts with Visx/Recharts
+2. Create sortable/filterable tables
+3. Add comparison views
+4. Implement CSV export
+5. Test visualizations with real data
+
+---
+
+### Interactive Dashboard Features
+
+**Status**: Basic UI implemented  
+**Priority**: Medium  
+**Effort**: 1 week  
+**Dependencies**: Real-time updates
 
 **Deliverables**:
 
 - Date range filtering
-- Drill-down capabilities
-- Interactive chart controls
-- Advanced data visualization
+- Search and filter jobs
+- Pagination for large job lists
+- Favorite/bookmark jobs
+- Recent jobs quick access
 
 **Success Criteria**:
 
-- Date filtering functional
-- Drill-down working
-- Charts interactive
-- Performance maintained
+- Filtering fast and responsive
+- Search finds jobs by ticker, status, date
+- Pagination handles 1000+ jobs
+- UX smooth and intuitive
 
 **Implementation Steps**:
 
 1. Implement date range picker
-2. Add drill-down functionality
-3. Create interactive chart controls
-4. Optimize performance
-5. Test user experience
-
-### Mobile Application
-
-**Status**: Not implemented  
-**Priority**: Medium  
-**Effort**: 4 weeks  
-**Dependencies**: Core platform completion
-
-**Deliverables**:
-
-- React Native app
-- Offline data sync
-- Push notifications
-- Native device features
-
-**Success Criteria**:
-
-- Mobile app functional
-- Offline sync working
-- Push notifications delivered
-- Native features integrated
-
-**Implementation Steps**:
-
-1. Set up React Native project
-2. Implement core app structure
-3. Add offline data sync
-4. Implement push notifications
-5. Test on iOS and Android
-
-### Advanced Analytics
-
-**Status**: Not implemented  
-**Priority**: Medium  
-**Effort**: 3 weeks  
-**Dependencies**: Core platform completion
-
-**Deliverables**:
-
-- Statistical analysis
-- Trend detection
-- Anomaly detection
-- Predictive insights
-
-**Success Criteria**:
-
-- Statistical analysis functional
-- Trends detected accurately
-- Anomalies identified
-- Insights generated
-
-**Implementation Steps**:
-
-1. Implement statistical analysis
-2. Add trend detection algorithms
-3. Create anomaly detection
-4. Generate predictive insights
-5. Test accuracy and performance
+2. Add search functionality
+3. Create pagination component
+4. Add favorites feature
+5. Optimize query performance
 
 ---
 
-## PRIORITY 4: PRODUCTION READINESS (Weeks 13-16)
+## PRIORITY 3: PRODUCTION FEATURES (Weeks 5-8)
 
 ### Performance Optimization
 
@@ -269,25 +177,29 @@ This roadmap outlines the implementation of missing features that are documented
 
 **Deliverables**:
 
-- API response time < 500ms
+- API response time < 200ms p95
 - Dashboard LCP < 2.5s
 - Database query optimization
-- Caching strategy
+- Redis/SQS caching strategy
+- CDN configuration for static assets
 
 **Success Criteria**:
 
-- API p95 < 500ms
+- API p95 latency < 200ms
 - Dashboard LCP < 2.5s
-- Database queries optimized
-- Caching effective
+- Database queries use indexes
+- Cache hit rate > 80%
+- Vercel Edge functions optimized
 
 **Implementation Steps**:
 
-1. Profile API performance
-2. Optimize database queries
-3. Implement caching strategy
-4. Test performance metrics
-5. Monitor production performance
+1. Profile API and database performance
+2. Add database indexes
+3. Implement caching layer
+4. Optimize React rendering
+5. Monitor production metrics
+
+---
 
 ### Security Hardening
 
@@ -298,83 +210,183 @@ This roadmap outlines the implementation of missing features that are documented
 
 **Deliverables**:
 
-- Security audit
-- Rate limiting
-- Input validation
+- Security audit (OWASP Top 10)
+- Rate limiting (10 req/min per API key)
+- Input validation (Zod schemas)
 - CORS configuration
-- Security headers
+- Security headers (CSP, HSTS)
+- API key rotation mechanism
 
 **Success Criteria**:
 
 - Security audit passed
-- Rate limiting functional
-- Input validation robust
-- CORS configured
+- Rate limiting prevents abuse
+- Input validation catches all malformed requests
+- CORS configured correctly
 - Security headers set
 
 **Implementation Steps**:
 
-1. Conduct security audit
-2. Implement rate limiting
-3. Add input validation
-4. Configure CORS
-5. Set security headers
+1. Conduct OWASP security audit
+2. Implement rate limiting middleware
+3. Add comprehensive Zod validation
+4. Configure CORS policies
+5. Set security headers in Next.js config
+
+---
 
 ### Testing & Monitoring
 
-**Status**: Partially implemented  
+**Status**: Partially implemented (Prometheus + Grafana)  
 **Priority**: High  
 **Effort**: 2 weeks  
 **Dependencies**: Core features complete
 
 **Deliverables**:
 
-- End-to-end testing (Playwright)
-- Load testing (100 concurrent users, K6)
-- Production monitoring (DataDog, Sentry)
-- Error tracking and alerting
+- End-to-end tests (Playwright): Job submission → completion
+- Load tests (K6): 100 concurrent jobs
+- Integration tests (Vitest): API routes, worker logic
+- Error tracking (Sentry): Production errors
+- Uptime monitoring (Better Uptime): 99.5% SLA
 
 **Success Criteria**:
 
-- E2E tests passing
-- Load tests passed
-- Monitoring active
-- Alerts configured
+- E2E tests cover critical user flows
+- Load tests pass (100 concurrent jobs)
+- Integration tests cover all API routes
+- Error tracking captures and alerts on failures
+- Uptime monitoring configured
 
 **Implementation Steps**:
 
 1. Set up Playwright E2E tests
-2. Implement K6 load testing
-3. Configure DataDog monitoring
-4. Set up Sentry error tracking
-5. Test alerting system
+2. Implement K6 load testing scenarios
+3. Write Vitest integration tests
+4. Configure Sentry error tracking
+5. Set up uptime monitoring and alerts
+
+---
+
+## PRIORITY 4: ADVANCED FEATURES (Weeks 9-16)
+
+### Multi-Pipeline Support
+
+**Status**: Not implemented  
+**Priority**: Medium  
+**Effort**: 2 weeks  
+**Dependencies**: Core pipeline working
+
+**Deliverables**:
+
+- Support for multiple pipeline types (trading, document processing, data ETL)
+- Pipeline templates for common workflows
+- Dynamic pipeline configuration
+- Pipeline versioning
+
+**Success Criteria**:
+
+- Can add new pipeline types without code changes
+- Templates speed up new pipeline creation
+- Configuration stored in database
+- Version control for pipeline definitions
+
+**Implementation Steps**:
+
+1. Design pipeline abstraction layer
+2. Create pipeline registry
+3. Implement template system
+4. Add versioning support
+5. Document pipeline creation process
+
+---
+
+### Advanced Analytics
+
+**Status**: Not implemented  
+**Priority**: Medium  
+**Effort**: 3 weeks  
+**Dependencies**: Core platform complete
+
+**Deliverables**:
+
+- Historical trend analysis (best strategies over time)
+- Anomaly detection (unusual job failures)
+- Cost tracking (AWS spend per pipeline)
+- Performance benchmarking (job duration trends)
+
+**Success Criteria**:
+
+- Trends visualized clearly
+- Anomalies detected and alerted
+- Cost tracking accurate
+- Benchmarks actionable
+
+**Implementation Steps**:
+
+1. Implement trend detection algorithms
+2. Add anomaly detection
+3. Track AWS costs per job
+4. Create performance benchmarks
+5. Build analytics dashboard
+
+---
+
+### Mobile Application
+
+**Status**: Not implemented  
+**Priority**: Low  
+**Effort**: 4 weeks  
+**Dependencies**: Core platform complete
+
+**Deliverables**:
+
+- React Native app (iOS/Android)
+- Job triggering from mobile
+- Push notifications for job completion
+- Offline job history viewing
+
+**Success Criteria**:
+
+- Mobile app functional on iOS and Android
+- Can trigger jobs from mobile
+- Push notifications delivered
+- Offline mode works
+
+**Implementation Steps**:
+
+1. Set up React Native project
+2. Implement auth with Supabase
+3. Add job triggering and viewing
+4. Implement push notifications (Firebase)
+5. Add offline data sync
+6. Test on iOS and Android
 
 ---
 
 ## IMPLEMENTATION TIMELINE
 
-### Month 1: Core Infrastructure
+### Weeks 1-2: Core Dashboard
 
-- **Week 1-2**: n8n deployment
-- **Week 3**: Real-time WebSocket connections
-- **Week 4**: Integration testing
+- **Week 1**: Pipeline management API
+- **Week 2**: Real-time dashboard updates
 
-### Month 2: Data Integration
+### Weeks 3-4: Visualization & UX
 
-- **Week 5-6**: Xero integration
-- **Week 7**: HubSpot integration
-- **Week 8**: Asana integration
+- **Week 3**: Result visualization components
+- **Week 4**: Interactive dashboard features
 
-### Month 3: Advanced Features
+### Weeks 5-8: Production Features
 
-- **Week 9-10**: Interactive dashboard features
-- **Week 11-12**: Mobile application
+- **Week 5**: Performance optimization
+- **Week 6**: Security hardening
+- **Week 7-8**: Testing and monitoring
 
-### Month 4: Production Readiness
+### Weeks 9-16: Advanced Features (Optional)
 
-- **Week 13**: Performance optimization
-- **Week 14**: Security hardening
-- **Week 15-16**: Testing and monitoring
+- **Week 9-10**: Multi-pipeline support
+- **Week 11-13**: Advanced analytics
+- **Week 14-16**: Mobile application
 
 ---
 
@@ -382,23 +394,22 @@ This roadmap outlines the implementation of missing features that are documented
 
 ### Development Resources
 
-- **Senior Full-Stack Developer**: 1 FTE
-- **DevOps Engineer**: 0.5 FTE (part-time)
-- **QA Engineer**: 0.5 FTE (part-time)
+- **Senior Full-Stack Developer**: 1 FTE (solo founder initially)
+- **Contractors** (as needed): DevOps, Frontend, Testing specialists
 
 ### Infrastructure Resources
 
-- **DigitalOcean Droplet**: 4GB RAM, 2 vCPUs
-- **Supabase Pro Plan**: Real-time features
-- **Monitoring Tools**: DataDog, Sentry
-- **Testing Tools**: Playwright, K6
+- **Supabase Free Tier**: PostgreSQL, auth, real-time (currently sufficient)
+- **Vercel Hobby Plan**: Next.js hosting (free)
+- **LocalStack** (local dev): AWS emulation (free)
+- **AWS** (future): EKS, SQS, S3 (estimate $50-200/month)
 
-### External Services
+### Tools & Services
 
-- **Xero API**: OAuth credentials
-- **HubSpot API**: OAuth credentials
-- **Asana API**: OAuth credentials
-- **Push Notification Service**: Firebase/OneSignal
+- **Prometheus + Grafana**: Monitoring (free, self-hosted)
+- **Sentry**: Error tracking (free tier: 5k events/month)
+- **Better Uptime**: Uptime monitoring (free tier)
+- **GitHub Actions**: CI/CD (free for public repos)
 
 ---
 
@@ -406,53 +417,73 @@ This roadmap outlines the implementation of missing features that are documented
 
 ### Technical Risks
 
-- **Integration Failures**: Comprehensive error handling and retry logic
-- **Performance Issues**: Load testing and optimization
-- **Security Vulnerabilities**: Security audit and hardening
-- **Data Quality**: Validation and monitoring
+- **Performance Issues**: Early load testing, caching strategy
+- **Security Vulnerabilities**: Security audit before production
+- **Data Loss**: Regular backups, point-in-time recovery
+- **External API Failures**: Retry logic, dead letter queues
 
 ### Operational Risks
 
-- **Timeline Delays**: Buffer time and priority management
-- **Resource Constraints**: Efficient resource allocation
-- **Knowledge Gaps**: Documentation and training
-- **External Dependencies**: Fallback plans and alternatives
+- **Solo Developer Capacity**: Focus on MVP features, defer advanced features
+- **Budget Constraints**: Use free tiers, LocalStack before AWS
+- **Timeline Delays**: Buffer time built into estimates
+- **Scope Creep**: Strict prioritization, defer non-critical features
 
 ---
 
 ## SUCCESS METRICS
 
-### Phase 1 Success (Core Infrastructure)
+### Phase 1 Success (Dashboard & API)
 
-- n8n deployment operational
-- Real-time connections working
-- Basic integrations functional
-- Performance targets met
+- ✅ Can trigger jobs from dashboard
+- ✅ Real-time status updates working
+- ✅ Results displayed clearly
+- ✅ API documented and tested
 
-### Phase 2 Success (Data Integration)
+### Phase 2 Success (Visualization & UX)
 
-- Xero, HubSpot, Asana syncing daily
-- Data quality validated
-- Error handling robust
-- Monitoring active
+- ✅ Charts and tables functional
+- ✅ Search and filtering fast
+- ✅ UX intuitive for non-technical users
+- ✅ CSV export working
 
-### Phase 3 Success (Advanced Features)
+### Phase 3 Success (Production Features)
 
-- Interactive dashboard functional
-- Mobile app operational
-- Advanced analytics working
-- User experience optimized
+- ✅ Performance targets achieved (< 200ms API, < 2.5s LCP)
+- ✅ Security audit passed
+- ✅ 100 concurrent jobs load tested
+- ✅ Error tracking and uptime monitoring active
 
-### Phase 4 Success (Production Readiness)
+### Phase 4 Success (Advanced Features)
 
-- Performance targets achieved
-- Security audit passed
-- Load testing successful
-- Monitoring and alerting active
+- ✅ Multi-pipeline support functional
+- ✅ Analytics provide actionable insights
+- ✅ Mobile app operational (optional)
+- ✅ Cost tracking accurate
 
 ---
 
-**Document Version**: 1.0  
+## CURRENT PRIORITIES (Next 2 Weeks)
+
+1. **Pipeline Management API** (Week 1)
+   - Implement GET /api/pipelines, POST /api/pipelines, GET /api/pipelines/[id]
+   - Test with Postman/curl
+   - Document API
+
+2. **Real-Time Dashboard** (Week 2)
+   - Supabase real-time subscriptions
+   - WebSocket connection management
+   - Live status updates in UI
+
+3. **Result Visualization** (Week 2)
+   - Charts for trading results
+   - Sortable tables
+   - Basic export functionality
+
+---
+
+**Document Version**: 2.0  
 **Last Updated**: 2025-01-27  
 **Owner**: Technical Architecture  
-**Review Cycle**: Weekly
+**Review Cycle**: Weekly  
+**Next Review**: 2025-02-03

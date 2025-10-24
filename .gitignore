@@ -50,3 +50,34 @@ zixly-credentials.env
 *secrets*
 .env.local
 .env.production
+
+# LocalStack data
+localstack-data/
+
+# AI conversation history
+.claude/
+
+# SSL certificates (Let's Encrypt)
+letsencrypt/
+
+# Temporary documentation and status files
+archive/
+DOCUMENTATION_OPTIMIZATION_*.md
+STATUS.md
+DEPLOYMENT.md
+plan.md
+*.plan.md
+
+# Terraform
+**/.terraform/
+**/*.tfstate
+**/*.tfstate.*
+**/.terraform.lock.hcl
+
+# Docker volumes and runtime data
+grafana-data/
+prometheus-data/
+postgres-data/
+
+# Service dependencies
+services/*/node_modules/

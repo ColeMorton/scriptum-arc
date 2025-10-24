@@ -39,7 +39,7 @@ This platform:
 
 - **TENANT** = Zixly organization (the service business itself)
 - **USER** = Zixly team members (cole@zixly.com.au, support@zixly.com.au)
-- **CLIENT** = Service clients (businesses using Zixly for n8n automation)
+- **CLIENT** = Service clients (businesses using Zixly for pipeline services automation)
 
 **Business Model**: Zixly is a **service business** that uses its own platform to track service delivery operations, demonstrating "eating our own dogfood" with the self-hostable SME stack.
 
@@ -47,7 +47,7 @@ This platform:
 
 1. **Single Tenant**: Only Zixly organization data
 2. **Internal Users**: Only Zixly team members
-3. **Service Clients**: Businesses that hire Zixly for n8n automation services
+3. **Service Clients**: Businesses that hire Zixly for pipeline services automation services
 4. **Open-Source**: Code available for demonstration and reuse
 5. **Dogfooding**: Using our own tools to run our business
 
@@ -67,13 +67,13 @@ This platform:
 
 **Database Entity**: `Tenant` table
 
-- Fields: `id`, `name` ("Zixly"), `industry` ("n8n Automation Services"), `createdAt`, `updatedAt`
+- Fields: `id`, `name` ("Zixly"), `industry` ("pipeline services Automation Services"), `createdAt`, `updatedAt`
 - Root entity for all Zixly internal operations data
 
 **Examples**:
 
 - Zixly (tenant_id: `zixly-org-001`)
-- Industry: "n8n Automation Services"
+- Industry: "pipeline services Automation Services"
 - Single tenant for all Zixly internal operations
 
 **Lifecycle**:
@@ -217,12 +217,12 @@ This platform:
 
 ### Zixly Service Business (Tenant)
 
-**Context**: Zixly is a service business that provides n8n automation services to clients. This platform tracks Zixly's internal service delivery operations.
+**Context**: Zixly is a service business that provides pipeline services automation services to clients. This platform tracks Zixly's internal service delivery operations.
 
 **Tenant Details**:
 
 - **Tenant Name**: Zixly
-- **Industry**: n8n Automation Services
+- **Industry**: pipeline services Automation Services
 - **Business Model**: Service provider (not SaaS)
 - **Tenant ID**: `zixly-org-001`
 

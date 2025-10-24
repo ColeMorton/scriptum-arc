@@ -9,7 +9,7 @@
 
 ## Overview
 
-This guide provides standardized estimation frameworks for n8n automation projects. Use these guidelines to create accurate project scopes, timelines, and investment estimates for client proposals.
+This guide provides standardized estimation frameworks for DevOps automation projects. Use these guidelines to create accurate project scopes, timelines, and investment estimates for client proposals.
 
 ---
 
@@ -23,7 +23,7 @@ This guide provides standardized estimation frameworks for n8n automation projec
 
 - 1-3 basic workflows
 - 1-2 system integrations
-- Standard n8n nodes only
+- Standard pipeline services nodes only
 - No custom code required
 - Clear business requirements
 
@@ -76,7 +76,7 @@ This guide provides standardized estimation frameworks for n8n automation projec
 
 ### 2. Time Estimation Matrix
 
-#### n8n Platform Setup
+#### pipeline platform Setup
 
 | Component              | Simple      | Medium       | Complex      |
 | ---------------------- | ----------- | ------------ | ------------ |
@@ -111,7 +111,7 @@ This guide provides standardized estimation frameworks for n8n automation projec
 
 ### 3. Service-Specific Estimates
 
-#### n8n Platform Setup
+#### pipeline platform Setup
 
 **Base Investment**: $2,500 - $5,000
 **Timeline**: 1-2 weeks
@@ -266,8 +266,8 @@ This guide provides standardized estimation frameworks for n8n automation projec
 ### Simple Project Proposal
 
 ```
-Project: [Client Name] n8n Automation Setup
-Scope: n8n platform setup + 3 basic workflows
+Project: [Client Name] pipeline services Automation Setup
+Scope: pipeline platform setup + 3 basic workflows
 Timeline: 2 weeks
 Investment: $4,500
 Includes: Platform setup, 3 workflows, training, 30-day support
@@ -277,7 +277,7 @@ Includes: Platform setup, 3 workflows, training, 30-day support
 
 ```
 Project: [Client Name] Business Process Automation
-Scope: n8n platform + 5 workflows + 2 integrations
+Scope: pipeline platform + 5 workflows + 2 integrations
 Timeline: 4 weeks
 Investment: $8,500
 Includes: Platform setup, 5 workflows, 2 integrations, training, 60-day support
@@ -287,7 +287,7 @@ Includes: Platform setup, 5 workflows, 2 integrations, training, 60-day support
 
 ```
 Project: [Client Name] Enterprise Automation Platform
-Scope: n8n platform + 10 workflows + 4 integrations + custom development
+Scope: pipeline platform + 10 workflows + 4 integrations + custom development
 Timeline: 8 weeks
 Investment: $18,500
 Includes: Platform setup, 10 workflows, 4 integrations, custom development, training, 90-day support

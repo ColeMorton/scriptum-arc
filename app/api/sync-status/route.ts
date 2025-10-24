@@ -23,13 +23,13 @@ export async function GET() {
       return NextResponse.json({ error: 'No tenant associated with user' }, { status: 400 })
     }
 
-    // Fetch Zixly's internal data sync status (written by n8n workflows)
+    // Fetch Zixly's internal data sync status (written by pipeline workflows)
     const syncStatus = await prisma.dataSyncStatus.findMany({
       where: { tenantId },
       orderBy: { lastSyncAt: 'desc' },
     })
 
-    // Fetch Zixly's internal workflow metadata (written by n8n workflows)
+    // Fetch Zixly's internal workflow metadata (written by pipeline workflows)
     const workflowStatus = await prisma.workflowMetadata.findMany({
       where: { tenantId },
       orderBy: { lastRunAt: 'desc' },

@@ -46,6 +46,7 @@ const eslintConfig = [
       "prisma/migrations/**",
       "test/setup.ts",
       "test/mocks/**",
+      "next-env.d.ts",
     ],
   },
 ];

@@ -9,7 +9,7 @@
 
 ## Overview
 
-This guide covers email authentication for n8n workflows. **CURRENT STATUS**: Zixly has migrated from SMTP to Microsoft Outlook OAuth2 API for enhanced security and reliability.
+This guide covers email authentication for pipeline services workflows. **CURRENT STATUS**: Zixly has migrated from SMTP to Microsoft Outlook OAuth2 API for enhanced security and reliability.
 
 **✅ MIGRATION COMPLETED**: Microsoft Outlook OAuth2 API is now active and configured.
 
@@ -91,16 +91,16 @@ This guide covers email authentication for n8n workflows. **CURRENT STATUS**: Zi
 
 ## Testing Microsoft Outlook OAuth2 Configuration
 
-### Method 1: n8n Credential Test
+### Method 1: pipeline services Credential Test
 
-1. Go to n8n → Settings → Credentials
+1. Go to pipeline services → Settings → Credentials
 2. Edit "Microsoft Outlook OAuth2 API" credential
 3. Click "Test" button
 4. Verify "Connection successful" message
 
 ### Method 2: Workflow Test
 
-1. Create a simple n8n workflow
+1. Create a simple pipeline services workflow
 2. Add "Microsoft Outlook" node
 3. Configure with "Microsoft Outlook OAuth2 API" credential
 4. Send test email to yourself
@@ -109,11 +109,11 @@ This guide covers email authentication for n8n workflows. **CURRENT STATUS**: Zi
 ### Method 3: OAuth2 Token Validation
 
 ```bash
-# Check n8n logs for OAuth2 authentication
-docker-compose -f docker-compose.n8n.yml logs n8n | grep -i oauth
+# Check pipeline services logs for OAuth2 authentication
+docker-compose -f docker-compose.pipeline services.yml logs pipeline services | grep -i oauth
 
 # Check for successful token refresh
-docker-compose -f docker-compose.n8n.yml logs n8n | grep -i "token refresh"
+docker-compose -f docker-compose.pipeline services.yml logs pipeline services | grep -i "token refresh"
 ```
 
 ---
@@ -128,7 +128,7 @@ docker-compose -f docker-compose.n8n.yml logs n8n | grep -i "token refresh"
 
 1. Enable 2FA in Google Account
 2. Generate app password
-3. Configure n8n with Gmail SMTP
+3. Configure pipeline services with Gmail SMTP
 
 **Configuration**:
 
@@ -148,7 +148,7 @@ docker-compose -f docker-compose.n8n.yml logs n8n | grep -i "token refresh"
 
 1. Create SendGrid account
 2. Generate API key
-3. Configure n8n with SendGrid SMTP
+3. Configure pipeline services with SendGrid SMTP
 
 **Configuration**:
 
@@ -195,9 +195,9 @@ docker-compose -f docker-compose.n8n.yml logs n8n | grep -i "token refresh"
    - Verify firewall settings
    - Test with telnet command
 
-5. **Check n8n Logs**:
+5. **Check pipeline services Logs**:
    ```bash
-   docker-compose -f docker-compose.n8n.yml logs n8n | grep -i smtp
+   docker-compose -f docker-compose.pipeline services.yml logs pipeline services | grep -i smtp
    ```
 
 ### Common Issues and Solutions
@@ -235,9 +235,9 @@ SMTP_USER: your_email@domain.com
 SMTP_PASSWORD: your_app_password_here
 ```
 
-### n8n Environment Variables
+### pipeline services Environment Variables
 
-Add to n8n container environment:
+Add to pipeline services container environment:
 
 ```yaml
 - SMTP_HOST=smtp-mail.outlook.com
@@ -256,7 +256,7 @@ Add to n8n container environment:
 - **Never use regular passwords** for SMTP authentication
 - **Always use app passwords** for Microsoft accounts
 - **Rotate app passwords** regularly (every 90 days)
-- **Store credentials securely** in n8n credential system
+- **Store credentials securely** in pipeline services credential system
 
 ### Network Security
 
@@ -277,7 +277,7 @@ Add to n8n container environment:
 ### Self-Service Resources
 
 1. **Check this guide** for common solutions
-2. **Review n8n logs** for specific error messages
+2. **Review pipeline services logs** for specific error messages
 3. **Test with alternative email providers**
 4. **Verify network connectivity**
 
@@ -288,13 +288,13 @@ Contact support if:
 - App password setup fails after following guide
 - Multiple email providers fail
 - Network connectivity issues persist
-- n8n workflow execution errors occur
+- pipeline services workflow execution errors occur
 
 ### Support Information
 
 - **Primary Contact**: Your Name (your_email@domain.com)
 - **Documentation**: This troubleshooting guide
-- **Logs Location**: `docker-compose logs n8n`
+- **Logs Location**: `docker-compose logs pipeline services`
 
 ---
 

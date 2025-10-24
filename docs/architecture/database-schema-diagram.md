@@ -1,6 +1,6 @@
 # Database Schema Diagram
 
-> **Note**: This document describes our internal database architecture and schema design for n8n service implementations. It is maintained for service delivery consistency and technical documentation purposes.
+> **Note**: This document describes our internal database architecture and schema design for pipeline services service implementations. It is maintained for service delivery consistency and technical documentation purposes.
 
 **Version**: 1.0
 **Last Updated**: 2025-10-15
@@ -413,7 +413,7 @@ ORDER BY record_date;
 └─────────────┘   │
                   │
 ┌─────────────┐   │      ┌──────────────┐      ┌──────────────┐
-│ HubSpot API │───┼─────→│  n8n ETL     │─────→│  PostgreSQL  │
+│ HubSpot API │───┼─────→│  pipeline services ETL     │─────→│  PostgreSQL  │
 └─────────────┘   │      │  Workflows   │      │  (Supabase)  │
                   │      └──────────────┘      └──────────────┘
 ┌─────────────┐   │              │                     │
@@ -433,7 +433,7 @@ ORDER BY record_date;
 
 **Key Steps**:
 
-1. **Extract**: n8n scheduled workflows pull data from external APIs (OAuth authenticated)
+1. **Extract**: pipeline services scheduled workflows pull data from external APIs (OAuth authenticated)
 2. **Transform**: Custom TypeScript nodes normalize dates, convert currencies, calculate derived metrics
 3. **Load**: Upsert into PostgreSQL using unique constraints to prevent duplicates
 4. **Serve**: API layer reads via Prisma with tenant isolation enforced by RLS

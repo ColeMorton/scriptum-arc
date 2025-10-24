@@ -1,0 +1,95 @@
+groups:
+  - name: pipeline_alerts
+    interval: 30s
+    rules:
+      # High error rate alert
+      - alert: HighPipelineErrorRate
+        expr: |
+          (
+            rate(pipeline_jobs_processed_total{status="failed"}[5m])
+            /
+            rate(pipeline_jobs_processed_total[5m])
+          ) > 0.1
+        for: 5m
+        labels:
+          severity: warning
+          component: pipeline
+        annotations:
+          summary: 'High pipeline job failure rate'
+          description: 'Pipeline job failure rate is {{ $value | humanizePercentage }} over the last 5 minutes'
+
+      # Job queue backing up
+      - alert: JobQueueBacklog
+        expr: |
+          sum(pipeline_jobs{status="queued"}) > 50
+        for: 10m
+        labels:
+          severity: warning
+          component: queue
+        annotations:
+          summary: 'Job queue backlog detected'
+          description: '{{ $value }} jobs queued for over 10 minutes. Consider scaling workers.'
+
+      # Worker down
+      - alert: NoActiveWorkers
+        expr: |
+          absent(up{job="pipeline-worker"}) or sum(up{job="pipeline-worker"}) == 0
+        for: 2m
+        labels:
+          severity: critical
+          component: worker
+        annotations:
+          summary: 'No active pipeline workers'
+          description: 'All pipeline workers are down. Jobs will not be processed.'
+
+      # Slow job execution
+      - alert: SlowJobExecution
+        expr: |
+          histogram_quantile(0.95, rate(pipeline_job_duration_seconds_bucket[10m])) > 600
+        for: 15m
+        labels:
+          severity: warning
+          component: performance
+        annotations:
+          summary: 'Slow pipeline job execution'
+          description: '95th percentile job duration is {{ $value | humanizeDuration }} (threshold: 10 minutes)'
+
+      # Redis connection issues
+      - alert: RedisConnectionErrors
+        expr: |
+          rate(redis_connection_errors_total[5m]) > 0
+        for: 2m
+        labels:
+          severity: critical
+          component: redis
+        annotations:
+          summary: 'Redis connection errors detected'
+          description: '{{ $value }} Redis connection errors per second'
+
+      # Trading API unreachable
+      - alert: TradingAPIUnreachable
+        expr: |
+          absent(up{job="trading-api"}) or up{job="trading-api"} == 0
+        for: 5m
+        labels:
+          severity: warning
+          component: external-api
+        annotations:
+          summary: 'Trading API is unreachable'
+          description: 'Cannot connect to Trading API. New jobs will fail.'
+
+      # High memory usage
+      - alert: HighMemoryUsage
+        expr: |
+          (
+            container_memory_usage_bytes{container_label_com_docker_compose_service="pipeline-worker"}
+            /
+            container_spec_memory_limit_bytes{container_label_com_docker_compose_service="pipeline-worker"}
+          ) > 0.9
+        for: 5m
+        labels:
+          severity: warning
+          component: resources
+        annotations:
+          summary: 'High memory usage in pipeline workers'
+          description: 'Pipeline worker memory usage is {{ $value | humanizePercentage }}'

@@ -68,20 +68,20 @@ This document outlines the security policies and procedures for managing credent
 ```yaml
 # ✅ CORRECT - Uses environment variables
 environment:
-  - N8N_BASIC_AUTH_PASSWORD=${N8N_BASIC_AUTH_PASSWORD}
+  - pipeline_BASIC_AUTH_PASSWORD=${pipeline_BASIC_AUTH_PASSWORD}
   - DB_POSTGRESDB_PASSWORD=${DB_POSTGRESDB_PASSWORD}
 
 # ❌ WRONG - Hardcoded credentials
 environment:
-  - N8N_BASIC_AUTH_PASSWORD=your_n8n_password_here
-  - DB_POSTGRESDB_PASSWORD=n8n_password
+  - pipeline_BASIC_AUTH_PASSWORD=your_pipeline services_password_here
+  - DB_POSTGRESDB_PASSWORD=pipeline services_password
 ```
 
 ### 3. Credential Rotation Schedule
 
 **Rotate credentials every 90 days:**
 
-- **n8n Basic Auth**: Change admin password
+- **pipeline services Basic Auth**: Change admin password
 - **Email Passwords**: Update SMTP credentials
 - **Database Passwords**: Rotate PostgreSQL passwords
 - **API Keys**: Refresh external service keys
@@ -116,9 +116,9 @@ environment:
 **Configuration files with environment variables:**
 
 ```yaml
-# docker-compose.n8n.yml
+# docker-compose.pipeline services.yml
 environment:
-  - N8N_BASIC_AUTH_PASSWORD=${N8N_BASIC_AUTH_PASSWORD}
+  - pipeline_BASIC_AUTH_PASSWORD=${pipeline_BASIC_AUTH_PASSWORD}
   - DB_POSTGRESDB_PASSWORD=${DB_POSTGRESDB_PASSWORD}
 ```
 
@@ -126,7 +126,7 @@ environment:
 
 ```bash
 # zixly-credentials.env.template
-N8N_BASIC_AUTH_PASSWORD=your_n8n_password_here
+pipeline_BASIC_AUTH_PASSWORD=your_pipeline services_password_here
 DB_POSTGRESDB_PASSWORD=your_postgres_password_here
 ```
 
@@ -137,15 +137,15 @@ DB_POSTGRESDB_PASSWORD=your_postgres_password_here
 ```yaml
 # ❌ NEVER DO THIS
 environment:
-  - N8N_BASIC_AUTH_PASSWORD=your_n8n_password_here
-  - DB_POSTGRESDB_PASSWORD=n8n_password
+  - pipeline_BASIC_AUTH_PASSWORD=your_pipeline services_password_here
+  - DB_POSTGRESDB_PASSWORD=pipeline services_password
 ```
 
 **Files with real credentials:**
 
 ```bash
 # ❌ NEVER COMMIT THIS
-N8N_BASIC_AUTH_PASSWORD=actual_password_123
+pipeline_BASIC_AUTH_PASSWORD=actual_password_123
 DB_POSTGRESDB_PASSWORD=real_password_456
 ```
 
@@ -197,8 +197,8 @@ DB_POSTGRESDB_PASSWORD=real_password_456
 
 ```bash
 # scripts/validate-env.sh
-if [ -z "$N8N_BASIC_AUTH_PASSWORD" ]; then
-  echo "ERROR: N8N_BASIC_AUTH_PASSWORD not set"
+if [ -z "$pipeline_BASIC_AUTH_PASSWORD" ]; then
+  echo "ERROR: pipeline_BASIC_AUTH_PASSWORD not set"
   exit 1
 fi
 ```
