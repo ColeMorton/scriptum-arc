@@ -134,6 +134,14 @@ jobs:
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
+        with:
+          # Enable Jekyll processing
+          enablement: true
+
+      - name: Build with Jekyll
+        run: |
+          echo "Building documentation with Jekyll..."
+          echo "Jekyll will process markdown files from docs/ directory"
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

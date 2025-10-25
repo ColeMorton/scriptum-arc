@@ -1,0 +1,14 @@
+source "https://rubygems.org"
+
+# Jekyll and GitHub Pages
+gem "github-pages", group: :jekyll_plugins
+
+# Optional plugins for better markdown rendering
+group :jekyll_plugins do
+  gem "jekyll-relative-links"
+  gem "jekyll-optional-front-matter"
+  gem "jekyll-readme-index"
+  gem "jekyll-titles-from-headings"
+  gem "jekyll-github-metadata"
+end
+

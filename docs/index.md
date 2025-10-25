@@ -1,3 +1,9 @@
+---
+layout: default
+title: Zixly Documentation
+description: DevOps Automation Services for Brisbane Tech Companies
+---
+
 # Zixly Documentation
 
 > **DevOps Automation Services for Brisbane Tech Companies**

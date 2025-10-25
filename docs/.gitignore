@@ -1,0 +1,16 @@
+# Jekyll build artifacts
+_site/
+.sass-cache/
+.jekyll-cache/
+.jekyll-metadata
+
+# Bundler
+.bundle/
+vendor/
+
+# Ruby version files
+.ruby-version
+
+# Gemfile.lock (optional - some prefer to commit it)
+Gemfile.lock
+
