@@ -1,21 +1,21 @@
 # Zixly Internal Operations Guide
 
-> **⚠️ PARTIALLY OUTDATED**: This document describes operational workflows that were built using the old n8n architecture. The conceptual data model and business processes remain valid, but the automation implementation details (n8n workflows) need to be rebuilt using Docker-based pipeline services.
+> **⚠️ PARTIALLY OUTDATED**: This document describes operational workflows that were built using the old n8n architecture. The conceptual data model and business processes remain valid, but the automation implementation details (n8n workflows) need to be rebuilt using Docker-based workflow services.
 >
 > **Status**: Reference Document (Automation sections outdated)  
-> **Last Updated**: 2025-01-27  
+> **Last Updated**: 2025-10-25  
 > **Action Required**: Rebuild automation workflows using webhook receiver + workers
 
-**Version**: 1.0  
+**Version**: 2.0  
 **Owner**: Service Operations
 
 ---
 
 ## Overview
 
-This document explains how Zixly uses its own platform to run the Zixly service business. This "dogfooding" approach provides authentic expertise and continuous improvement of our service delivery capabilities while demonstrating the value of cloud-native infrastructure patterns to potential clients.
+This document explains how Zixly uses its own platform to run the Zixly service business. This "dogfooding" approach provides authentic expertise and continuous improvement of our service delivery capabilities while demonstrating the value of business automation to SME clients.
 
-**Note**: The automation workflows described in this document reference n8n, which has been replaced with Docker-based pipeline services. The business processes and data models are still accurate, but the implementation details need updating.
+**Note**: The automation workflows described in this document reference n8n, which has been replaced with Docker-based workflow services. The business processes and data models are still accurate, but the implementation details need updating.
 
 ---
 
@@ -25,11 +25,11 @@ This document explains how Zixly uses its own platform to run the Zixly service 
 
 **What We Track:**
 
-- **Service Clients**: Businesses using Zixly for DevOps automation services
-- **Service Revenue**: Revenue from Starter, Professional, and Enterprise packages
-- **Service Costs**: Consultant time, tools, infrastructure costs
-- **Service Metrics**: Project velocity, client satisfaction, delivery efficiency
-- **Sales Pipeline**: Leads for service contracts through our sales process
+- **Service Clients**: SMEs using Zixly for business automation services (connecting Xero, HubSpot, Shopify, Asana)
+- **Service Revenue**: Revenue from Business Automation Starter, Complete, and Enterprise packages
+- **Service Costs**: Consultant time, tools, infrastructure costs, OAuth integration setup
+- **Service Metrics**: Project velocity, client satisfaction, delivery efficiency, time saved for clients
+- **Sales Pipeline**: Leads for business automation service contracts through our sales process
 
 ### Data Model for Internal Operations
 
@@ -58,15 +58,15 @@ This document explains how Zixly uses its own platform to run the Zixly service 
 **Tools Used:**
 
 - **Plane**: Project management and task tracking
-- **pipeline services**: Automated project status updates
-- **Custom Metrics**: Project velocity, delivery efficiency
+- **Workflow automation**: Automated project status updates
+- **Custom Metrics**: Project velocity, delivery efficiency, client time savings
 
 ### Financial Operations
 
 **What We Track:**
 
 - Service revenue by client and project type
-- Operational costs (consultant time, tools, infrastructure)
+- Operational costs (consultant time, tools, infrastructure, OAuth services)
 - Profit margins by service tier
 - Cash flow and billing status
 
@@ -74,7 +74,7 @@ This document explains how Zixly uses its own platform to run the Zixly service 
 
 - **Xero**: Accounting and financial management
 - **Invoice Ninja**: Client billing and payment tracking
-- **pipeline services**: Automated financial reporting and Xero sync
+- **Workflow automation**: Automated financial reporting and Xero sync
 
 ### Client Support
 

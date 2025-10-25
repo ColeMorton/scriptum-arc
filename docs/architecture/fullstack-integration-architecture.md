@@ -1,15 +1,15 @@
-# Cloud-Native Pipeline Integration Architecture
+# SME Business Automation Integration Architecture
 
-**Version**: 2.0  
-**Last Updated**: 2025-01-27  
+**Version**: 3.0  
+**Last Updated**: 2025-10-25  
 **Owner**: Technical Architecture  
-**Status**: Defined
+**Status**: Active
 
 ---
 
 ## Overview
 
-Zixly's cloud-native pipeline architecture seamlessly connects webhook receivers, job queues, background workers, and observability systems, creating a unified data analysis and automation platform. This document outlines the technical patterns, data flow, and integration strategies that enable reliable, scalable, webhook-triggered pipelines.
+Zixly's business automation architecture seamlessly connects webhook receivers, job queues, background workers, and observability systems, creating a unified SME workflow automation platform. This document outlines the technical patterns, data flow, and integration strategies that enable reliable, scalable, webhook-triggered business workflows (e.g., Xero invoice paid → HubSpot CRM update).
 
 ---
 
@@ -17,13 +17,13 @@ Zixly's cloud-native pipeline architecture seamlessly connects webhook receivers
 
 ### Event-Driven Design
 
-**Core Principle**: Every component responds to events, enabling asynchronous, scalable processing:
+**Core Principle**: Every component responds to business events, enabling asynchronous, scalable workflow processing:
 
-- **Webhook Receiver**: Accept HTTP requests, validate, queue jobs immediately
-- **Job Queue**: Reliable message broker (Redis/Bull or AWS SQS) for async processing
-- **Pipeline Worker**: Process jobs independently, retry on failure, emit results
-- **Database**: Store results and job status for dashboard queries
-- **Observability**: Prometheus metrics and Grafana dashboards for real-time monitoring
+- **Webhook Receiver**: Accept HTTP requests from business systems, validate, queue workflow jobs immediately
+- **Job Queue**: Reliable message broker (Redis/Bull or AWS SQS) for async workflow processing
+- **Workflow Worker**: Execute business integrations independently, retry on failure, emit execution logs
+- **Database**: Store workflow execution history and status for dashboard queries
+- **Observability**: Prometheus metrics and Grafana dashboards for real-time workflow monitoring
 
 ### Data Flow Architecture
 
@@ -58,25 +58,26 @@ Zixly's cloud-native pipeline architecture seamlessly connects webhook receivers
                              │
                              ▼
 ┌─────────────────────────────────────────────────────────────────┐
-│               Pipeline Worker (Node.js/TypeScript)               │
+│            Workflow Worker (Node.js/TypeScript)                  │
 │  ┌───────────────────────────────────────────────────────────┐  │
-│  │  1. Poll queue for new jobs                                │  │
+│  │  1. Poll queue for new workflow jobs                       │  │
 │  │  2. Update job status: QUEUED → RUNNING                   │  │
-│  │  3. Execute job logic (call external API, process data)    │  │
-│  │  4. Store results in S3 (large datasets)                   │  │
-│  │  5. Store results summary in PostgreSQL                    │  │
+│  │  3. Execute workflow (call business APIs via OAuth)        │  │
+│  │     - Fetch from Xero, update in HubSpot, etc.            │  │
+│  │  4. Store documents in S3 (invoices, reports)             │  │
+│  │  5. Store execution log in PostgreSQL                      │  │
 │  │  6. Update job status: RUNNING → COMPLETED/FAILED         │  │
-│  │  7. Send notification (email/Slack)                        │  │
+│  │  7. Send notification (optional: email/Slack)              │  │
 │  │  8. Emit Prometheus metrics                                │  │
 │  └───────────────────────────────────────────────────────────┘  │
 └────────┬────────────────────────────┬───────────────────────────┘
          │                            │
          ▼                            ▼
 ┌──────────────────────┐   ┌───────────────────────────────────┐
-│   PostgreSQL         │   │   S3 Storage (Large Datasets)     │
-│   (Supabase)         │   │   - Raw API responses             │
-│   - Job status       │   │   - Analysis results (CSV/JSON)   │
-│   - Result summaries │   │   - Logs and artifacts            │
+│   PostgreSQL         │   │   S3 Storage (Documents)          │
+│   (Supabase)         │   │   - Business documents            │
+│   - Workflow status  │   │   - Invoices, reports (PDF)       │
+│   - Execution logs   │   │   - Workflow artifacts            │
 │   - User data        │   └───────────────────────────────────┘
 └──────────┬───────────┘
            │

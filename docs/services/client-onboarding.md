@@ -1,7 +1,7 @@
 # Client Onboarding Process
 
-**Version**: 1.0  
-**Last Updated**: 2025-01-27  
+**Version**: 2.0  
+**Last Updated**: 2025-10-25  
 **Owner**: Service Delivery  
 **Status**: Active Process
 
@@ -9,7 +9,7 @@
 
 ## Overview
 
-This document outlines Zixly's client onboarding process for DevOps automation services. Our structured approach ensures smooth project initiation, clear communication, and successful service delivery.
+This document outlines Zixly's client onboarding process for SME business automation services. Our structured approach ensures smooth project initiation, clear communication, and successful service delivery for connecting your business systems (Xero, HubSpot, Shopify, Asana) to automate repetitive tasks.
 
 ---
 
@@ -273,26 +273,26 @@ This document outlines Zixly's client onboarding process for DevOps automation s
 
 **Activities**:
 
-- pipeline platform setup
-- Workflow development
-- Integration implementation
+- Business automation platform setup
+- Workflow development (e.g., invoice automation, CRM syncing)
+- System integration implementation (Xero, HubSpot, Shopify)
 - Testing and validation
 - Documentation creation
 
 **Client Involvement**:
 
 - Progress review meetings
-- Testing participation
+- Testing participation (test workflows with real data)
 - Feedback provision
 - Issue identification
 - Acceptance testing
 
 **Deliverables**:
 
-- Configured pipeline platform
-- Functional workflows
-- Tested integrations
-- User documentation
+- Configured business automation platform
+- Functional workflows (automating your business processes)
+- Tested integrations (systems talking to each other)
+- User documentation (plain English guides)
 - Technical documentation
 
 ### 11. Training & Knowledge Transfer
@@ -453,7 +453,7 @@ This document outlines Zixly's client onboarding process for DevOps automation s
 
 ---
 
-**Document Version**: 1.0  
-**Last Updated**: 2025-01-27  
+**Document Version**: 2.0  
+**Last Updated**: 2025-10-25  
 **Owner**: Zixly Service Delivery  
 **Review Cycle**: Quarterly

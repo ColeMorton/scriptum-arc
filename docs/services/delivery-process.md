@@ -1,7 +1,7 @@
 # Service Delivery Process
 
-**Version**: 1.0  
-**Last Updated**: 2025-01-27  
+**Version**: 2.0  
+**Last Updated**: 2025-10-25  
 **Owner**: Service Delivery  
 **Status**: Active Process
 
@@ -9,7 +9,7 @@
 
 ## Overview
 
-This document outlines Zixly's standardized service delivery process for DevOps automation implementations. Our proven methodology ensures consistent, high-quality service delivery while maintaining flexibility for client-specific needs.
+This document outlines Zixly's standardized service delivery process for SME business automation implementations. Our proven methodology ensures consistent, high-quality service delivery while maintaining flexibility for client-specific needs. We focus on connecting your business systems (Xero, HubSpot, Shopify, Asana) to automate repetitive tasks and save time.
 
 ---
 
@@ -74,7 +74,7 @@ This document outlines Zixly's standardized service delivery process for DevOps 
 
 ---
 
-## Phase 2: pipeline Platform Setup (Week 2)
+## Phase 2: Business Automation Platform Setup (Week 2)
 
 ### 2.1 Infrastructure Preparation
 
@@ -82,16 +82,16 @@ This document outlines Zixly's standardized service delivery process for DevOps 
 
 **Activities**:
 
-- Server provisioning and configuration
-- Security hardening
+- Cloud platform provisioning and configuration
+- Security hardening (OAuth token encryption, data encryption)
 - Backup system setup
-- Monitoring configuration
+- Monitoring configuration (workflow health tracking)
 
 **Deliverables**:
 
-- Secure pipeline instance
+- Secure automation platform instance
 - Backup procedures
-- Monitoring dashboard
+- Monitoring dashboard (workflow execution tracking)
 - Security documentation
 
 ### 2.2 Initial Configuration
@@ -100,16 +100,16 @@ This document outlines Zixly's standardized service delivery process for DevOps 
 
 **Activities**:
 
-- pipeline platform configuration
-- User account setup
-- Basic security settings
-- Initial workflow templates
+- Business automation platform configuration
+- User account setup (your team members)
+- OAuth connections to business systems (Xero, HubSpot, etc.)
+- Initial workflow templates (common automation patterns)
 
 **Deliverables**:
 
-- Configured pipeline platform
+- Configured business automation platform
 - User accounts and permissions
-- Basic workflow templates
+- Workflow templates (e.g., invoice automation, CRM sync)
 - Configuration documentation
 
 ### 2.3 Integration Setup

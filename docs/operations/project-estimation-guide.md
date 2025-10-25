@@ -1,7 +1,7 @@
 # Project Estimation Guide
 
-**Version**: 1.0  
-**Last Updated**: 2025-01-27  
+**Version**: 2.0  
+**Last Updated**: 2025-10-25  
 **Owner**: Service Delivery  
 **Status**: Active Guide
 
@@ -9,7 +9,7 @@
 
 ## Overview
 
-This guide provides standardized estimation frameworks for DevOps automation projects. Use these guidelines to create accurate project scopes, timelines, and investment estimates for client proposals.
+This guide provides standardized estimation frameworks for SME business automation projects. Use these guidelines to create accurate project scopes, timelines, and investment estimates for client proposals. Our focus is on connecting business systems (Xero, HubSpot, Shopify, Asana) to automate repetitive tasks for SMEs.
 
 ---
 
@@ -22,19 +22,19 @@ This guide provides standardized estimation frameworks for DevOps automation pro
 **Characteristics**:
 
 - 1-3 basic workflows
-- 1-2 system integrations
-- Standard pipeline services nodes only
+- 1-2 system integrations (e.g., Xero + HubSpot)
+- Standard automation patterns only
 - No custom code required
 - Clear business requirements
 
 **Examples**:
 
-- Xero to CRM lead sync
-- Email notification workflows
-- Basic data transformation
-- Simple approval processes
+- Xero invoice paid → update HubSpot contact
+- Automated email notifications when deal is won
+- Basic data sync between systems
+- Simple approval notifications
 
-**Investment Range**: $2,500 - $5,000
+**Investment Range**: $3,000 - $5,000
 
 #### Medium Projects (2-4 weeks)
 
@@ -76,15 +76,16 @@ This guide provides standardized estimation frameworks for DevOps automation pro
 
 ### 2. Time Estimation Matrix
 
-#### pipeline platform Setup
+#### Business Automation Platform Setup
 
-| Component              | Simple      | Medium       | Complex      |
-| ---------------------- | ----------- | ------------ | ------------ |
-| Infrastructure setup   | 4 hours     | 8 hours      | 16 hours     |
-| Security configuration | 2 hours     | 4 hours      | 8 hours      |
-| User management        | 1 hour      | 2 hours      | 4 hours      |
-| Basic monitoring       | 2 hours     | 4 hours      | 8 hours      |
-| **Total Setup**        | **9 hours** | **18 hours** | **36 hours** |
+| Component                   | Simple       | Medium       | Complex      |
+| --------------------------- | ------------ | ------------ | ------------ |
+| Infrastructure setup        | 4 hours      | 8 hours      | 16 hours     |
+| Security configuration      | 2 hours      | 4 hours      | 8 hours      |
+| OAuth integration setup     | 2 hours      | 4 hours      | 8 hours      |
+| User management             | 1 hour       | 2 hours      | 4 hours      |
+| Workflow execution tracking | 2 hours      | 4 hours      | 8 hours      |
+| **Total Setup**             | **11 hours** | **22 hours** | **44 hours** |
 
 #### Workflow Development
 

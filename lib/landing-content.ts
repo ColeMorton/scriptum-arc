@@ -1,287 +1,271 @@
 /**
- * Landing Page Content
+ * Landing Page Content - SME Business Automation
  *
- * All content extracted from documentation to maintain single source of truth.
+ * All content for public-facing website landing page.
  * Sources: docs/marketing/service-overview.md, docs/financial/service-business-model.md
+ *
+ * Version: 3.0 - Complete SME Business Automation Focus
  */
 
 export const HERO_CONTENT = {
-  headline: 'DevOps Automation Services for Brisbane Tech Companies',
+  headline: 'Stop Wasting Time on Repetitive Admin Work',
   subheadline:
-    'Docker, Kubernetes, Terraform infrastructure implementation. Reduce cloud costs 20-50%. Production-grade reliability.',
-  primaryCTA: 'View Our Capabilities',
-  secondaryCTA: 'See Pricing',
+    'We connect your business systems (Xero, HubSpot, Shopify, etc.) so they work together automatically. Save 10-20 hours per week on data entry, invoicing, and reporting.',
+  primaryCTA: 'See How It Works',
+  secondaryCTA: 'Calculate Time Savings',
 }
 
 export const PROBLEM_STATEMENT = {
-  headline: 'Brisbane Tech Companies Face Infrastructure Challenges',
+  headline: 'Brisbane SMEs Waste Thousands on Manual Admin',
   painPoints: [
     {
-      stat: '40+ hrs/month',
-      description: 'Manual deployment time',
-      impact: 'Slows release cycles and developer velocity',
+      stat: '15+ hrs/week',
+      description: 'Manual data entry',
+      impact: 'Entering the same information into multiple systems',
     },
     {
-      stat: '$2K-5K/mo',
-      description: 'Wasted AWS spend',
-      impact: 'Cloud costs spiral without optimization',
+      stat: '95% errors',
+      description: 'From double handling',
+      impact: 'Duplicate, conflicting, or missing information',
     },
     {
-      stat: '99.0% uptime',
-      description: 'Without proper monitoring',
-      impact: 'Outages surprise teams and customers',
+      stat: '30 minutes',
+      description: 'Finding information',
+      impact: '"Which system has the correct phone number?"',
     },
     {
-      stat: '3-6 months',
-      description: 'To hire DevOps engineer',
-      impact: 'Local DevOps expertise is scarce',
+      stat: '$50K-$150K',
+      description: 'Wasted per year',
+      impact: 'On admin work that could be automated',
     },
   ],
 }
 
-export const CLOUD_NATIVE_BENEFITS = {
-  headline: 'Why Cloud-Native Infrastructure?',
+export const BUSINESS_AUTOMATION_BENEFITS = {
+  headline: 'Why Automate Your Business Systems?',
   subheadline:
-    'Modern infrastructure patterns that scale with your business and reduce operational overhead.',
+    'Connect your existing systems and eliminate repetitive work. Your team focuses on customers, not data entry.',
   benefits: [
     {
-      title: 'Scalability',
-      description: 'Auto-scaling handles traffic spikes without manual intervention',
-      icon: 'TrendingUp',
+      title: 'Save Time',
+      description: 'Eliminate 10-20 hours per week of manual data entry and double handling',
+      icon: 'Clock',
     },
     {
-      title: 'Reliability',
-      description: '99.5-99.9% uptime with automated failover and health checks',
+      title: 'Reduce Errors',
+      description: '95%+ reduction in data entry mistakes and duplicate information',
       icon: 'Shield',
     },
     {
-      title: 'Cost Efficiency',
-      description:
-        'Pay only for resources used, right-sized infrastructure reduces AWS bills 20-50%',
+      title: 'Improve Cash Flow',
+      description: 'Faster invoicing and payment tracking means getting paid sooner',
       icon: 'DollarSign',
     },
     {
-      title: 'Developer Velocity',
-      description: 'CI/CD pipelines enable multiple deployments per day',
-      icon: 'Zap',
+      title: 'Better Visibility',
+      description: 'Real-time dashboard shows how your business is performing right now',
+      icon: 'Activity',
     },
     {
-      title: 'Observability',
-      description: 'Real-time dashboards show every metric, alert before issues become outages',
-      icon: 'Activity',
+      title: 'Enable Growth',
+      description: 'Handle 30-50% more business without hiring additional admin staff',
+      icon: 'TrendingUp',
     },
   ],
 }
 
-export const CAPABILITIES = {
-  headline: 'Production Infrastructure We Build',
+export const WHAT_WE_AUTOMATE = {
+  headline: 'Workflows We Automate for Brisbane SMEs',
   subheadline:
-    'Real implementations we deliver to Brisbane tech companies. Technical depth backed by production experience.',
+    'Real automation we deliver to businesses like yours. Eliminate repetitive tasks and focus on what matters.',
   items: [
     {
-      title: 'Webhook-Triggered Data Pipelines',
+      title: 'Automatic Invoice Generation',
       description:
-        'Event-driven architecture for reliable async processing. Production-tested patterns from our own operations.',
+        'Stop manually creating invoices. When work is done or time is logged, invoices generate automatically.',
       features: [
-        'Docker containerization for portability',
-        'Redis/Bull or AWS SQS job queues',
-        'Retry logic with exponential backoff',
-        'Prometheus + Grafana monitoring',
-        'PostgreSQL for job tracking and results',
+        'Time tracked → Automatic invoice creation',
+        'Deal won in CRM → Invoice sent to customer',
+        'Payment reminders sent automatically',
+        'Payment received → Thank you email + CRM updated',
+        'Real-time outstanding invoice dashboard',
       ],
-      example: 'Trading strategy backtesting pipeline processing 10-50 jobs/day',
-      icon: 'Webhook',
+      example: 'Law firm saves 12 hours/week on billing, billing accuracy up from 85% to 98%',
+      icon: 'FileText',
     },
     {
-      title: 'Production Kubernetes Deployments',
+      title: 'Business System Integration',
       description:
-        'Full AWS EKS implementation with infrastructure as code. Scale from local development to multi-region production.',
+        'Connect Xero, HubSpot, Shopify, Asana and others. Data entered once, updated everywhere instantly.',
       features: [
-        'AWS EKS cluster provisioning',
-        'Horizontal Pod Autoscaling (2-50 pods)',
-        'Application Load Balancer + ingress',
-        'Terraform modules for repeatability',
-        'GitOps deployment workflows',
+        'Customer details synced across all systems',
+        'No more "which system is correct?"',
+        'Projects automatically created from sales',
+        'Inventory levels synchronized across channels',
+        'Single source of truth for your business',
       ],
-      example: '99.5% uptime SLA, 100-1000 jobs/day capacity',
-      icon: 'Kubernetes',
+      example: 'Construction company eliminates 14 hours/week of data re-entry between systems',
+      icon: 'Link',
     },
     {
-      title: 'Complete Observability Stack',
+      title: 'Real-Time Business Dashboard',
       description:
-        'Know exactly what your infrastructure is doing. Alert on issues before they become outages.',
+        'See how your business is doing right now. No more waiting for reports or pulling data from multiple systems.',
       features: [
-        'Prometheus metrics collection',
-        'Custom Grafana dashboards',
-        'PagerDuty/OpsGenie integration',
-        'SLO/SLI tracking and alerting',
-        'Cost monitoring and budget alerts',
+        'Outstanding invoices and cash flow',
+        'Sales pipeline and conversion rates',
+        'Project profitability in real-time',
+        'Inventory levels and reorder alerts',
+        'Access from phone, tablet, or computer',
       ],
-      example: 'Real-time visibility into every job, API call, and system metric',
-      icon: 'Activity',
+      example:
+        'E-commerce business makes better buying decisions with real-time inventory visibility',
+      icon: 'BarChart',
     },
   ],
 }
 
 export const SERVICE_PACKAGES = [
   {
-    name: 'Pipeline MVP',
-    tagline: 'Webhook-Triggered Data Analysis',
-    price: '$5,000 - $8,000',
+    name: 'Business Automation Starter',
+    tagline: 'Quick Wins for Small Businesses',
+    price: '$3,000 - $5,000',
     priceNote: 'one-time',
-    timeline: '2-4 weeks',
-    bestFor: 'Startups and small teams needing reliable automation',
+    timeline: '1-2 weeks',
+    bestFor: 'Small businesses (5-15 employees) wanting to prove automation value',
     includes: [
-      'Docker Compose infrastructure',
-      'Webhook receiver (Express.js)',
-      'Job queue (Redis/Bull or AWS SQS)',
-      'Pipeline workers with retry logic',
-      'Prometheus + Grafana dashboards',
-      'PostgreSQL integration (Supabase)',
-      'GitHub Actions CI/CD',
-      'Documentation and runbooks',
-      'Team training session',
+      'Connect 2-3 business systems (e.g., Xero + HubSpot)',
+      '2-3 core automation workflows',
+      'Simple dashboard with key metrics',
+      'Team training (2 hours)',
+      'Documentation and workflow diagrams',
       '30 days post-launch support',
     ],
     useCases: [
-      'Trading strategy backtesting',
-      'Document processing pipelines',
-      'Data ETL workflows',
-      'ML model batch inference',
+      'Invoice paid → Update CRM',
+      'Deal won → Create invoice',
+      'Time tracked → Compile timesheet',
     ],
     successMetrics: [
-      'Processes 10-50 jobs/day reliably',
-      '< 5 minute job completion latency',
-      'Full observability dashboards',
-      'Team operates pipelines independently',
+      '5-10 hours per week saved',
+      'Zero data entry errors between systems',
+      'ROI achieved within 3 months',
     ],
     featured: false,
   },
   {
-    name: 'DevOps Foundation',
-    tagline: 'Production Kubernetes Infrastructure',
-    price: '$12,000 - $20,000',
+    name: 'Complete Business Automation',
+    tagline: 'Comprehensive Multi-System Integration',
+    price: '$8,000 - $15,000',
     priceNote: 'one-time',
-    timeline: '6-8 weeks',
-    bestFor: 'Growing tech companies needing scalable, production-grade infrastructure',
+    timeline: '4-6 weeks',
+    bestFor: 'Growing businesses (15-50 employees) with multiple systems',
     includes: [
-      'Everything in Pipeline MVP',
-      'Local Kubernetes (Minikube/Docker Desktop)',
-      'AWS EKS cluster deployment',
-      'Terraform infrastructure as code',
-      'ElastiCache Redis or AWS SQS',
-      'S3 storage integration',
-      'AWS Secrets Manager',
-      'Horizontal Pod Autoscaling',
-      'CloudWatch + Prometheus monitoring',
-      'Disaster recovery procedures',
+      'Everything in Starter, PLUS',
+      'Connect 5-8 business systems',
+      '5-10 custom automation workflows',
+      'Advanced dashboard with analytics',
+      'Real-time business intelligence',
       'Team training (8 hours)',
+      'Comprehensive documentation',
       '60 days post-launch support',
     ],
     useCases: [
-      'Scalable microservices deployment',
-      'High-throughput data processing',
-      'Multi-environment CI/CD',
-      'Auto-scaling web applications',
+      'Complete customer lifecycle automation',
+      'Financial workflow (time → invoice → payment)',
+      'Inventory management and reordering',
+      'Project coordination and billing',
     ],
     successMetrics: [
-      'Auto-scaling handles 100-1000 jobs/day',
-      '99.5% uptime SLA',
-      'Infrastructure fully codified in Terraform',
-      'Team deploys via GitOps',
+      '15-20 hours per week saved',
+      '95%+ data accuracy across systems',
+      'Real-time business visibility',
+      'ROI achieved within 4-6 months',
     ],
     featured: true,
   },
   {
-    name: 'Enterprise Cloud',
-    tagline: 'Multi-Region High Availability',
-    price: '$30,000 - $60,000',
+    name: 'Enterprise Business Suite',
+    tagline: 'Industry-Specific Custom Solutions',
+    price: '$20,000 - $40,000',
     priceNote: 'one-time',
-    timeline: '12-16 weeks',
-    bestFor: 'Established businesses requiring enterprise-grade infrastructure',
+    timeline: '8-12 weeks',
+    bestFor: 'Established businesses (40-100 employees) needing customization',
     includes: [
-      'Everything in DevOps Foundation',
-      'Multi-region AWS (Sydney + Singapore)',
-      'RDS PostgreSQL with read replicas',
-      'Lambda functions for serverless',
-      'API Gateway for webhook ingress',
-      'AWS WAF (Web Application Firewall)',
-      'GuardDuty threat detection',
-      'CloudTrail audit logging',
-      'SOC 2 readiness documentation',
-      'Quarterly disaster recovery drills',
-      'Comprehensive training',
-      '3 months managed services included',
+      'Everything in Complete, PLUS',
+      'Unlimited system integrations',
+      'Industry-specific workflows (legal, construction, e-commerce, manufacturing)',
+      'Advanced analytics and forecasting',
+      'Multi-location support',
+      'Compliance automation',
+      'Comprehensive training (12+ hours)',
+      '90 days full support with dedicated contact',
     ],
     useCases: [
-      'Mission-critical SaaS platforms',
-      'Compliance-driven applications',
-      'Global customer base',
-      'Enterprise B2B platforms',
+      'Construction: Job costing and progress billing',
+      'Legal: Matter management and trust accounting',
+      'E-commerce: Multi-channel inventory sync',
+      'Manufacturing: Production scheduling and procurement',
     ],
     successMetrics: [
-      '99.9% uptime SLA',
-      '< 100ms p95 latency for ingress',
-      'Auto-scaling 0 to 1000+ workers',
-      'Complete audit trail for compliance',
+      '20-30 hours per week saved',
+      'Complete business visibility across locations',
+      'Industry-specific compliance maintained',
+      'ROI achieved within 6-12 months',
     ],
     featured: false,
   },
   {
-    name: 'Managed Services',
-    tagline: '24/7 Infrastructure Management',
-    price: '$2,000 - $5,000',
+    name: 'Monthly Management',
+    tagline: 'Ongoing Optimization and Support',
+    price: '$500 - $2,000',
     priceNote: 'per month',
     timeline: 'Ongoing',
-    bestFor: 'Teams wanting hands-off infrastructure management',
+    bestFor: 'Businesses wanting hands-off automation management',
     includes: [
-      '24/7 infrastructure monitoring',
-      'Alert response (business hours or 24/7)',
+      'Workflow monitoring and health checks',
+      'Bug fixes and optimization',
+      'New workflow development (1-2 per month)',
+      'Integration updates as systems change',
       'Monthly performance reports',
-      'Security patch management',
-      'Quarterly infrastructure reviews',
-      'Incident response SLA',
-      'Weekly optimization reviews',
-      'New feature development hours included',
-      'Slack channel support',
-      'Cost monitoring and optimization',
+      'Priority support (4 hour to same-day response)',
+      'Strategy calls to identify new opportunities',
+      'Keeps automation current as business evolves',
     ],
     tiers: [
       {
-        name: 'Basic Monitoring',
+        name: 'Basic Management',
+        price: '$500/month',
+        features: [
+          'Monitoring and bug fixes',
+          'Email support within 24 hours',
+          'Monthly performance report',
+        ],
+      },
+      {
+        name: 'Professional Management',
+        price: '$1,200/month',
+        features: [
+          '1 new workflow per month',
+          'Priority support within 4 hours',
+          'Monthly strategy call',
+        ],
+      },
+      {
+        name: 'Enterprise Management',
         price: '$2,000/month',
         features: [
-          'Business hours alert response',
-          'Monthly reports',
-          'Email support < 4 hour response',
-        ],
-      },
-      {
-        name: 'Full Managed Services',
-        price: '$3,500/month',
-        features: [
-          '24/7 alert response',
-          '< 1 hour incident SLA',
-          '4 hours/month feature development',
-          'Slack support',
-        ],
-      },
-      {
-        name: 'Enterprise Support',
-        price: '$5,000/month',
-        features: [
-          '< 30 minute incident SLA',
-          '8 hours/month feature development',
-          'Dedicated Slack channel',
-          'Compliance reporting assistance',
+          '2 new workflows per month',
+          'Same-day support response',
+          'Dedicated Slack/Teams channel',
         ],
       },
     ],
     useCases: [
-      'Focus on product, not infrastructure',
+      'Continuous improvement and optimization',
       'Expert backup for in-house teams',
-      'Compliance maintenance',
-      'Continuous optimization',
+      'Adapt automation as business grows',
+      'Keep workflows current with system updates',
     ],
     successMetrics: [],
     featured: false,
@@ -291,59 +275,59 @@ export const SERVICE_PACKAGES = [
 export const IMPLEMENTATION_PROCESS = {
   headline: 'Our Delivery Process',
   subheadline:
-    'Proven methodology for successful DevOps implementations. From infrastructure audit to production deployment.',
+    'Proven methodology for successful business automation. From assessment to go-live in 1-12 weeks.',
   steps: [
     {
       number: 1,
-      title: 'Discovery & Assessment',
+      title: 'Free Assessment',
       description:
-        'Free infrastructure audit, DevOps maturity evaluation, and automation opportunities identification.',
+        'Free 30-60 minute discussion of your systems, pain points, and automation opportunities.',
       deliverables: [
-        'Current infrastructure assessment',
-        'DevOps maturity scorecard',
-        'Automation opportunity analysis',
-        'Custom service recommendation',
+        'Current systems inventory',
+        'Pain point identification',
+        'Quick win opportunities',
+        'Service tier recommendation',
       ],
-      duration: 'Free consultation',
+      duration: 'Free, 30-60 minutes',
     },
     {
       number: 2,
-      title: 'Architecture Design',
+      title: 'Business Process Review',
       description:
-        'Design Terraform modules, Kubernetes manifests, and CI/CD pipeline architecture tailored to your needs.',
+        'Deep-dive into your workflows, ROI calculations, and detailed proposal with exact scope.',
       deliverables: [
-        'Terraform module structure',
-        'Kubernetes resource definitions',
-        'CI/CD pipeline design',
-        'Architecture decision records',
+        'Workflow mapping and documentation',
+        'ROI calculation per workflow',
+        'Detailed proposal with pricing',
+        'Timeline and milestones',
       ],
-      duration: '1-2 weeks',
+      duration: '$500, credited to project',
     },
     {
       number: 3,
-      title: 'Phased Implementation',
+      title: 'Implementation',
       description:
-        'Start with Docker Compose locally, progress through local Kubernetes, deploy to AWS EKS production.',
+        'We build, test, and deploy your automation. Weekly check-ins keep you informed throughout.',
       deliverables: [
-        'Local Docker Compose setup',
-        'Staging Kubernetes environment',
-        'Production AWS EKS deployment',
-        'Infrastructure as Code repository',
+        'System connections configured',
+        'Workflows built and tested',
+        'Dashboard customized for your business',
+        'Quality assurance completed',
       ],
-      duration: '2-14 weeks (tier dependent)',
+      duration: '1-12 weeks (tier dependent)',
     },
     {
       number: 4,
-      title: 'Training & Handover',
+      title: 'Training & Go-Live',
       description:
-        'Comprehensive team training on infrastructure operations, runbooks, and ongoing support options.',
+        'Your team learns how it all works. Test with real data, make adjustments, then go live.',
       deliverables: [
-        'Team training workshops',
-        'Comprehensive runbooks',
-        'Incident response procedures',
+        'Team training sessions',
+        'Documentation and diagrams',
+        'Test period with adjustments',
         'Post-launch support plan',
       ],
-      duration: '1-2 weeks',
+      duration: 'Final 1-2 weeks',
     },
   ],
 }
@@ -351,56 +335,56 @@ export const IMPLEMENTATION_PROCESS = {
 export const COMPETITIVE_DIFFERENTIATORS = {
   headline: 'Why Choose Zixly?',
   subheadline:
-    'Brisbane-based DevOps expertise with authentic implementation experience and transparent methodology.',
+    'Brisbane-based, business-focused automation that speaks your language and delivers results.',
   comparisons: [
     {
-      category: 'vs Traditional DevOps Consultants',
+      category: 'vs DIY Automation Platforms (Zapier, Make)',
       advantages: [
         {
-          title: 'Authentic Expertise',
-          description: 'We use these tools daily for our own operations',
+          title: 'Done For You',
+          description: "We build and maintain everything - you don't need to learn tools",
         },
         {
-          title: 'Open-Source Transparency',
-          description: 'Full codebase visibility builds trust',
+          title: 'Complex Workflows',
+          description: 'Handle multi-step workflows DIY platforms struggle with',
         },
         {
-          title: 'Real-World Proof',
-          description: 'Actual business operations demonstrate value',
+          title: 'Business Consulting',
+          description: 'We understand your processes and suggest improvements',
         },
       ],
     },
     {
-      category: 'vs SaaS DevOps Platforms',
+      category: 'vs Traditional IT Consultants',
       advantages: [
         {
-          title: 'No Vendor Lock-In',
-          description: 'You own your infrastructure and can migrate anytime',
+          title: 'Business Focus',
+          description: 'We speak business language, not technical jargon',
         },
         {
-          title: 'Full Customization',
-          description: 'Complete control over every aspect of your infrastructure',
+          title: 'Fixed Pricing',
+          description: 'No surprise hourly billings, clear project costs upfront',
         },
         {
-          title: 'Cost Transparency',
-          description: 'No hidden fees, usage limits, or per-seat pricing',
+          title: 'Fast Turnaround',
+          description: '1-12 weeks vs months of IT projects',
         },
       ],
     },
     {
-      category: 'vs Enterprise Solutions',
+      category: 'vs Large Automation Consultancies',
       advantages: [
         {
-          title: 'Brisbane-Appropriate',
-          description: 'Right-sized for local tech businesses, not enterprise overhead',
+          title: 'SME-Appropriate Pricing',
+          description: '$3K-$40K projects, not $100K+ enterprise pricing',
         },
         {
-          title: 'Modern Stack',
-          description: 'Latest Docker, Kubernetes, Terraform versions',
+          title: 'Brisbane Local',
+          description: 'In-person meetings, same timezone, understand local market',
         },
         {
-          title: 'Quick Implementation',
-          description: 'Weeks not months, proven patterns accelerate delivery',
+          title: 'Personal Service',
+          description: 'Direct access to senior consultants, no account managers',
         },
       ],
     },
@@ -408,157 +392,172 @@ export const COMPETITIVE_DIFFERENTIATORS = {
 }
 
 export const USE_CASES = {
-  headline: 'Built for Brisbane Tech Companies',
+  headline: 'Built for Brisbane SMEs',
   subheadline:
-    'Concrete implementations across different business types. See how we solve infrastructure challenges.',
+    'Real implementations across different industries. See how we solve business challenges.',
   cases: [
     {
-      title: 'SaaS Startups',
-      problem: 'Manual deployments limiting release velocity, no auto-scaling for traffic spikes',
-      solution:
-        'Full CI/CD pipeline enabling multiple daily deployments, Kubernetes auto-scaling from 2 to 50 pods',
-      metrics: [
-        '10x deployment frequency',
-        '3 hours/week saved on deployments',
-        'Auto-scaled to handle 10x traffic spike',
-      ],
-      technologies: ['Docker', 'AWS EKS', 'GitHub Actions', 'Horizontal Pod Autoscaler'],
-    },
-    {
-      title: 'Data-Driven Companies',
-      problem: 'Long-running data jobs blocking infrastructure, no observability into processing',
-      solution:
-        'Webhook-triggered pipeline workers with Redis queue, Prometheus + Grafana monitoring dashboards',
-      metrics: [
-        '50+ jobs/day processed reliably',
-        '< 5 min job submission latency',
-        'Complete job history and metrics',
-      ],
-      technologies: ['Docker Compose', 'Redis/Bull', 'PostgreSQL', 'Prometheus', 'Grafana'],
-    },
-    {
-      title: 'B2B Tech Platforms',
+      title: 'Professional Services',
       problem:
-        'Single-region deployment risking customer access, no compliance documentation for enterprise sales',
+        'Timesheets scattered, billing inaccurate, WIP tracking manual, trust accounting errors',
       solution:
-        'Multi-region AWS deployment (Sydney + Singapore), CloudTrail audit logging, SOC 2 readiness docs',
+        'Time tracking → Automatic timesheet compilation → Invoice generation → Trust accounting entries → WIP dashboard',
       metrics: [
-        '99.9% uptime SLA achieved',
-        '< 100ms p95 latency globally',
-        'SOC 2 audit preparation complete',
+        '12 hours/week saved on billing',
+        'Billing accuracy 85% → 98%',
+        'Zero trust accounting errors',
       ],
-      technologies: ['Multi-region AWS', 'RDS replicas', 'CloudTrail', 'WAF', 'GuardDuty'],
+      technologies: ['Practice Management', 'Xero', 'CRM', 'Document Management'],
+    },
+    {
+      title: 'Construction & Trades',
+      problem:
+        'Quote tracking chaos, job costing done after job complete, progress billing takes hours',
+      solution:
+        'Quote template → Auto-PDF generation → CRM tracking → Real-time job costing → Automatic progress invoices',
+      metrics: [
+        'Quote prep: 3-4 hrs → 30 mins',
+        'Real-time job profitability',
+        'Progress billing: 6 hrs → 45 mins',
+      ],
+      technologies: ['Job Management', 'Xero', 'CRM', 'Estimating Tools'],
+    },
+    {
+      title: 'E-commerce & Retail',
+      problem:
+        'Inventory out of sync across channels, 20 hrs/week manual order processing, frequent stockouts',
+      solution:
+        'Multi-channel inventory sync → Automatic order processing → Customer notifications → Reorder automation',
+      metrics: [
+        'Order processing: 20 hrs → 3 hrs/week',
+        'Stockouts reduced 70%',
+        'Sales increased 25%',
+      ],
+      technologies: ['Shopify', 'eBay/Amazon', 'Xero', 'Inventory Management'],
     },
   ],
 }
 
-export const TECHNOLOGY_STACK = {
-  headline: 'Our Technology Stack',
+export const INTEGRATIONS_WE_SUPPORT = {
+  headline: 'Business Systems We Connect',
   subheadline:
-    'Production-tested tools and platforms. We use these daily to run our own operations.',
+    'The tools you already use, working together automatically. If it has an API, we can integrate it.',
   categories: [
     {
-      category: 'Containerization & Orchestration',
+      category: 'Accounting & Finance',
       technologies: [
-        { name: 'Docker', description: 'Container runtime and build system' },
-        { name: 'Docker Compose', description: 'Local multi-container orchestration' },
-        { name: 'Kubernetes', description: 'Production container orchestration' },
-        { name: 'AWS EKS', description: 'Managed Kubernetes on AWS' },
+        { name: 'Xero', description: 'Cloud accounting platform (most popular)' },
+        { name: 'MYOB', description: 'Australian accounting software' },
+        { name: 'QuickBooks', description: 'Intuit accounting platform' },
+        { name: 'Stripe', description: 'Payment processing' },
       ],
     },
     {
-      category: 'Infrastructure as Code',
+      category: 'CRM & Sales',
       technologies: [
-        { name: 'Terraform', description: 'Declarative infrastructure provisioning' },
-        { name: 'LocalStack', description: 'Local AWS emulation for development' },
-        { name: 'Helm', description: 'Kubernetes package manager' },
+        { name: 'HubSpot', description: 'CRM and marketing automation' },
+        { name: 'Pipedrive', description: 'Sales-focused CRM' },
+        { name: 'Salesforce', description: 'Enterprise CRM platform' },
+        { name: 'Zoho CRM', description: 'Affordable CRM option' },
       ],
     },
     {
-      category: 'Data & Queues',
+      category: 'Project Management',
       technologies: [
-        { name: 'PostgreSQL', description: 'Relational database (Supabase)' },
-        { name: 'Redis', description: 'In-memory cache and job queue' },
-        { name: 'AWS SQS', description: 'Managed message queue service' },
-        { name: 'AWS S3', description: 'Object storage for results and datasets' },
+        { name: 'Asana', description: 'Team collaboration and projects' },
+        { name: 'Monday.com', description: 'Visual project management' },
+        { name: 'Trello', description: 'Simple kanban boards' },
+        { name: 'ClickUp', description: 'All-in-one work platform' },
       ],
     },
     {
-      category: 'Monitoring & Observability',
+      category: 'E-commerce',
       technologies: [
-        { name: 'Prometheus', description: 'Time-series metrics collection' },
-        { name: 'Grafana', description: 'Metrics visualization and dashboards' },
-        { name: 'CloudWatch', description: 'AWS native monitoring' },
+        { name: 'Shopify', description: 'Leading e-commerce platform' },
+        { name: 'WooCommerce', description: 'WordPress e-commerce' },
+        { name: 'Magento', description: 'Enterprise e-commerce' },
+        { name: 'eBay/Amazon', description: 'Marketplace integrations' },
       ],
     },
     {
-      category: 'CI/CD & Deployment',
+      category: 'Communication & Collaboration',
       technologies: [
-        { name: 'GitHub Actions', description: 'Automated testing and deployment' },
-        { name: 'AWS Secrets Manager', description: 'Credential management' },
+        { name: 'Email', description: 'Gmail, Outlook, any email provider' },
+        { name: 'Slack', description: 'Team messaging platform' },
+        { name: 'Microsoft Teams', description: 'Microsoft collaboration suite' },
+        { name: 'Google Workspace', description: 'Docs, Sheets, Drive' },
+      ],
+    },
+    {
+      category: 'HR & Scheduling',
+      technologies: [
+        { name: 'Employment Hero', description: 'Australian HR and payroll' },
+        { name: 'Deputy', description: 'Staff scheduling and timesheets' },
+        { name: 'KeyPay', description: 'Cloud payroll software' },
+        { name: 'Calendly', description: 'Appointment scheduling' },
       ],
     },
   ],
 }
 
 export const TRUST_SIGNALS = {
-  headline: 'Brisbane-Based DevOps Expertise',
+  headline: 'Brisbane-Based Business Automation Experts',
   subheadline:
-    'Local team with authentic infrastructure experience. We use these patterns to run our own business.',
+    'Local team who understands Brisbane businesses. We use these workflows to run our own operations.',
   signals: [
     {
-      title: 'Brisbane-Based Team',
+      title: 'Brisbane-Based and Local',
       description:
-        'Local expertise with deep understanding of Australian tech business needs and data residency requirements.',
+        'In-person meetings, same timezone, understand Australian business needs and data residency requirements.',
       icon: 'MapPin',
     },
     {
-      title: 'Dogfooding Approach',
+      title: 'We Use It Ourselves',
       description:
-        'We use Docker, Kubernetes, and Terraform daily to run Zixly operations. Authentic expertise from real usage.',
+        'These exact workflows run Zixly operations. Authentic expertise from real daily usage, not theory.',
       icon: 'CheckCircle2',
-    },
-    {
-      title: 'Open-Source Strategy',
-      description:
-        'Our operations platform codebase will be released on GitHub. Full transparency builds trust.',
-      icon: 'Github',
-    },
-    {
-      title: 'Australian Data Residency',
-      description:
-        'Your infrastructure stays in Australia. Complete control over data sovereignty and compliance.',
-      icon: 'Shield',
-    },
-    {
-      title: 'Production Experience',
-      description:
-        'Real-world implementations running in production. Not theoretical consulting, actual operational knowledge.',
-      icon: 'Zap',
     },
     {
       title: 'No Vendor Lock-In',
       description:
-        'You own your infrastructure and code. Export and migrate anytime with full Terraform modules.',
+        'You own everything. Can leave us anytime, take documentation, manage yourself or hire someone else.',
       icon: 'Unlock',
+    },
+    {
+      title: 'Australian Data Residency',
+      description:
+        'Your data stays in Australia. Complete control over data sovereignty and compliance.',
+      icon: 'Shield',
+    },
+    {
+      title: 'Fixed-Price Projects',
+      description:
+        "No hourly surprises. Clear scope and cost upfront. You know exactly what you're paying.",
+      icon: 'DollarSign',
+    },
+    {
+      title: 'Business-Focused',
+      description:
+        'We speak business language, not tech jargon. Focus on ROI and time saved, not APIs and code.',
+      icon: 'Zap',
     },
   ],
 }
 
 export const FINAL_CTA = {
-  headline: 'Ready to Modernize Your Infrastructure?',
+  headline: 'Ready to Stop Wasting Time on Admin Work?',
   subheadline:
-    'Join Brisbane tech companies with production-grade Kubernetes, automated CI/CD, and complete observability. Expert DevOps implementation without the hiring headache.',
+    'Join Brisbane SMEs saving 10-20 hours per week with automated workflows between their business systems. No technical knowledge required.',
   primaryCTA: {
-    text: 'Book Infrastructure Assessment',
-    subtitle: 'Free consultation',
+    text: 'Book Free Assessment',
+    subtitle: 'Free, 30-60 minutes',
   },
   secondaryCTA: {
-    text: 'Download Service Overview',
-    subtitle: 'PDF guide',
+    text: 'Calculate Your Savings',
+    subtitle: 'ROI calculator',
   },
   tertiaryCTA: {
-    text: 'View Open-Source Platform',
-    subtitle: 'GitHub (coming Q2 2025)',
+    text: 'See Case Studies',
+    subtitle: 'Real client results',
   },
 }

@@ -1,168 +1,268 @@
 # Missing Features Implementation Roadmap
 
-**Last Updated**: 2025-01-27  
-**Status**: Active Development  
+**Last Updated**: 2025-10-25  
+**Status**: Active Development - SME Business Automation Focus  
 **Owner**: Technical Architecture
 
 ---
 
 ## BUSINESS CONTEXT
 
-**Zixly is a DevOps automation platform for Brisbane businesses.**
+**Zixly is an SME business automation platform for Brisbane and South East Queensland businesses (10-50 employees).**
 
-This roadmap outlines remaining features to be implemented beyond the core webhook-triggered pipeline infrastructure (Phase 1, 2, and 1.5 complete as of 2025-01-27).
+This roadmap outlines remaining features to be implemented for SME business automation, focusing on connecting business systems (Xero, HubSpot, Shopify, Asana) to automate repetitive tasks. The core webhook-triggered workflow infrastructure is complete; now we build SME integrations.
 
 ---
 
 ## CURRENT STATUS
 
-### ✅ COMPLETED (Phase 1, 2, 1.5)
+### ✅ COMPLETED
 
-- Docker Compose pipeline infrastructure
+**Core Infrastructure:**
+
+- Docker Compose workflow infrastructure
 - Webhook receiver (Express.js)
-- Pipeline worker (Bull/SQS)
+- Workflow worker (Bull/SQS)
 - Redis job queue
 - LocalStack + Terraform (AWS emulation)
 - SQS, S3, Secrets Manager integration
 - Prometheus + Grafana observability
-- Trading API pipeline integration
 - Basic dashboard UI
+
+**Business Pivot (October 2025):**
+
+- Complete documentation pivot to SME focus
+- New financial model for SME market
+- SME-focused marketing materials and website
+- Integration documentation (Xero, HubSpot, Shopify, Asana, Email)
+- Updated service catalog and pricing
 
 ### 🔄 IN PROGRESS
 
-- Dashboard API routes for job management
-- Real-time job status updates
-- Result visualization components
+- OAuth 2.0 integration framework
+- SME business system connectors
+- Workflow template library
 
 ---
 
-## PRIORITY 1: DASHBOARD & API COMPLETION (Weeks 1-2)
+## PRIORITY 1: SME BUSINESS SYSTEM INTEGRATIONS (Weeks 1-4)
 
-### Pipeline Management API
+### Xero Integration (Accounting)
 
-**Status**: In Progress  
+**Status**: Not Started  
 **Priority**: Critical  
-**Effort**: 1 week  
-**Dependencies**: Existing webhook receiver and database schema
+**Effort**: 2 weeks  
+**Dependencies**: OAuth 2.0 framework, Xero developer account
 
 **Deliverables**:
 
-- GET /api/pipelines - List jobs with filtering
-- POST /api/pipelines - Trigger new job
-- GET /api/pipelines/[id] - Get job details and results
-- DELETE /api/pipelines/[id] - Cancel running job
-- API authentication and authorization
+- OAuth 2.0 authentication flow for Xero
+- Webhook subscription for invoice events
+- API client for Xero REST API
+- Workflow: Invoice paid → update HubSpot contact
+- Workflow: New customer → create in Xero
+- Secure token storage in AWS Secrets Manager
 
 **Success Criteria**:
 
-- All API endpoints functional
-- Jobs can be triggered from dashboard
-- Job status and results displayed
-- Authentication working with Supabase JWT
+- OAuth connection successful
+- Webhook events received and processed
+- Invoice data synced to CRM
+- Token refresh working automatically
+- Error handling for API failures
 
 **Implementation Steps**:
 
-1. Create Next.js API routes in `/app/api/pipelines/`
-2. Implement Prisma queries for job data
-3. Add Supabase auth middleware
-4. Test API endpoints
-5. Document API with OpenAPI spec
+1. Set up Xero developer app and OAuth credentials
+2. Implement OAuth 2.0 authorization flow
+3. Create Xero API client (TypeScript)
+4. Subscribe to Xero webhooks
+5. Build invoice-to-CRM workflow
+6. Test with real Xero account
 
 ---
 
-### Real-Time Dashboard Updates
+### HubSpot Integration (CRM)
 
-**Status**: Not implemented  
+**Status**: Not Started  
+**Priority**: Critical  
+**Effort**: 2 weeks  
+**Dependencies**: OAuth 2.0 framework, HubSpot developer account
+
+**Deliverables**:
+
+- OAuth 2.0 authentication flow for HubSpot
+- Webhook subscription for deal events
+- API client for HubSpot REST API
+- Workflow: Deal won → create Asana project
+- Workflow: New lead → nurture email sequence
+- Contact and deal sync workflows
+
+**Success Criteria**:
+
+- OAuth connection successful
+- Webhook events received and processed
+- Deal data synced to project management
+- Lead nurturing automated
+- Contact records kept in sync
+
+**Implementation Steps**:
+
+1. Set up HubSpot developer app and OAuth credentials
+2. Implement OAuth 2.0 authorization flow
+3. Create HubSpot API client (TypeScript)
+4. Subscribe to HubSpot webhooks
+5. Build deal-to-project workflow
+6. Test with real HubSpot account
+
+---
+
+### Shopify Integration (E-commerce)
+
+**Status**: Not Started  
 **Priority**: High  
-**Effort**: 1 week  
-**Dependencies**: Supabase real-time subscriptions
+**Effort**: 2 weeks  
+**Dependencies**: OAuth 2.0 framework, Shopify partner account
 
 **Deliverables**:
 
-- WebSocket connection to Supabase
-- Real-time job status updates
-- Live dashboard refresh
-- Connection state management
+- OAuth 2.0 authentication flow for Shopify
+- Webhook subscription for order events
+- API client for Shopify REST/GraphQL API
+- Workflow: Order placed → update inventory in accounting
+- Workflow: Order fulfilled → send customer email
+- Order sync to accounting system
 
 **Success Criteria**:
 
-- Dashboard updates automatically when job status changes
-- WebSocket connections stable
-- Connection errors handled gracefully
-- Updates within 1 second of status change
+- OAuth connection successful
+- Order webhooks received and processed
+- Inventory synced to accounting
+- Customer notifications automated
+- Order data accurate in all systems
 
 **Implementation Steps**:
 
-1. Implement Supabase real-time subscriptions
-2. Update React components with WebSocket listeners
-3. Add connection status indicators
-4. Handle reconnection logic
-5. Test real-time updates
+1. Set up Shopify partner app and OAuth credentials
+2. Implement OAuth 2.0 authorization flow
+3. Create Shopify API client (TypeScript)
+4. Subscribe to Shopify webhooks
+5. Build order-to-accounting workflow
+6. Test with Shopify test store
 
 ---
 
-## PRIORITY 2: VISUALIZATION & UX (Weeks 3-4)
+### Asana Integration (Project Management)
 
-### Result Visualization Components
-
-**Status**: Partially implemented  
-**Priority**: High  
-**Effort**: 1 week  
-**Dependencies**: API routes complete
-
-**Deliverables**:
-
-- Charts for trading sweep results (Sharpe ratio, returns, drawdown)
-- Table views with sorting and filtering
-- Comparison views for multiple sweeps
-- Export results to CSV
-
-**Success Criteria**:
-
-- Results displayed in clear, actionable visualizations
-- Charts interactive (hover, zoom)
-- Tables sortable and filterable
-- CSV export functional
-
-**Implementation Steps**:
-
-1. Implement result charts with Visx/Recharts
-2. Create sortable/filterable tables
-3. Add comparison views
-4. Implement CSV export
-5. Test visualizations with real data
-
----
-
-### Interactive Dashboard Features
-
-**Status**: Basic UI implemented  
+**Status**: Not Started  
 **Priority**: Medium  
 **Effort**: 1 week  
-**Dependencies**: Real-time updates
+**Dependencies**: OAuth 2.0 framework, Asana developer account
 
 **Deliverables**:
 
-- Date range filtering
-- Search and filter jobs
-- Pagination for large job lists
-- Favorite/bookmark jobs
-- Recent jobs quick access
+- OAuth 2.0 authentication flow for Asana
+- Webhook subscription for task events
+- API client for Asana REST API
+- Workflow: Deal won → create project from template
+- Workflow: Task completed → update time tracking
+- Automated project creation workflows
 
 **Success Criteria**:
 
-- Filtering fast and responsive
-- Search finds jobs by ticker, status, date
-- Pagination handles 1000+ jobs
-- UX smooth and intuitive
+- OAuth connection successful
+- Task webhooks received and processed
+- Projects created automatically from deals
+- Time tracking synced to accounting
+- Project templates working
 
 **Implementation Steps**:
 
-1. Implement date range picker
-2. Add search functionality
-3. Create pagination component
-4. Add favorites feature
-5. Optimize query performance
+1. Set up Asana developer app and OAuth credentials
+2. Implement OAuth 2.0 authorization flow
+3. Create Asana API client (TypeScript)
+4. Subscribe to Asana webhooks
+5. Build project creation workflow
+6. Test with real Asana workspace
+
+---
+
+## PRIORITY 2: WORKFLOW TEMPLATES & SME DASHBOARD (Weeks 5-8)
+
+### Workflow Template Library
+
+**Status**: Not Started  
+**Priority**: High  
+**Effort**: 2 weeks  
+**Dependencies**: SME integrations complete
+
+**Deliverables**:
+
+- Pre-built workflow templates for common SME use cases
+- Template categories: Accounting, Sales, E-commerce, Project Management
+- One-click workflow installation
+- Template customization interface
+- Template documentation (business-focused, plain English)
+
+**Success Criteria**:
+
+- 10+ workflow templates available
+- Templates categorized and searchable
+- Installation process simple and fast
+- Customization intuitive for non-technical users
+- Templates work out-of-the-box with connected systems
+
+**Example Templates**:
+
+- Invoice paid → update CRM contact
+- Deal won → create Asana project
+- Shopify order → Xero invoice
+- Task completed → time tracking update
+- New lead → email nurture sequence
+
+**Implementation Steps**:
+
+1. Design template data model and storage
+2. Create template installation workflow
+3. Build 10 common SME workflow templates
+4. Implement template search and discovery
+5. Add customization UI
+6. Write business-focused documentation for each template
+
+---
+
+### SME-Friendly Dashboard
+
+**Status**: Basic infrastructure exists  
+**Priority**: High  
+**Effort**: 2 weeks  
+**Dependencies**: Workflow templates, real-time updates
+
+**Deliverables**:
+
+- Plain English workflow execution history
+- Visual workflow status (not just "queued/running/failed")
+- Time savings analytics dashboard
+- Error messages that SMEs can understand
+- ROI tracking (hours saved, errors prevented)
+- One-click workflow triggering
+
+**Success Criteria**:
+
+- Non-technical users can understand all dashboard elements
+- Error messages suggest actionable fixes
+- Time savings accurately calculated and displayed
+- Dashboard loads in < 2 seconds
+- Mobile-responsive design
+
+**Implementation Steps**:
+
+1. Redesign dashboard UI for SME users (remove technical jargon)
+2. Implement time savings calculation engine
+3. Create ROI tracking dashboard
+4. Rewrite all error messages in plain English
+5. Add mobile-responsive layout
+6. User testing with non-technical SME business owners
 
 ---
 

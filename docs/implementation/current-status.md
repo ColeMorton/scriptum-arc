@@ -6,9 +6,10 @@
 
 ## Quick Status
 
-**Current Phase**: Phase 3 (Dashboard & API)  
-**Progress**: 90% MVP Complete  
-**Last Updated**: 2025-01-27
+**Current Phase**: SME Business Automation Platform Development  
+**Business Pivot**: Completed shift from DevOps focus to SME business automation  
+**Progress**: Core platform ready, SME integrations (Xero, HubSpot, Shopify, Asana) in development  
+**Last Updated**: 2025-10-25
 
 ---
 
@@ -24,31 +25,47 @@
 
 ---
 
-## Current Focus (Week 7-8)
+## Current Focus
 
-### Active Development
+### Business Pivot Completed (October 2025)
 
-**Pipeline Management API**:
+**Strategic Shift**:
 
-- Building `/api/pipelines` endpoints (GET, POST)
-- Implementing `/api/pipelines/[id]` endpoints (GET, DELETE)
-- Adding Zod validation and JWT authentication
-- Enforcing tenant isolation (RLS)
+- Pivoted from DevOps automation for tech companies to SME business automation
+- Updated all documentation, marketing materials, and website content
+- Repositioned services for 10-50 employee SMEs in Brisbane and SEQ
+- New service tiers: Business Automation Starter ($3K-$5K), Complete ($8K-$15K), Enterprise ($20K-$40K)
 
-**Dashboard UI**:
+### SME Integration Priorities (Next Phase)
 
-- Creating job list page (`/dashboard/jobs`)
-- Creating job detail page (`/dashboard/jobs/[id]`)
-- Implementing real-time updates (Supabase WebSocket)
-- Adding job visualization components
+**Priority 1: Core Business System Integrations**:
+
+- OAuth 2.0 integration for Xero (accounting)
+- OAuth 2.0 integration for HubSpot (CRM)
+- OAuth 2.0 integration for Shopify (e-commerce)
+- OAuth 2.0 integration for Asana (project management)
+
+**Priority 2: Workflow Templates**:
+
+- Invoice paid → CRM update workflow
+- Deal won → project creation workflow
+- Order placed → fulfillment workflow
+- Task completed → billing workflow
+
+**Priority 3: Client Dashboard**:
+
+- SME-friendly workflow execution dashboard
+- Plainlanguage error messages and notifications
+- Time savings analytics and ROI tracking
 
 ### Recently Completed
 
-- ✅ Testing implementation (275 tests, 70-75% coverage)
-- ✅ Grafana dashboards (pipeline overview + trading pipeline)
-- ✅ LocalStack + Terraform integration
-- ✅ Docker Compose pipeline stack
-- ✅ Webhook receiver and pipeline worker services
+- ✅ Complete business model pivot to SME focus
+- ✅ New financial projections for SME market
+- ✅ SME-focused marketing documentation
+- ✅ Integration documentation (Xero, HubSpot, Shopify, Asana, Email)
+- ✅ Updated service catalog and pricing
+- ✅ Rewritten website landing page content
 
 ---
 
@@ -85,12 +102,14 @@ For comprehensive status information including:
 
 ## Business Context
 
-**Zixly is a DevOps automation service business** for Brisbane tech companies, using this internal operations platform to track service delivery and demonstrate cloud-native infrastructure patterns.
+**Zixly is an SME business automation service** for Brisbane and South East Queensland SMEs (10-50 employees), using this internal operations platform to track service delivery and demonstrate business workflow automation.
 
-**Current Focus**: Building pipeline management capabilities to demonstrate DevOps automation patterns (Docker, Kubernetes, Terraform, AWS) to potential clients.
+**Current Focus**: Building SME business system integrations (Xero, HubSpot, Shopify, Asana) to connect client systems and automate repetitive tasks, saving 10-20 hours per week.
+
+**Target Market**: Professional services, construction/trades, e-commerce/retail, and manufacturing businesses in Brisbane and SEQ.
 
 ---
 
-**Last Updated**: 2025-01-27  
+**Last Updated**: 2025-10-25  
 **Maintained By**: Zixly Development Team  
 **Primary Status Document**: [STATUS.md](../../STATUS.md)

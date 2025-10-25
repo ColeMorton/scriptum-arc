@@ -36,13 +36,13 @@ import {
 import {
   HERO_CONTENT,
   PROBLEM_STATEMENT,
-  CLOUD_NATIVE_BENEFITS,
-  CAPABILITIES,
+  BUSINESS_AUTOMATION_BENEFITS,
+  WHAT_WE_AUTOMATE,
   SERVICE_PACKAGES,
   IMPLEMENTATION_PROCESS,
   COMPETITIVE_DIFFERENTIATORS,
   USE_CASES,
-  TECHNOLOGY_STACK,
+  INTEGRATIONS_WE_SUPPORT,
   TRUST_SIGNALS,
   FINAL_CTA,
 } from '@/lib/landing-content'
@@ -142,8 +142,8 @@ export default function Home() {
               {PROBLEM_STATEMENT.headline}
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Manual deployments, spiraling cloud costs, and missing monitoring create real business
-              pain. Let&apos;s fix that.
+              Manual data entry, double handling, and disconnected systems waste thousands per year.
+              Let&apos;s fix that.
             </p>
           </div>
 
@@ -160,20 +160,20 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Cloud-Native Benefits Section */}
+      {/* Business Automation Benefits Section */}
       <section className="py-20 bg-gradient-to-br from-blue-50 to-indigo-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-6">
-              {CLOUD_NATIVE_BENEFITS.headline}
+              {BUSINESS_AUTOMATION_BENEFITS.headline}
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              {CLOUD_NATIVE_BENEFITS.subheadline}
+              {BUSINESS_AUTOMATION_BENEFITS.subheadline}
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
-            {CLOUD_NATIVE_BENEFITS.benefits.map((benefit, index) => {
+            {BUSINESS_AUTOMATION_BENEFITS.benefits.map((benefit, index) => {
               const Icon = iconMap[benefit.icon] || Activity
               return (
                 <FeatureCard
@@ -188,18 +188,20 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Capabilities Showcase Section */}
+      {/* What We Automate Section */}
       <section id="capabilities" className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-6">
-              {CAPABILITIES.headline}
+              {WHAT_WE_AUTOMATE.headline}
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">{CAPABILITIES.subheadline}</p>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              {WHAT_WE_AUTOMATE.subheadline}
+            </p>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {CAPABILITIES.items.map((capability, index) => (
+            {WHAT_WE_AUTOMATE.items.map((capability, index) => (
               <CapabilityShowcase
                 key={index}
                 title={capability.title}
@@ -219,11 +221,11 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-6">
-              Service Tiers for Brisbane Tech Companies
+              Business Automation Services for Brisbane SMEs
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              From Docker Compose MVP to multi-region Kubernetes. Choose the infrastructure tier
-              that fits your scale and growth stage.
+              From basic system integration to complete business automation. Choose the service tier
+              that fits your needs and growth stage.
             </p>
           </div>
 
@@ -323,20 +325,20 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Technology Stack Section */}
+      {/* Integrations We Support Section */}
       <section className="py-20 bg-gradient-to-br from-slate-50 to-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-6">
-              {TECHNOLOGY_STACK.headline}
+              {INTEGRATIONS_WE_SUPPORT.headline}
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              {TECHNOLOGY_STACK.subheadline}
+              {INTEGRATIONS_WE_SUPPORT.subheadline}
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {TECHNOLOGY_STACK.categories.map((category, index) => (
+            {INTEGRATIONS_WE_SUPPORT.categories.map((category, index) => (
               <TechnologyCard
                 key={index}
                 category={category.category}

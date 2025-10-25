@@ -1,9 +1,9 @@
 # Zixly - System Architecture Document
 
-> **DevOps Automation Platform for Brisbane Tech Companies**
+> **SME Business Automation Platform for Brisbane Businesses**
 
-**Version**: 2.0  
-**Last Updated**: 2025-01-27  
+**Version**: 3.0  
+**Last Updated**: 2025-10-25  
 **Owner**: Technical Architecture
 **Status**: Active
 
@@ -14,7 +14,7 @@
 1. [Executive Summary](#executive-summary)
 2. [Architecture Overview](#architecture-overview)
 3. [Technology Stack](#technology-stack)
-4. [Pipeline Architecture](#pipeline-architecture)
+4. [Workflow Architecture](#workflow-architecture)
 5. [Data Architecture](#data-architecture)
 6. [Security Architecture](#security-architecture)
 7. [Infrastructure & Deployment](#infrastructure--deployment)
@@ -28,28 +28,26 @@
 
 ### Purpose
 
-**Zixly is a DevOps automation service business** for Brisbane tech companies, using this internal operations platform to track service delivery and demonstrate cloud-native infrastructure patterns (Docker, Kubernetes, Terraform, AWS).
+**Zixly is an SME business automation service** for Brisbane businesses (10-50 employees), using this internal operations platform to track service delivery and demonstrate workflow automation patterns for connecting business systems (Xero, HubSpot, Shopify, Asana).
 
 ### Architecture Philosophy
 
-**Cloud-Native, Event-Driven, Infrastructure as Code**
+**Event-Driven, Cloud-Based, Scalable**
 
-- **DevOps Services**: Provide pipeline automation services to Brisbane tech companies
+- **SME Automation Services**: Connect business systems to eliminate repetitive admin work
 - **Internal Operations**: Track Zixly's own service delivery (single-tenant platform)
-- **Open-Source**: Codebase available for demonstration and community benefit
-- **Cloud-Native**: Docker, Kubernetes, Terraform, AWS technologies
-- **Event-Driven**: Webhook-triggered pipeline orchestration
+- **Modern Infrastructure**: Leverages cloud services (AWS), containerization, and infrastructure as code
+- **Event-Driven**: Webhook-triggered workflow execution (e.g., invoice paid → update CRM)
 - **Infrastructure as Code**: All infrastructure version-controlled with Terraform
-- **Full Observability**: Prometheus + Grafana monitoring stack
+- **Full Observability**: Prometheus + Grafana monitoring for workflow health
 
 ### Business Model
 
-**Service Business + Internal Operations + Open-Source**
+**Service Business + Internal Operations Platform**
 
-- **Primary Business**: DevOps automation services ($5K - $60K projects)
+- **Primary Business**: SME business automation services ($3K - $40K projects)
 - **Internal Platform**: Single-tenant platform for tracking Zixly operations
-- **Open-Source Strategy**: Public codebase for demonstration and community
-- **Target Market**: Brisbane and South East Queensland tech businesses
+- **Target Market**: Brisbane and South East Queensland SMEs (professional services, construction, e-commerce, manufacturing)
 
 ### Key Architectural Decisions
 
@@ -71,33 +69,33 @@
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │                    Zixly Platform                            │
-│           (DevOps Automation + Internal Operations)          │
+│        (SME Business Automation + Internal Operations)       │
 │                                                               │
 │  ┌────────────────┐  ┌──────────────┐  ┌────────────────┐  │
-│  │   Dashboard    │  │   API Layer  │  │    Pipeline    │  │
+│  │   Dashboard    │  │   API Layer  │  │    Workflow    │  │
 │  │   (Next.js)    │◄─┤  (Next.js    │◄─┤  Orchestration │  │
 │  │                │  │   API Routes)│  │   (Docker)     │  │
 │  └────────────────┘  └──────┬───────┘  └──────┬─────────┘  │
 │                              │                  │             │
 │                         ┌────▼──────────────────▼────┐       │
 │                         │   PostgreSQL (Supabase)    │       │
-│                         │   Data Warehouse           │       │
+│                         │   Business Data Store      │       │
 │                         └────────────────────────────┘       │
 └─────────────────────────────────────────────────────────────┘
                                   │
-                                  │ REST/GraphQL APIs
+                                  │ REST/OAuth APIs
                                   ▼
         ┌──────────┬──────────┬──────────┬──────────┐
-        │ Trading  │  Client  │   AWS    │  Other   │
-        │   API    │ Systems  │ Services │   APIs   │
+        │   Xero   │ HubSpot  │ Shopify  │  Asana   │
+        │(Acctng)  │  (CRM)   │(Ecommerce)│ (PM)    │
         └──────────┴──────────┴──────────┴──────────┘
 ```
 
 ### System Capabilities
 
-1. **Webhook-Triggered Pipelines**: Event-driven job orchestration
+1. **Webhook-Triggered Workflows**: Event-driven automation (e.g., "invoice paid" triggers CRM update)
 2. **Job Queue Management**: Redis/Bull (local) + AWS SQS (production)
-3. **Worker Pool**: Scalable Node.js workers for job processing
+3. **Worker Pool**: Scalable Node.js workers for executing business integrations
 4. **Data Storage**: PostgreSQL for job tracking, S3 for result datasets
 5. **Real-Time Dashboard**: Next.js with WebSocket updates
 6. **Full Observability**: Prometheus metrics + Grafana dashboards
@@ -112,68 +110,67 @@
 
 | Layer                 | Technology          | Version     | Purpose                         |
 | --------------------- | ------------------- | ----------- | ------------------------------- |
-| **Frontend**          | Next.js + React     | 15.5.5 / 19 | Pipeline monitoring dashboard   |
+| **Frontend**          | Next.js + React     | 15.5.5 / 19 | Workflow monitoring dashboard   |
 | **Styling**           | Tailwind CSS        | 4.x         | Utility-first responsive design |
-| **Backend**           | Next.js API Routes  | 15.5.5      | Pipeline management APIs        |
-| **Database**          | PostgreSQL          | 15.x        | Job tracking and results        |
+| **Backend**           | Next.js API Routes  | 15.5.5      | Workflow management APIs        |
+| **Database**          | PostgreSQL          | 15.x        | Workflow execution tracking     |
 | **ORM**               | Prisma              | 6.x         | Type-safe database access       |
 | **Auth**              | Supabase Auth       | Latest      | JWT authentication              |
 | **Orchestration**     | Docker Compose      | 24.x        | Local container orchestration   |
-| **Job Queue (Local)** | Redis + Bull        | 4.x         | Async job processing            |
-| **Job Queue (AWS)**   | AWS SQS             | -           | Production job processing       |
-| **Storage**           | AWS S3              | -           | Pipeline result datasets        |
-| **Secrets**           | AWS Secrets Manager | -           | Credential management           |
+| **Job Queue (Local)** | Redis + Bull        | 4.x         | Async workflow processing       |
+| **Job Queue (AWS)**   | AWS SQS             | -           | Production workflow processing  |
+| **Storage**           | AWS S3              | -           | Business documents & reports    |
+| **Secrets**           | AWS Secrets Manager | -           | OAuth tokens & API keys         |
 | **Monitoring**        | Prometheus          | 2.x         | Metrics collection              |
 | **Dashboards**        | Grafana             | 10.x        | Metrics visualization           |
 | **Infrastructure**    | Terraform           | 1.6+        | Infrastructure as Code          |
 | **Local AWS**         | LocalStack          | 3.x         | Local AWS emulation             |
-| **CI/CD**             | GitHub Actions      | -           | Automated pipelines             |
+| **CI/CD**             | GitHub Actions      | -           | Automated testing & deployment  |
 | **Cloud Platform**    | AWS (EKS/ECS)       | -           | Production (planned)            |
 | **Dashboard Hosting** | Vercel              | -           | Web application deployment      |
 
-### Pipeline Architecture Stack
+### Workflow Architecture Stack
 
-| Component              | Technology              | Purpose                           |
-| ---------------------- | ----------------------- | --------------------------------- |
-| **Webhook Receiver**   | Express.js + TypeScript | HTTP endpoint for webhook events  |
-| **Request Validation** | Zod                     | Schema validation and type safety |
-| **Job Queue**          | Bull + Redis (or SQS)   | Async job management              |
-| **Worker Pool**        | Node.js + Cluster       | Concurrent job processing         |
-| **API Client**         | Axios                   | External API integrations         |
-| **Logging**            | Winston                 | Structured logging                |
-| **Metrics**            | Prom-client             | Prometheus metrics export         |
+| Component              | Technology              | Purpose                                 |
+| ---------------------- | ----------------------- | --------------------------------------- |
+| **Webhook Receiver**   | Express.js + TypeScript | HTTP endpoint for webhook events        |
+| **Request Validation** | Zod                     | Schema validation and type safety       |
+| **Job Queue**          | Bull + Redis (or SQS)   | Async workflow job management           |
+| **Worker Pool**        | Node.js + Cluster       | Concurrent workflow execution           |
+| **OAuth Integration**  | OAuth 2.0 Libraries     | Secure third-party system authorization |
+| **API Client**         | Axios                   | External API integrations               |
+| **Logging**            | Winston                 | Structured logging                      |
+| **Metrics**            | Prom-client             | Prometheus metrics export               |
 
 ---
 
-## Pipeline Architecture
+## Workflow Architecture
 
-### Webhook-Triggered Pipeline Pattern
+### Webhook-Triggered Workflow Pattern
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                    Pipeline Architecture                     │
+│                    Workflow Architecture                     │
+│           (Example: Invoice Paid → Update CRM)               │
 │                                                               │
-│  [External System] ──POST→ [Webhook Receiver:3000]          │
+│  [Xero: Invoice Paid] ──POST→ [Webhook Receiver:3000]       │
 │                                      │                        │
 │                                      ↓ validate & enqueue    │
 │                               [Redis/SQS Queue]              │
 │                                      │                        │
 │                                      ↓ pick up job           │
-│                            [Pipeline Worker] (x2+)           │
+│                            [Workflow Worker] (x2+)           │
 │                                      │                        │
-│                                      ↓ call external API     │
-│                            [External API]                    │
+│                                      ↓ fetch invoice data    │
+│                            [Xero API via OAuth]              │
 │                                      │                        │
-│                                      ↓ webhook callback       │
-│                            [Webhook Receiver]                │
+│                                      ↓ update CRM contact    │
+│                            [HubSpot API via OAuth]           │
 │                                      │                        │
-│                                      ↓ fetch results         │
-│                            [External API]                    │
-│                                      │                        │
-│                                      ↓ store                 │
+│                                      ↓ store execution log   │
 │                            [PostgreSQL + S3]                 │
 │                                      │                        │
-│                                      ↓ notify                │
+│                                      ↓ notify (optional)     │
 │                            [Email/Slack]                     │
 │                                                               │
 │  Monitoring: [Prometheus] ←metrics─ [All Services]          │
@@ -182,7 +179,7 @@
 └─────────────────────────────────────────────────────────────┘
 ```
 
-### Pipeline Components
+### Workflow Components
 
 #### 1. Webhook Receiver (Express.js)
 
@@ -190,19 +187,20 @@
 
 **Responsibilities**:
 
-- Accept incoming HTTP POST requests
+- Accept incoming HTTP POST requests from business systems (Xero, HubSpot, Shopify)
 - Validate payloads with Zod schemas
-- Enqueue jobs to Redis/SQS
-- Store job metadata in PostgreSQL
+- Enqueue workflow jobs to Redis/SQS
+- Store workflow execution metadata in PostgreSQL
 - Return 202 Accepted with job ID
-- Handle webhook callbacks from external APIs
+- Handle webhook callbacks from external systems
 - Export Prometheus metrics
 
-**API Endpoints**:
+**API Endpoints (Examples)**:
 
-- `POST /webhook/trading-sweep` - Trigger trading strategy sweep
-- `POST /webhook/sweep-callback` - External API callback handler
-- `GET /webhook/jobs/:id` - Get job status
+- `POST /webhook/xero-invoice` - Process Xero invoice event
+- `POST /webhook/hubspot-deal` - Process HubSpot deal update
+- `POST /webhook/shopify-order` - Process Shopify order event
+- `GET /webhook/jobs/:id` - Get workflow execution status
 - `GET /health` - Health check
 - `GET /metrics` - Prometheus metrics
 
@@ -223,7 +221,7 @@
 // services/webhook-receiver/src/services/queue.ts
 import Bull from 'bull'
 
-const queue = new Bull('trading-sweeps', {
+const queue = new Bull('business-workflows', {
   redis: {
     host: process.env.REDIS_HOST || 'localhost',
     port: 6379,
@@ -260,30 +258,30 @@ const sqsClient = new SQSClient({
 - Job timeout (1 hour)
 - Metrics export (queue depth, processing rate)
 
-#### 3. Pipeline Worker (Node.js)
+#### 3. Workflow Worker (Node.js)
 
 **File**: `services/pipeline-worker/src/worker.ts`
 
 **Responsibilities**:
 
 - Poll job queue (Bull or SQS)
-- Execute job processing logic
-- Call external APIs
-- Store results in PostgreSQL + S3
+- Execute workflow processing logic
+- Call business system APIs (Xero, HubSpot, Shopify) via OAuth
+- Store execution logs in PostgreSQL + documents in S3
 - Handle errors and retries
-- Send notifications on completion
+- Send notifications on completion (optional)
 - Export processing metrics
 
-**Processing Flow**:
+**Processing Flow (Example: Invoice Paid → Update CRM)**:
 
-1. Pick up job from queue
+1. Pick up workflow job from queue
 2. Update job status to `RUNNING`
-3. Call external API (e.g., Trading API)
-4. Wait for webhook callback (poll database)
-5. Fetch results from external API
-6. Store results in PostgreSQL + S3
+3. Fetch invoice details from Xero API (OAuth)
+4. Identify customer in HubSpot CRM
+5. Update customer record in HubSpot (mark invoice as paid)
+6. Store execution log in PostgreSQL
 7. Update job status to `COMPLETED`
-8. Send email/Slack notification
+8. (Optional) Send notification email
 9. Export metrics to Prometheus
 
 **Concurrency**:
@@ -303,46 +301,44 @@ const sqsClient = new SQSClient({
 
 #### 4. Result Storage
 
-**PostgreSQL** (Job metadata and small results):
+**PostgreSQL** (Job metadata and execution logs):
 
 ```prisma
-model PipelineJob {
+model WorkflowJob {
   id            String    @id @default(cuid())
   tenantId      String
-  jobType       String
+  workflowType  String    // e.g., "xero-invoice-to-hubspot"
   status        JobStatus // QUEUED, RUNNING, COMPLETED, FAILED
-  parameters    Json
+  triggerData   Json      // Webhook payload from external system
+  executionLog  Json?     // Steps performed, API calls made
   result        Json?     // Summary results
-  metrics       Json?
   errorMessage  String?
   createdAt     DateTime
   startedAt     DateTime?
   completedAt   DateTime?
 
-  results       TradingSweepResult[]
+  relatedRecords WorkflowRelatedRecord[]
 }
 
-model TradingSweepResult {
-  id                String   @id
-  jobId             String
-  sweepRunId        String
-  ticker            String
-  strategyType      String
-  score             Decimal
-  sharpeRatio       Decimal
-  totalReturnPct    Decimal
-  // ... more metrics
+model WorkflowRelatedRecord {
+  id          String @id
+  jobId       String
+  systemName  String // e.g., "Xero", "HubSpot"
+  recordType  String // e.g., "Invoice", "Contact"
+  recordId    String // External system's record ID
+  action      String // e.g., "READ", "UPDATE", "CREATE"
+  // ... workflow tracking
 }
 ```
 
-**S3** (Large datasets):
+**S3** (Documents and reports):
 
-- Full result datasets stored in S3
-- Path: `s3://zixly-pipeline-results/{tenantId}/{jobId}/results.json`
+- Business documents (invoices, reports) stored in S3
+- Path: `s3://zixly-workflow-data/{tenantId}/{jobId}/document.pdf`
 - Versioning enabled
-- Lifecycle: Archive after 30 days, delete after 365 days
+- Lifecycle: Archive after 90 days, delete after 7 years (compliance)
 
-### Pipeline Patterns
+### Workflow Patterns
 
 #### Pattern 1: Synchronous Webhook → Async Processing
 

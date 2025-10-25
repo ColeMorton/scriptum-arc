@@ -1,7 +1,7 @@
 # Zixly Business Model
 
-**Version**: 2.0  
-**Last Updated**: 2025-01-27  
+**Version**: 3.0  
+**Last Updated**: 2025-10-25  
 **Owner**: Business Architecture  
 **Status**: Active Strategy
 
@@ -9,40 +9,39 @@
 
 ## Executive Summary
 
-**Zixly is a DevOps automation service business** for Brisbane tech companies, using this internal operations platform to track service delivery and demonstrate cloud-native infrastructure patterns (Docker, Kubernetes, Terraform, AWS).
+**Zixly is a business automation service** for Brisbane SMEs, connecting business systems (Xero, HubSpot, Shopify, etc.) so they work together automatically. We eliminate repetitive admin work, saving businesses 10-20 hours per week.
 
 ### Business Model
 
-- **Service Business**: DevOps automation services for Brisbane tech companies
+- **Service Business**: Business automation services for Brisbane SMEs
 - **Internal Operations Platform**: Single-tenant platform to track Zixly's service delivery
-- **Open-Source Strategy**: Codebase available for demonstration and community benefit
-- **Dogfooding Approach**: Using our own platform demonstrates authentic expertise
+- **Market Focus**: SMEs (10-50 employees) across all industries
+- **Value Proposition**: Connect your business systems automatically, eliminate double data entry, save time on admin work
 
 ---
 
 ## What Zixly Is
 
-### DevOps Automation Service Business
+### Business Automation Service Business
 
-**Primary Business**: Provide DevOps automation services to Brisbane tech companies
+**Primary Business**: Automate workflows between business systems for Brisbane SMEs
 
 **Services Offered**:
 
-- Webhook-triggered data analysis pipelines
-- Docker and Kubernetes infrastructure setup
-- Terraform infrastructure as code
-- CI/CD pipeline implementation
-- Monitoring and observability (Prometheus + Grafana)
-- AWS cloud infrastructure migration
+- Automatic invoice generation and payment tracking
+- Customer data syncing between CRM and accounting
+- Inventory management and supplier ordering automation
+- Project-to-invoice workflow automation
+- Business dashboard and reporting
 
-**Target Market**: Brisbane and South East Queensland tech businesses
+**Target Market**: Brisbane and South East Queensland SMEs (10-50 employees)
 
 **Service Tiers**:
 | Tier | Investment | Timeline | Best For |
 |------|------------|----------|----------|
-| **Pipeline MVP** | $5,000 - $8,000 | 2-4 weeks | Startups, single pipeline |
-| **DevOps Foundation** | $12,000 - $20,000 | 6-8 weeks | Growing companies, full CI/CD |
-| **Enterprise Cloud** | $30,000 - $60,000 | 12-16 weeks | Established businesses, AWS migration |
+| **Business Automation Starter** | $3,000 - $5,000 | 1-2 weeks | Small businesses, 2-3 core workflows |
+| **Complete Business Automation** | $8,000 - $15,000 | 4-6 weeks | Growing businesses, multiple integrations |
+| **Enterprise Business Suite** | $20,000 - $40,000 | 8-12 weeks | Established businesses, industry-specific needs |
 
 ### Internal Operations Platform
 
@@ -52,27 +51,16 @@
 
 - **Single tenant**: Only Zixly organization data
 - **Internal users**: Only Zixly team members
-- **Service clients**: Brisbane tech businesses using Zixly's DevOps services
-- **Tracking**: Project velocity, billable hours, client satisfaction, service delivery metrics
+- **Service clients**: Brisbane SMEs using Zixly's business automation services
+- **Tracking**: Project velocity, client workflows, satisfaction scores, service delivery metrics
 
-**Technology Stack**:
+**Technology Stack** (Internal):
 
 - Next.js + React for dashboard
-- PostgreSQL (Supabase) for data warehouse
-- Docker + Kubernetes for orchestration
-- Terraform for infrastructure as code
-- Prometheus + Grafana for monitoring
-
-### Open-Source Strategy
-
-**Approach**: Codebase available on GitHub for demonstration and reuse
-
-**Benefits**:
-
-- **Transparency**: Clients can see our actual operations
-- **Trust building**: Open codebase demonstrates confidence
-- **Community contribution**: Share knowledge and patterns
-- **Demonstration value**: Live system shows capabilities
+- PostgreSQL (Supabase) for workflow tracking
+- Webhook receivers for integration events
+- Worker queues for background processing
+- Monitoring for workflow success rates
 
 ---
 
@@ -83,17 +71,17 @@
 **Tenant**: Zixly organization (single tenant)
 
 - **Users**: Zixly team members (internal staff)
-- **Clients**: Zixly's service clients (Brisbane tech businesses)
-- **Data**: Zixly's service delivery metrics, project tracking, financial performance
+- **Clients**: Zixly's service clients (Brisbane SMEs across all industries)
+- **Data**: Workflow execution history, client systems, automation performance metrics
 
 ### Business Context
 
 ```
-Zixly Service Clients (Brisbane Tech Companies)
+Zixly Service Clients (Brisbane SMEs)
         ↓
-Zixly DevOps Services (Pipeline setup, K8s deployment, etc.)
+Business Automation Services (Xero, HubSpot, Shopify integrations)
         ↓
-Internal Operations Platform (Track service delivery)
+Internal Operations Platform (Track workflow executions)
         ↓
 Zixly Team (Service delivery team)
 ```
@@ -107,287 +95,164 @@ Zixly Team (Service delivery team)
 
 ---
 
-## Dogfooding Strategy
+## "Using It to Run Our Business" Strategy
 
-### Core Principle: "Eat Your Own Dogfood"
+### Core Principle: Practice What We Preach
 
-**Definition**: Using your own products internally to run your business operations
+**Definition**: Using business automation workflows internally to run Zixly's operations
 
-**For Zixly**: Using cloud-native DevOps patterns (Docker, K8s, Terraform) to run Zixly's internal operations, providing authentic expertise in these technologies.
+**For Zixly**: Using the same automation patterns we sell to clients, providing authentic expertise through real-world usage.
 
 ### Strategic Benefits
 
 **Authentic Expertise**:
 
-- Daily usage of Docker, Kubernetes, Terraform, AWS
-- Real-world implementation experience
-- Genuine problem-solving knowledge
-- Continuous infrastructure optimization
+- Daily usage of business automation workflows
+- Real-world implementation experience with Xero, HubSpot, and other SME systems
+- Genuine problem-solving knowledge for common business challenges
+- Continuous workflow optimization based on actual usage
 
 **Competitive Advantage**:
 
-- Unique market positioning (DevOps consultants using DevOps tools)
+- Unique market positioning (automation consultants automating their own business)
 - Real-world proof of concept
-- Authentic success stories
-- No competitor can match this alignment
+- Authentic success stories from our own operations
+- "We use this exact setup to run Zixly" credibility
 
 **Continuous Improvement**:
 
-- Daily usage drives innovation
-- Real-world pain points identified
-- Pipeline optimization opportunities
-- New pattern development
+- Daily usage drives innovation in workflow design
+- Real-world pain points identified and solved
+- Workflow optimization opportunities discovered organically
+- New integration patterns developed from actual needs
 
 **Client Credibility**:
 
-- "We use these DevOps patterns to run our own business"
-- Live system demonstrations
-- Actual performance metrics
-- Genuine use case examples
+- "We use these exact workflows to run our own business"
+- Live system demonstrations with real data
+- Actual performance metrics (time saved, errors prevented)
+- Genuine use case examples from our operations
 
-### Internal Infrastructure Stack
+### Internal Automation Examples
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│              Zixly Internal Operations Stack                 │
-│                                                               │
-│  ┌─────────────────────────────────────────────────────┐   │
-│  │        Next.js Dashboard (Vercel)                    │   │
-│  │     - Real-time service delivery analytics           │   │
-│  │     - Project and financial reporting                │   │
-│  │     - Websocket-based live updates                   │   │
-│  └────────────────┬────────────────────────────────────┘   │
-│                   │                                          │
-│  ┌────────────────▼──────────────────────────────────┐    │
-│  │     PostgreSQL (Supabase) - Data Warehouse         │    │
-│  │     - Service clients (ClientKPI)                  │    │
-│  │     - Project data (Financial)                     │    │
-│  │     - Pipeline jobs (PipelineJob)                  │    │
-│  └────────────────▲──────────────────────────────────┘    │
-│                   │                                          │
-│  ┌────────────────┴──────────────────────────────────┐    │
-│  │       Docker Pipeline Services                     │    │
-│  │     - Webhook receivers (Express.js)               │    │
-│  │     - Job queues (Redis/SQS)                       │    │
-│  │     - Pipeline workers (Node.js)                   │    │
-│  │     - Prometheus + Grafana monitoring              │    │
-│  └────────────────────────────────────────────────────┘    │
-│                                                              │
-│  ┌────────────────────────────────────────────────────┐    │
-│  │       Infrastructure as Code (Terraform)            │    │
-│  │     - LocalStack for local development             │    │
-│  │     - AWS for production (SQS, S3, Secrets)        │    │
-│  └────────────────────────────────────────────────────┘    │
-└─────────────────────────────────────────────────────────────┘
-```
+**Invoice Workflow**:
 
-### Internal Operations Use Cases
+- Client approves quote → Invoice auto-created in Xero → Payment reminder emails → Payment received → CRM updated
 
-**Service Delivery Management**:
+**Client Onboarding**:
 
-- Active DevOps projects by tier
-- Project completion timelines
-- Billable hours per consultant
-- Service delivery quality metrics
+- New client in HubSpot → Project created in Asana → Welcome email sent → Xero contact created → Kickoff meeting scheduled
 
-**Pipeline Operations**:
+**Time Tracking to Billing**:
 
-- Webhook-triggered job tracking
-- Pipeline success rates
-- Job execution metrics
-- System health monitoring
+- Time logged in project management → Weekly timesheet compiled → Client invoiced automatically → Hours updated in CRM
 
-**Financial Operations**:
+**Financial Reporting**:
 
-- Service revenue by client and tier
-- Operational costs and profit margins
-- Cash flow and billing status
-- Financial performance analytics
-
-**Client Tracking**:
-
-- Client satisfaction scores (NPS)
-- Project velocity metrics
-- Service delivery efficiency
-- Client retention rates
+- End of week → Revenue calculated from Xero → Dashboard updated → Weekly report emailed to team
 
 ---
 
-## Open-Source Release Strategy
+## Target Market Analysis
 
-### Phase 1: Internal Operations (Current)
+### Primary Market Segments
 
-**Status**: Active
+**Professional Services** (Law, Accounting, Consulting, Architecture)
 
-**Objective**: Use platform internally to run Zixly service business
+- **Size**: 10-50 employees
+- **Pain Points**: Timesheet chaos, billing inaccuracies, scattered client communication, manual WIP tracking
+- **Value**: 15+ hours/week saved on admin, improved billing accuracy, better client visibility
+- **Examples**: Law firms, accounting practices, engineering consultancies, architecture firms
 
-**Deliverables**:
+**Construction & Trades** (Builders, Electricians, Plumbers, Landscapers)
 
-- ✅ Platform operational for internal service tracking
-- ✅ Docker + Kubernetes patterns demonstrated
-- ✅ Comprehensive documentation created
-- 🔄 Case studies in development
+- **Size**: 5-30 employees
+- **Pain Points**: Quote tracking nightmare, manual job costing, progress billing complexity, supplier invoice data entry
+- **Value**: 12+ hours/week saved, accurate job costing, faster invoicing
+- **Examples**: Building contractors, electrical contractors, plumbing businesses, landscaping companies
 
-**Success Criteria**:
+**E-commerce & Retail**
 
-- Platform tracks all Zixly service operations
-- Authentic DevOps workflows documented
-- Internal operations optimized
-- Ready for open-source release
+- **Size**: 5-40 employees
+- **Pain Points**: Inventory out of sync, manual order processing, customer service overwhelm, multi-channel chaos
+- **Value**: 20+ hours/week saved, zero stockouts, faster order fulfillment
+- **Examples**: Online stores, retail chains, wholesale distributors
 
-### Phase 2: Open-Source Release (Planned Q2 2025)
+**Manufacturing** (Small to Medium Production)
 
-**Objective**: Release codebase on GitHub with comprehensive documentation
+- **Size**: 20-50 employees
+- **Pain Points**: Manual production scheduling, reactive purchasing, paper-based quality control, unknown profitability
+- **Value**: 10+ hours/week saved, reduced stockouts, better cost visibility
+- **Examples**: Food manufacturers, component manufacturers, packaging companies
 
-**Deliverables**:
+### Market Size (Brisbane & SEQ)
 
-- Release codebase with MIT or Apache 2.0 license
-- Create demonstration pipelines and examples
-- Provide community contribution guidelines
-- Share architecture patterns for reuse
-
-**Target Audience**:
-
-- Brisbane tech companies evaluating DevOps solutions
-- DevOps engineers learning cloud-native patterns
-- Open-source community interested in pipeline orchestration
-
-**Success Criteria**:
-
-- Codebase available on GitHub
-- 100+ GitHub stars in first 6 months
-- 5+ active community contributors
-- Comprehensive documentation and examples
-
-### Phase 3: Community Engagement (Planned H2 2025)
-
-**Objective**: Engage with DevOps and cloud-native communities
-
-**Activities**:
-
-- Contribute to related open-source projects (Kubernetes, Terraform)
-- Share knowledge through blog posts and conference talks
-- Build relationships with potential Brisbane clients
-- Create video tutorials and demos
-
-**Success Criteria**:
-
-- Active community engagement (issues, PRs, discussions)
-- Regular knowledge sharing content (monthly blog posts)
-- Client inquiries from open-source visibility
-- Speaking at Brisbane tech meetups
+- **Total SMEs (10-50 employees)**: ~25,000 businesses
+- **Target addressable market**: ~5,000 businesses (those with 3+ business systems)
+- **Serviceable market (year 1)**: 100-200 businesses (those ready for automation)
+- **Target penetration (year 1)**: 20-30 clients (0.5-1% of serviceable market)
 
 ---
 
-## Reusable Components
+## Automation Templates
 
-### Pipeline Templates
+### Common Workflow Patterns
 
-**Webhook-Triggered Pipelines**:
+**Customer Lifecycle Automation**:
 
-- Event ingestion patterns
-- Job queue management
-- Worker pool orchestration
-- Result storage strategies
+- New lead captured → CRM entry created → Welcome email sent → Follow-up scheduled
+- Deal won → Invoice generated → Project created → Team notified → Onboarding triggered
+- Payment received → Thank you email → Profitability calculated → Upsell opportunity flagged
 
-**Trading API Integration** (Example Implementation):
+**Financial Automation**:
 
-- Parameter sweep execution
-- Async job processing
-- Result aggregation
-- Email notifications
+- Timesheet approved → Invoice created → Payment reminder scheduled → Receipt recorded → P&L updated
+- Supplier invoice received → Job allocated → Xero posted → Approval workflow → Payment scheduled
+- End of month → Revenue calculated → Expenses categorized → Financial report generated
 
-**Infrastructure Patterns**:
+**Inventory & Supply Chain**:
 
-- Docker Compose for local development
-- Kubernetes manifests for production
-- Terraform modules (SQS, S3, Secrets Manager)
-- LocalStack for local AWS emulation
+- Stock level low → Supplier notified → Purchase order created → Receipt tracked → Inventory updated
+- Order received → Inventory allocated → Pick list generated → Shipping label created → Customer notified
+- Product sold → Inventory decremented → Reorder triggered if below threshold
 
-### Architecture Patterns
+**Project Management**:
 
-**Pipeline Orchestration**:
-
-- Webhook receiver architecture
-- Job queue patterns (Redis/Bull, AWS SQS)
-- Worker pool management
-- Error handling and retry logic
-
-**Real-Time Dashboard**:
-
-- WebSocket connections (Supabase real-time)
-- Live data updates
-- State management
-- Performance optimization
-
-**Infrastructure as Code**:
-
-- Terraform module structure
-- LocalStack + AWS compatibility
-- Environment-specific configurations
-- Provider override patterns
-
-**Monitoring & Observability**:
-
-- Prometheus metrics collection
-- Grafana dashboard configuration
-- Alert rule definitions
-- Performance tracking
-
-### Documentation
-
-**Implementation Guides**:
-
-- Docker Compose setup
-- Kubernetes deployment
-- Terraform infrastructure
-- LocalStack integration
-
-**Architecture Decision Records (ADRs)**:
-
-- ADR-006: Kubernetes Pipeline Orchestration
-- ADR-007: Webhook Event Architecture
-- ADR-008: Local Docker First Strategy
-- ADR-009: LocalStack + Terraform Phase
-
-**Best Practices**:
-
-- Development standards (TypeScript strict mode)
-- Code quality guidelines (SOLID, DRY, KISS)
-- Testing strategies (70%+ coverage)
-- Security practices (JWT auth, RLS)
+- New project won → Folder structure created → Team assigned → Tasks generated → Timeline set → Client portal access
+- Milestone reached → Progress invoice generated → Customer updated → Payment requested
+- Project complete → Final invoice sent → Files archived → Feedback requested → Case study created
 
 ---
 
 ## Competitive Advantages
 
-### vs. Traditional DevOps Consultants
+### vs. Traditional IT Consultants
 
-- **Authentic expertise**: We use these tools daily for our own operations
-- **Open-source transparency**: Full codebase visibility builds trust
-- **Real-world proof**: Actual business operations demonstrate value
-- **Continuous improvement**: Daily usage drives optimization
+- **Business focus**: We speak business language, not technical jargon
+- **Local Brisbane expertise**: In-person meetings, same timezone, Australian compliance understanding
+- **Fixed pricing**: No surprise hourly billings, clear project costs
+- **Fast implementation**: 1-12 weeks vs months of IT projects
 
-### vs. SaaS DevOps Platforms
+### vs. DIY Integration Platforms (Zapier, Make)
 
-- **No vendor lock-in**: Clients own their infrastructure
-- **Full customization**: Complete control over pipelines
-- **Cost transparency**: No hidden fees or usage limits
-- **Local development**: LocalStack enables zero-cost development
+- **Done for you**: We build and maintain workflows, clients don't need to learn tools
+- **Custom complexity**: Handle complex workflows DIY tools can't manage
+- **Business consulting**: We understand your processes and suggest improvements
+- **Ongoing support**: We're here when things break or need changes
 
-### vs. Enterprise Solutions
+### vs. Large Automation Consultancies
 
-- **Brisbane-appropriate**: Right-sized for local tech businesses
-- **Quick implementation**: No enterprise overhead
-- **Modern stack**: Latest Docker, K8s, Terraform versions
-- **Flexible pricing**: Service packages from $5K to $60K
+- **Brisbane-appropriate pricing**: $3K-$40K projects, not $100K+ enterprise pricing
+- **SME-focused**: We understand 10-50 employee businesses, not just enterprises
+- **Quick turnaround**: Weeks not months, pragmatic not perfect
+- **Personal relationship**: Direct access to senior consultants, no account managers
 
-### vs. DIY Approaches
+### vs. Offshore Automation Services
 
-- **Proven patterns**: Battle-tested architecture
-- **Comprehensive documentation**: Complete implementation guides
-- **Faster time to value**: Pre-built pipeline templates
-- **Ongoing support**: Brisbane-based team with deep expertise
+- **Local Brisbane presence**: In-person meetings, site visits, understand Australian business
+- **Same timezone**: No waiting overnight for responses
+- **Australian data residency**: Your data stays in Australia, compliance confidence
+- **Cultural fit**: Understand Queensland business culture and communication style
 
 ---
 
@@ -395,108 +260,123 @@ Zixly Team (Service delivery team)
 
 ### Lead Generation
 
-**Open-Source Visibility**:
+**Local Networking**:
 
-- GitHub repository drives inbound interest
-- Documentation showcases expertise
-- Live demonstrations build credibility
-- Community engagement creates relationships
+- Brisbane business chambers and networking groups
+- Industry association events (builders, lawyers, accountants)
+- Accountant and bookkeeper partnerships (referral channel)
+- Business coach and consultant partnerships
 
 **Content Marketing**:
 
-- Blog posts about DevOps challenges
-- Conference talks at Brisbane tech events
-- Video tutorials on YouTube
-- Case studies and success stories
+- Blog posts about SME automation challenges and solutions
+- Industry-specific case studies (how we helped a plumber, lawyer, retailer)
+- LinkedIn content targeting Brisbane business owners
+- Workshops on business automation at local co-working spaces
 
-**Network Building**:
+**Partnership Strategy**:
 
-- Brisbane tech meetups and events
-- LinkedIn content and engagement
-- Partnerships with complementary services
-- Referrals from satisfied clients
+- Xero accountants and bookkeepers (they see clients needing automation)
+- Business coaches and consultants (they identify inefficient processes)
+- Industry associations (direct access to target market)
+- Complementary service providers (web developers, marketing agencies)
+
+**Referral Program**:
+
+- 10% discount on next project for client referrals
+- Partner commission program for accountants and consultants
+- Case study program (discount for letting us showcase results)
 
 ### Sales Process
 
-**Discovery Call** (Free):
+**Discovery Call** (Free, 30-60 minutes):
 
-- Current infrastructure assessment
-- DevOps maturity evaluation
-- Automation opportunities identification
-- Service recommendations
+- Current systems inventory (what tools do you use?)
+- Pain point identification (what takes the most time?)
+- Workflow mapping (how does work flow through your business?)
+- Opportunity sizing (how much time could be saved?)
+
+**Business Process Review** (Paid, $500 credited to project):
+
+- 2-4 hours deep-dive into current operations
+- Document existing workflows and pain points
+- Identify automation opportunities with ROI calculations
+- Propose specific workflows to automate
 
 **Proposal**:
 
-- Custom service package
+- Clear service tier recommendation (Starter, Complete, or Enterprise)
+- Specific workflows to be automated
 - Timeline and deliverables
-- Investment breakdown
-- Success criteria
+- Investment breakdown with ROI calculation
+- Success metrics (time saved, errors reduced)
 
 **Implementation**:
 
-- Phased approach (2-16 weeks)
-- Regular check-ins and demos
-- Documentation and training
-- Handover and support
+- Phased approach (1-12 weeks depending on tier)
+- Weekly check-ins with client
+- Training for client team on using automated workflows
+- Testing period with adjustment
+- Handover and ongoing support options
 
 **Follow-up**:
 
-- Managed services (optional)
-- Ongoing optimization
-- New pipeline development
-- Annual infrastructure reviews
+- Monthly management services (optional $500-$2K/month)
+- New workflow development as business grows
+- System updates and optimization
+- Annual automation review and improvement
 
 ---
 
 ## Success Metrics
 
-### Internal Operations
+### Internal Operations (Zixly)
 
 **Efficiency Gains**:
 
-- 50%+ reduction in manual administrative work
-- 90%+ client satisfaction scores
-- 80%+ billable hours utilization
-- 95%+ invoice payment within 30 days
+- 60%+ reduction in manual administrative work (our own operations)
+- 95%+ client satisfaction scores
+- 75%+ billable hours utilization
+- 98%+ invoice payment within 30 days
 
 **Business Impact**:
 
-- Improved service delivery quality
-- Faster client onboarding
-- Better financial visibility
-- Enhanced team productivity
+- Improved service delivery quality through automation
+- Faster client onboarding with standardized workflows
+- Better financial visibility with automated reporting
+- Enhanced team productivity (less admin, more client work)
 
 ### Client Outcomes
 
-**DevOps Maturity**:
+**Time Savings**:
 
-- CI/CD pipeline automation
-- Infrastructure as Code adoption
-- Monitoring and observability
-- Security and compliance
+- 10-20 hours per week saved on repetitive admin tasks
+- 70%+ reduction in manual data entry
+- 50%+ faster invoicing and billing processes
+- 80%+ reduction in "where's that information?" searching
 
-**Business Value**:
+**Accuracy Improvements**:
 
-- Faster deployment cycles
-- Reduced infrastructure costs
-- Improved system reliability
-- Team productivity gains
+- 95%+ reduction in data entry errors
+- Consistent data across all systems (single source of truth)
+- Eliminated duplicate or conflicting information
+- Improved financial reporting accuracy
 
-### Open-Source Community
+**Business Growth Enablers**:
 
-**Community Engagement**:
+- Capacity to handle 30-50% more clients without additional admin staff
+- Better cash flow through faster invoicing and payment tracking
+- Improved customer experience through consistent communication
+- Data-driven decision making with real-time dashboards
 
-- 100+ GitHub stars (Year 1 target)
-- 5+ active contributors
-- 50+ documentation views per week
-- Active issue resolution
+### Financial Metrics (Clients)
 
-**Business Impact**:
+**ROI Calculations**:
 
-- Increased client inquiries
-- Enhanced brand credibility
-- Thought leadership positioning
-- Community-driven improvements
+- **Professional Services**: $72K/year saved (15 hrs/week at $90/hr) for $8K investment = 9:1 ROI
+- **Construction**: $46K/year saved (12 hrs/week at $75/hr) for $12K investment = 4:1 ROI
+- **E-commerce**: $75K/year saved (2 FTE reduction in order processing) for $15K investment = 5:1 ROI
+- **Manufacturing**: $67K/year saved (time + stockout reduction) for $12K investment = 5:1 ROI
 
 ---
 
@@ -504,75 +384,102 @@ Zixly Team (Service delivery team)
 
 ### Technical Risks
 
-**Infrastructure Complexity**:
+**API Changes from Vendors** (Xero, HubSpot, etc.):
 
-- Risk: Managing Docker, K8s, Terraform complexity
-- Mitigation: Comprehensive documentation and automation
-- Mitigation: LocalStack for risk-free local development
+- Risk: Third-party APIs change, breaking integrations
+- Mitigation: Monitor vendor API announcements, have update process
+- Mitigation: Build abstraction layer so changes isolated to one place
+- Mitigation: Test integrations regularly with automated health checks
 
-**Client Technical Debt**:
+**Data Synchronization Issues**:
 
-- Risk: Legacy systems requiring extensive refactoring
-- Mitigation: Phased migration approach
-- Mitigation: Clear scope boundaries in proposals
+- Risk: Data gets out of sync between systems, causing confusion
+- Mitigation: Clear error logging and alerting
+- Mitigation: Automated health checks and reconciliation
+- Mitigation: Manual override and correction procedures documented
 
 ### Business Risks
 
-**Market Competition**:
+**Client Technical Literacy**:
 
-- Risk: Competing with established DevOps consultancies
-- Mitigation: Open-source differentiation
-- Mitigation: Brisbane market focus
-- Mitigation: Authentic expertise demonstration
+- Risk: Clients intimidated by technology, resist automation
+- Mitigation: Heavy focus on business outcomes, not technology
+- Mitigation: Comprehensive training and handholding
+- Mitigation: Ongoing support to build confidence
+
+**Market Education**:
+
+- Risk: SMEs don't know automation is possible or affordable
+- Mitigation: Educational content marketing (case studies, workshops)
+- Mitigation: ROI calculators and clear pricing
+- Mitigation: "Quick win" starter packages to prove value
+
+**Vendor Dependency**:
+
+- Risk: Reliant on third-party platforms (Xero, HubSpot)
+- Mitigation: Support multiple alternatives (MYOB, Pipedrive, Salesforce)
+- Mitigation: Clear communication to clients about platform choices
+- Mitigation: Build transferable workflows, not locked-in solutions
 
 **Scaling Challenges**:
 
-- Risk: Limited team capacity
-- Mitigation: Documented processes and automation
-- Mitigation: Strategic hiring plan
-- Mitigation: Community contribution leverage
+- Risk: Limited team capacity as client base grows
+- Mitigation: Standardized workflow templates reduce implementation time
+- Mitigation: Client self-service capabilities for simple changes
+- Mitigation: Strategic hiring plan (contractor consultants initially)
 
 ---
 
 ## Long-Term Vision
 
-### Year 1: Foundation
+### Year 1: Foundation (2025-2026)
 
-- Build authentic expertise through internal usage
-- Deliver 10-15 client projects
-- Release open-source platform
-- Establish Brisbane market presence
+- Build expertise through internal usage of automation
+- Deliver 20-30 SME client projects
+- Establish Brisbane market presence and reputation
+- Develop library of workflow templates by industry
+- Build partnerships with 5-10 accountants and business coaches
 
-### Year 2: Growth
+**Revenue Target**: $200K-$400K (20-30 clients at $8K-$15K average)
 
-- Scale to 30-40 client projects
-- Grow team to 3-5 consultants
-- Active community of 100+ contributors
-- Expand to Gold Coast and Sunshine Coast
+### Year 2: Growth (2026-2027)
 
-### Year 3: Expansion
+- Scale to 50-70 client projects
+- Grow team to 2-3 automation consultants
+- Expand to Gold Coast and Sunshine Coast markets
+- Industry-specific packages (legal, construction, e-commerce)
+- Self-service client portal for simple workflow changes
 
-- Enterprise tier services
-- Interstate expansion (Sydney, Melbourne)
-- Advanced pipeline products
-- Training and certification programs
+**Revenue Target**: $500K-$800K (50-70 clients + recurring revenue growth)
+
+### Year 3: Expansion (2027-2028)
+
+- Interstate expansion (Sydney, Melbourne through partnerships)
+- Advanced analytics and business intelligence offerings
+- White-label partner program for other consultants
+- Industry-specific SaaS products (standardized automation packages)
+
+**Revenue Target**: $1M-$1.5M (100+ clients + recurring revenue + partnerships)
 
 ---
 
 ## Conclusion
 
-Zixly's business model combines **DevOps automation services** with **internal operations platform** and **open-source strategy** to create a unique, authentic, and scalable business serving Brisbane's tech community.
+Zixly's business model focuses on **SME business automation** through **connecting existing business systems** (Xero, HubSpot, Shopify, etc.) to eliminate repetitive admin work and save 10-20 hours per week.
 
-By "eating our own dogfood" with cloud-native DevOps patterns, we build genuine expertise and demonstrate real-world value to clients. The open-source approach builds trust, community, and competitive advantage.
+By using these automation workflows to run our own business, we build genuine expertise and demonstrate real-world value. Our Brisbane-local presence, SME-appropriate pricing ($3K-$40K), and business-focused approach differentiate us from both IT consultants and DIY platforms.
+
+The SME market in Brisbane is large (5,000+ businesses with 3+ systems) and underserved by automation solutions designed for their needs and budget. Zixly addresses this gap with practical, affordable business automation.
 
 ---
 
-**Document Version**: 2.0  
-**Last Updated**: 2025-01-27  
+**Document Version**: 3.0  
+**Last Updated**: 2025-10-25  
 **Owner**: Zixly Business Architecture  
 **Review Cycle**: Quarterly
 
 **Previous Versions**:
 
 - v1.0: Initial documentation (n8n-focused SME stack model)
-- v2.0: Updated to reflect DevOps automation service model (current)
+- v2.0: Updated to reflect DevOps automation service model
+- v3.0: Complete pivot to SME business automation (current)
