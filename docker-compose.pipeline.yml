@@ -50,7 +50,7 @@ services:
       dockerfile: Dockerfile
     container_name: zixly-webhook-receiver
     ports:
-      - '3000:3000'
+      - '3002:3000'
     environment:
       - NODE_ENV=development
       - REDIS_URL=redis://redis:6379

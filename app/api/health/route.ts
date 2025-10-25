@@ -1,40 +1,26 @@
-import { createClient } from '@/lib/supabase/server'
+import { prisma } from '@/lib/prisma'
 import { NextResponse } from 'next/server'
 
 export async function GET() {
   try {
-    const supabase = await createClient()
-
-    // Test Supabase connection
-    const { error } = await supabase.from('_prisma_migrations').select('*').limit(1)
-
-    if (error) {
-      console.error('Supabase connection error:', error)
-      return NextResponse.json(
-        {
-          status: 'error',
-          message: 'Database connection failed',
-          error: error.message,
-        },
-        { status: 500 }
-      )
-    }
+    // Test database connection using Prisma
+    await prisma.$queryRaw`SELECT 1`
 
     return NextResponse.json({
       status: 'ok',
-      message: 'Supabase connected successfully',
+      message: 'Database connected successfully',
       timestamp: new Date().toISOString(),
-      supabase: {
-        url: process.env.NEXT_PUBLIC_SUPABASE_URL,
+      database: {
+        url: process.env.DATABASE_URL ? 'configured' : 'not configured',
         hasConnection: true,
       },
     })
   } catch (error) {
-    console.error('Health check error:', error)
+    console.error('Database connection error:', error)
     return NextResponse.json(
       {
         status: 'error',
-        message: 'Health check failed',
+        message: 'Database connection failed',
         error: error instanceof Error ? error.message : 'Unknown error',
       },
       { status: 500 }

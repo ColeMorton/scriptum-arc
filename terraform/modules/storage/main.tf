@@ -18,11 +18,16 @@ resource "aws_s3_bucket_versioning" "pipeline_results_versioning" {
 }
 
 resource "aws_s3_bucket_lifecycle_configuration" "pipeline_results_lifecycle" {
+  count  = var.enable_lifecycle_rules ? 1 : 0
   bucket = aws_s3_bucket.pipeline_results.id
 
   rule {
     id     = "archive-old-results"
     status = "Enabled"
+
+    filter {
+      prefix = "" # Apply to all objects
+    }
 
     transition {
       days          = 30

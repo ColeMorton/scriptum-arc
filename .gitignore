@@ -81,3 +81,4 @@ postgres-data/
 
 # Service dependencies
 services/*/node_modules/
+services/*/dist/

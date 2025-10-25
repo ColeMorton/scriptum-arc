@@ -8,3 +8,9 @@ variable "environment" {
   type        = string
 }
 
+variable "enable_lifecycle_rules" {
+  description = "Enable S3 lifecycle rules (disabled for LocalStack compatibility)"
+  type        = bool
+  default     = true
+}
+

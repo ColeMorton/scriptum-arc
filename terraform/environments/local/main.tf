@@ -1,5 +1,5 @@
 terraform {
-  required_version = ">= 1.6.0"
+  required_version = ">= 1.5.0"
   required_providers {
     aws = {
       source  = "hashicorp/aws"
@@ -15,6 +15,7 @@ provider "aws" {
   skip_credentials_validation = true
   skip_metadata_api_check     = true
   skip_requesting_account_id  = true
+  s3_use_path_style           = true
 
   endpoints {
     sqs            = "http://localhost:4566"
@@ -36,8 +37,9 @@ module "pipeline_queue" {
 module "pipeline_storage" {
   source = "../../modules/storage"
 
-  project_name = var.project_name
-  environment  = var.environment
+  project_name          = var.project_name
+  environment           = var.environment
+  enable_lifecycle_rules = false # Disabled for LocalStack compatibility
 }
 
 module "pipeline_secrets" {

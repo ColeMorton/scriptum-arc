@@ -1,26 +1,29 @@
 version: '3.8'
 
 services:
-  # PostgreSQL Database
-  postgres:
-    image: postgres:15-alpine
-    container_name: zixly-postgres
+  # LocalStack (AWS Services Emulation)
+  localstack:
+    image: localstack/localstack:3.0
+    container_name: zixly-localstack
     restart: unless-stopped
     environment:
-      - POSTGRES_USER=zixly_admin
-      - POSTGRES_PASSWORD=local_dev_password
-      - POSTGRES_DB=zixly_main
+      - SERVICES=s3,dynamodb,sqs,sns,lambda,apigateway,cloudformation
+      - DEBUG=1
+      - DATA_DIR=/tmp/localstack/data
+      - LAMBDA_EXECUTOR=docker
+      - DOCKER_HOST=unix:///var/run/docker.sock
     ports:
-      - '5433:5432'
+      - '4566:4566'
+      - '4510-4559:4510-4559'
     volumes:
-      - postgres_data:/var/lib/postgresql/data
-      - ./init-scripts:/docker-entrypoint-initdb.d
+      - ./localstack-data:/tmp/localstack
+      - /var/run/docker.sock:/var/run/docker.sock
     networks:
       - zixly-local
     healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U zixly_admin -d zixly_main']
-      interval: 30s
-      timeout: 10s
+      test: ['CMD', 'curl', '-f', 'http://localhost:4566/_localstack/health']
+      interval: 10s
+      timeout: 5s
       retries: 3
 
   # Redis Cache
@@ -61,9 +64,7 @@ services:
       - '5678:5678'
     volumes:
       - pipeline_data:/home/node/.pipeline
-    depends_on:
-      postgres:
-        condition: service_healthy
+    # Note: Pipeline service now uses Supabase cloud database
     networks:
       - zixly-local
     healthcheck:
@@ -73,13 +74,13 @@ services:
       timeout: 10s
       retries: 3
 
-  # Plane Project Management (commented out - image not available)
+  # Plane Project Management (commented out - requires separate database if enabled)
   # plane:
   #   image: makeplane/plane:latest
   #   container_name: zixly-plane
   #   restart: unless-stopped
   #   environment:
-  #     - DATABASE_URL=postgresql://zixly_admin:local_dev_password@postgres:5432/plane
+  #     - DATABASE_URL=your_supabase_database_url  # Use Supabase connection
   #     - REDIS_URL=redis://:local_dev_password@redis:6379
   #     - SECRET_KEY=local_plane_secret_key
   #     - WEB_URL=http://localhost:8000
@@ -87,8 +88,6 @@ services:
   #   ports:
   #     - '8000:8000'
   #   depends_on:
-  #     postgres:
-  #       condition: service_healthy
   #     redis:
   #       condition: service_healthy
   #   networks:
@@ -100,8 +99,6 @@ services:
   #     retries: 3
 
 volumes:
-  postgres_data:
-    driver: local
   redis_data:
     driver: local
   pipeline_data:

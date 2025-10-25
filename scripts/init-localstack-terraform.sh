@@ -32,12 +32,14 @@ docker-compose -f docker-compose.pipeline.yml up -d localstack
 
 # Wait for LocalStack
 echo "Waiting for LocalStack to be ready..."
-TIMEOUT=60
+TIMEOUT=90
 ELAPSED=0
-until curl -s http://localhost:4566/_localstack/health | grep -q "running" 2>/dev/null; do
+until curl -s http://localhost:4566/_localstack/health | jq -e '[.services.sqs, .services.s3, .services.secretsmanager] | all(. == "available" or . == "running")' > /dev/null 2>&1; do
     if [ $ELAPSED -ge $TIMEOUT ]; then
         echo "❌ Error: LocalStack failed to start within ${TIMEOUT} seconds"
         echo "Check logs with: docker-compose -f docker-compose.pipeline.yml logs localstack"
+        echo "Current health status:"
+        curl -s http://localhost:4566/_localstack/health | jq '.'
         exit 1
     fi
     echo -n "."
