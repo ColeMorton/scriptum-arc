@@ -988,8 +988,8 @@ curl -X POST http://localhost:3000/webhook/trading-sweep \
 - **[Business Model](../business/business-model.md)** - Service business + internal operations + open-source
 - **[Architecture Decisions](./decisions/)** - ADRs for key technical choices
 - **[Pipeline Specifications](../pipelines/)** - Webhook pipelines and job patterns
-- **[Deployment Guide](../../DEPLOYMENT.md)** - Local and production deployment
-- **[Implementation Status](../../STATUS.md)** - Current progress and milestones
+- **[Deployment Guide](https://github.com/colemorton/zixly/blob/main/DEPLOYMENT.md)** - Local and production deployment
+- **[Implementation Status](https://github.com/colemorton/zixly/blob/main/STATUS.md)** - Current progress and milestones
 
 ---
 

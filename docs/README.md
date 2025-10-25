@@ -12,9 +12,9 @@ Welcome to the comprehensive documentation for Zixly, a DevOps automation servic
 
 **Current Status & Planning**:
 
-- **[Implementation Status](../STATUS.md)** - Current progress, milestones, and phase tracking
+- **[Implementation Status](https://github.com/colemorton/zixly/blob/main/STATUS.md)** - Current progress, milestones, and phase tracking
 - **[Implementation Plan](./implementation/plan.md)** - Phase-by-phase roadmap
-- **[Deployment Guide](../DEPLOYMENT.md)** - Local and production deployment
+- **[Deployment Guide](https://github.com/colemorton/zixly/blob/main/DEPLOYMENT.md)** - Local and production deployment
 
 **Architecture & Technical**:
 
@@ -27,7 +27,7 @@ Welcome to the comprehensive documentation for Zixly, a DevOps automation servic
 
 - **[Local Development](./local-development/README.md)** - Setup and development environment
 - **[Troubleshooting](./troubleshooting/)** - Common issues and solutions
-- **[Testing](../test/README.md)** - Testing strategy and implementation
+- **[Testing](https://github.com/colemorton/zixly/blob/main/test/README.md)** - Testing strategy and implementation
 
 ---
 
@@ -42,7 +42,7 @@ Welcome to the comprehensive documentation for Zixly, a DevOps automation servic
 **Capabilities**:
 
 - **[Pipeline Capabilities](./pipelines/)** - Webhook-triggered pipelines and job orchestration
-- **[Case Study: Internal Operations](../README.md#service-capabilities)** - How we use our own platform
+- **[Case Study: Internal Operations](https://github.com/colemorton/zixly/blob/main/README.md#service-capabilities)** - How we use our own platform
 
 **Getting Started**:
 
@@ -58,11 +58,11 @@ Welcome to the comprehensive documentation for Zixly, a DevOps automation servic
 
 - **[Business Model](./business/business-model.md)** - Understanding the project context
 - **[Architecture Decisions](./architecture/decisions/)** - Key technical decisions and rationale
-- **[Technology Stack](../README.md#technology-stack)** - Current stack and versions
+- **[Technology Stack](https://github.com/colemorton/zixly/blob/main/README.md#technology-stack)** - Current stack and versions
 
 **Contributing**:
 
-- **[Implementation Status](../STATUS.md)** - Current development focus
+- **[Implementation Status](https://github.com/colemorton/zixly/blob/main/STATUS.md)** - Current development focus
 - **[Local Development](./local-development/README.md)** - Setup your development environment
 
 **Patterns & Examples**:
@@ -241,7 +241,7 @@ docs/
 
 - ⏳ Phase 4: Production Readiness (Performance, Security, Testing)
 
-See **[STATUS.md](../STATUS.md)** for detailed milestone tracking.
+See **[STATUS.md](https://github.com/colemorton/zixly/blob/main/STATUS.md)** for detailed milestone tracking.
 
 ---
 
@@ -249,7 +249,7 @@ See **[STATUS.md](../STATUS.md)** for detailed milestone tracking.
 
 ### Internal Team
 
-1. Read **[Implementation Status](../STATUS.md)** for current focus
+1. Read **[Implementation Status](https://github.com/colemorton/zixly/blob/main/STATUS.md)** for current focus
 2. Review **[Architecture Decisions](./architecture/decisions/)** for context
 3. Follow **[Local Development](./local-development/README.md)** setup
 4. Reference **[System Architecture](./architecture/system-architecture.md)** for patterns

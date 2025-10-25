@@ -34,9 +34,9 @@ npm run dev
 
 **Essential Links:**
 
-- [Deployment Guide](../DEPLOYMENT.md) - Local and production setup
+- [Deployment Guide](https://github.com/colemorton/zixly/blob/main/DEPLOYMENT.md) - Local and production setup
 - [Local Development](./local-development/README.md) - Development environment
-- [Implementation Status](../STATUS.md) - Current progress and milestones
+- [Implementation Status](https://github.com/colemorton/zixly/blob/main/STATUS.md) - Current progress and milestones
 
 ### For Clients
 
@@ -82,7 +82,7 @@ Resources for building and deploying:
 - **[Local Development Setup](./local-development/README.md)** - Complete development environment
 - **[Implementation Roadmap](./implementation/)** - Phase-by-phase development plan
 - **[Current Status](./implementation/current-status.md)** - What's done and what's next
-- **[Testing Guide](../test/README.md)** - Testing strategy and framework
+- **[Testing Guide](https://github.com/colemorton/zixly/blob/main/test/README.md)** - Testing strategy and framework
 - **[Troubleshooting](./troubleshooting/)** - Common issues and solutions
 
 **Implementation Documents:**
@@ -185,7 +185,7 @@ Webhook-triggered automation and job orchestration:
 - ⏳ Horizontal pod autoscaling
 - ⏳ Centralized logging (Loki)
 
-See [Implementation Status](../STATUS.md) for detailed progress.
+See [Implementation Status](https://github.com/colemorton/zixly/blob/main/STATUS.md) for detailed progress.
 
 ---
 
@@ -243,14 +243,14 @@ See [Local Development Guide](./local-development/README.md) for complete setup.
 
 - [System Architecture](./architecture/system-architecture.md)
 - [DevOps Assessment](./devops-assessment.md)
-- [Terraform Setup](../terraform/README.md)
+- [Terraform Setup](https://github.com/colemorton/zixly/blob/main/terraform/README.md)
 - [Kubernetes Migration](./architecture/decisions/adr-006-kubernetes-pipeline-orchestration.md)
 
 **Developers:**
 
 - [Local Development](./local-development/README.md)
-- [API Documentation](../app/api/)
-- [Testing Guide](../test/README.md)
+- [API Documentation](https://github.com/colemorton/zixly/tree/main/app/api)
+- [Testing Guide](https://github.com/colemorton/zixly/blob/main/test/README.md)
 - [Troubleshooting](./troubleshooting/)
 
 **Project Managers:**
@@ -271,7 +271,7 @@ See [Local Development Guide](./local-development/README.md) for complete setup.
 
 - [Docker Compose Setup](./local-development/README.md)
 - [Kubernetes Architecture](./architecture/decisions/adr-006-kubernetes-pipeline-orchestration.md)
-- [Terraform Modules](../terraform/README.md)
+- [Terraform Modules](https://github.com/colemorton/zixly/blob/main/terraform/README.md)
 - [LocalStack Integration](./pipelines/testing-localstack.md)
 
 **Security:**
@@ -282,7 +282,7 @@ See [Local Development Guide](./local-development/README.md) for complete setup.
 
 **Operations:**
 
-- [Deployment Guide](../DEPLOYMENT.md)
+- [Deployment Guide](https://github.com/colemorton/zixly/blob/main/DEPLOYMENT.md)
 - [Monitoring Setup](./architecture/system-architecture.md#monitoring--observability)
 - [Troubleshooting Guide](./troubleshooting/)
 - [Internal Operations](./operations/internal-operations-guide.md)
@@ -295,7 +295,7 @@ See [Local Development Guide](./local-development/README.md) for complete setup.
 
 1. **Read the Architecture**: Start with [System Architecture](./architecture/system-architecture.md)
 2. **Setup Locally**: Follow [Local Development Guide](./local-development/README.md)
-3. **Check Status**: Review [Implementation Status](../STATUS.md)
+3. **Check Status**: Review [Implementation Status](https://github.com/colemorton/zixly/blob/main/STATUS.md)
 4. **Follow Patterns**: Reference [Architecture Decisions](./architecture/decisions/)
 
 ### Code Quality Standards
@@ -313,9 +313,9 @@ See [Local Development Guide](./local-development/README.md) for complete setup.
 ### Documentation Sites
 
 - **Main Docs**: You're here! (`docs/index.md`)
-- **README**: [Project Overview](../README.md)
-- **Deployment**: [Deployment Guide](../DEPLOYMENT.md)
-- **Status**: [Current Status](../STATUS.md)
+- **README**: [Project Overview](https://github.com/colemorton/zixly/blob/main/README.md)
+- **Deployment**: [Deployment Guide](https://github.com/colemorton/zixly/blob/main/DEPLOYMENT.md)
+- **Status**: [Current Status](https://github.com/colemorton/zixly/blob/main/STATUS.md)
 
 ### Getting Help
 
@@ -373,7 +373,7 @@ See [Local Development Guide](./local-development/README.md) for complete setup.
 ### Internal Guides
 
 - **New to the project?** Start with [System Architecture](./architecture/system-architecture.md)
-- **Need to deploy?** Read [Deployment Guide](../DEPLOYMENT.md)
+- **Need to deploy?** Read [Deployment Guide](https://github.com/colemorton/zixly/blob/main/DEPLOYMENT.md)
 - **Debugging issues?** Check [Troubleshooting](./troubleshooting/)
 - **Understanding decisions?** Review [ADRs](./architecture/decisions/)
 

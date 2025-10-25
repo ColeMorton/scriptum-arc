@@ -258,8 +258,8 @@ ALB → Webhook Receiver (EKS Service)
 - [Kubernetes Jobs Documentation](https://kubernetes.io/docs/concepts/workloads/controllers/job/)
 - [AWS EKS Best Practices](https://aws.github.io/aws-eks-best-practices/)
 - [Bull Queue Documentation](https://github.com/OptimalBits/bull)
-- [DevOps Automation Pivot Plan](/.claude/devops_automation_pivot.md)
 - [Brisbane DevOps Job Market Analysis](https://www.seek.com.au/devops-jobs/in-Brisbane-QLD)
+- [Implementation Roadmap](../../implementation/) - Development phases and priorities
 
 ---
 

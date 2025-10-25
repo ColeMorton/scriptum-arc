@@ -8,12 +8,51 @@
     },
     {
       "pattern": "^mailto:"
+    },
+    {
+      "pattern": "^http://localhost"
+    },
+    {
+      "pattern": "^https://zixly.com"
+    },
+    {
+      "pattern": "^~/\\.claude/"
+    },
+    {
+      "pattern": "^/\\.claude/"
+    },
+    {
+      "pattern": "^#$"
+    },
+    {
+      "pattern": "phase-2-etl-orchestration"
+    },
+    {
+      "pattern": "phase-3-business-intelligence"
+    },
+    {
+      "pattern": "docs.sendgrid.com"
+    },
+    {
+      "pattern": "/pipelines/$"
+    },
+    {
+      "pattern": "/integrations/$"
+    },
+    {
+      "pattern": "/troubleshooting/$"
+    },
+    {
+      "pattern": "/implementation/$"
+    },
+    {
+      "pattern": "/decisions/$"
     }
   ],
   "replacementPatterns": [
     {
       "pattern": "^../",
-      "replacement": "https://colemorton.github.io/scriptum-arc/"
+      "replacement": "https://colemorton.github.io/zixly/"
     }
   ],
   "httpHeaders": [

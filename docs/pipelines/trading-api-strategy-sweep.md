@@ -576,11 +576,9 @@ curl http://localhost:3000/api/pipelines/cm4x8y9z0000108l7a1b2c3d4 \
 
 ## References
 
-- [Trading API Repository](../archive/pipeline-workflows/internal/trading-api-smoke-test.json) - Original pipeline workflow
 - [ADR-006: Kubernetes Pipeline Orchestration](../architecture/decisions/adr-006-kubernetes-pipeline-orchestration.md)
 - [ADR-007: Webhook Event Architecture](../architecture/decisions/adr-007-webhook-event-architecture.md)
 - [Bull Queue Documentation](https://github.com/OptimalBits/bull)
-- [Algorithmic Trading Concepts](https://www.investopedia.com/terms/a/algorithmictrading.asp)
 
 ---
 

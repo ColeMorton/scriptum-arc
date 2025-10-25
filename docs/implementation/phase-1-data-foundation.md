@@ -1,5 +1,5 @@
 ---
-**← [Sales Strategy](../sales/sales-deck-demo-script.md)** | **[Back to Documentation Index](../index.md)** | **[Product Requirements](../product/product-requirements-document.md)** →
+**← [Marketing Overview](../marketing/service-overview.md)** | **[Back to Documentation Index](../index.md)** | **[Business Model](../business/business-model.md)** →
 ---
 
 # Phase 1: Data Foundation and Schema Implementation
@@ -15,8 +15,8 @@
 
 **Strategic Context**:
 
-- [Product Specification](../specs/product-specification.md) - Product vision, MVP scope, success metrics
-- [Product Requirements Document](../product/product-requirements-document.md) - User stories, functional requirements
+- [Business Model](../business/business-model.md) - Service business strategy and vision
+- [Service Catalog](../services/service-catalog.md) - Service offerings and requirements
 
 **Architecture Context**:
 

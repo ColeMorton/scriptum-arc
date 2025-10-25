@@ -34,7 +34,7 @@ This document defines **production-grade database monitoring** for Zixly's Postg
 
 ### Monitoring Philosophy
 
-Per [Global Development Standards](~/.claude/CLAUDE.md):
+Per Global Development Standards:
 
 > Fail-fast is superior to fallbacks because it exposes problems immediately for proper fixing rather than hiding them behind degraded functionality.
 
@@ -161,7 +161,7 @@ prisma.$use(async (params, next) => {
 avg:postgres.query.time.p95{env:production}
 ```
 
-**Target**: < 100ms (per [NFR-1.3](../product/product-requirements-document.md#nfr-1-performance))
+**Target**: < 100ms (performance requirement)
 
 **Thresholds**:
 

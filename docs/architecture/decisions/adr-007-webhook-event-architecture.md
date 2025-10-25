@@ -526,7 +526,7 @@ spec:
 - [Bull MQ (TypeScript native)](https://docs.bullmq.io/)
 - [Redis Persistence](https://redis.io/topics/persistence)
 - [Event-Driven Microservices](https://martinfowler.com/articles/201701-event-driven.html)
-- [Trading API Integration (pipeline workflow)](../../../archive/pipeline-workflows/internal/trading-api-smoke-test.json)
+- [Trading API Pipeline Specification](../../pipelines/trading-api-strategy-sweep.md)
 
 ---
 

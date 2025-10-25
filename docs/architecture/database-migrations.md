@@ -47,7 +47,7 @@ This document defines the **authoritative migration strategy** for Zixly's Postg
 
 ### Fail-Fast Principle
 
-Per [Global Development Standards](~/.claude/CLAUDE.md):
+Per Global Development Standards:
 
 > Do not use fallback mechanisms, instead take a fail fast approach and throw meaningful exceptions.
 
@@ -59,7 +59,7 @@ Per [Global Development Standards](~/.claude/CLAUDE.md):
 
 ### No Backward Compatibility
 
-Per [Global Development Standards](~/.claude/CLAUDE.md):
+Per Global Development Standards:
 
 > No backwards compatibility whatsoever, as that is completely out of scope and handled by git.
 

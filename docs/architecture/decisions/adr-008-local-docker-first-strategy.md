@@ -423,8 +423,8 @@ Migrate to Kubernetes when **any** of these conditions met:
 - [Docker Compose Documentation](https://docs.docker.com/compose/)
 - [Docker Compose Production Considerations](https://docs.docker.com/compose/production/)
 - [When to use Docker Compose vs Kubernetes](https://www.docker.com/blog/docker-compose-from-local-to-amazon-ecs/)
-- [DevOps Automation Pivot Plan](/.claude/devops_automation_pivot.md) - Phase 1 priorities
 - [ADR-006: Kubernetes Pipeline Orchestration](./adr-006-kubernetes-pipeline-orchestration.md) - Future state
+- [Implementation Roadmap](../../implementation/) - Development phases and priorities
 
 ---
 

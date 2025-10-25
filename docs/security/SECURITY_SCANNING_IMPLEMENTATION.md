@@ -261,7 +261,7 @@ docs/
 
 - [Vulnerability Scanning Guide](./vulnerability-scanning.md)
 - [DevOps Assessment](../devops-assessment.md)
-- [Deployment Guide](../../DEPLOYMENT.md)
+- [Deployment Guide](https://github.com/colemorton/zixly/blob/main/DEPLOYMENT.md)
 
 **Tools**:
 

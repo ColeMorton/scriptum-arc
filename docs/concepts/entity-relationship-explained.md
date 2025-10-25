@@ -416,7 +416,7 @@ This platform:
 4. All associated **CustomMetrics** deleted
 5. Deletion is **irreversible** (no soft deletes)
 
-**Rationale**: Per [Global Development Standards](~/.claude/CLAUDE.md):
+**Rationale**: Per Global Development Standards:
 
 > No backwards compatibility whatsoever, as that is completely out of scope and handled by git.
 
@@ -609,8 +609,8 @@ describe('Multi-tenant isolation', () => {
 
 **Business Context**:
 
-- [Product Requirements Document](../product/product-requirements-document.md) - Business objectives and user stories
-- [Product Specification](../specs/product-specification.md) - Feature definitions
+- [Business Model](../business/business-model.md) - Business objectives and service strategy
+- [Service Catalog](../services/service-catalog.md) - Service definitions and deliverables
 
 **Technical Schema**:
 

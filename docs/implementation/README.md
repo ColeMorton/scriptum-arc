@@ -87,8 +87,8 @@ The MVP follows a 4-phase approach spanning 18 weeks, optimized for solo senior 
 
 **Strategic & Product**:
 
-- [Product Specification](../specs/product-specification.md) - Product vision, MVP scope, competitive positioning
-- [Product Requirements Document](../product/product-requirements-document.md) - 35+ user stories, 38 functional requirements
+- [Business Model](../business/business-model.md) - Service business strategy and positioning
+- [Service Catalog](../services/service-catalog.md) - Available services and deliverables
 
 **Architecture & Technical**:
 
@@ -97,14 +97,14 @@ The MVP follows a 4-phase approach spanning 18 weeks, optimized for solo senior 
 
 **Business & GTM**:
 
-- [Sales Deck & Demo Script](../sales/sales-deck-demo-script.md) - Value proposition, ROI calculator, objection handling
-- [Financial Projections](../financial/financial-projections-unit-economics.md) - 3-year model, unit economics (LTV:CAC 13.6:1)
+- [Service Overview](../marketing/service-overview.md) - Value proposition and service offerings
+- [Service Business Model](../financial/service-business-model.md) - Financial model and pricing strategy
 
 ---
 
 ## Implementation Principles
 
-Per [CLAUDE.md](../../.claude/CLAUDE.md) global instructions:
+Per global development standards:
 
 **Code Quality**:
 
@@ -142,7 +142,7 @@ After completing each phase:
 
 2. **Update System Architecture**: Reflect architectural changes in [system-architecture.md](../architecture/system-architecture.md)
 
-3. **Update Product Documentation**: Ensure [Product Specification](../specs/product-specification.md) and [PRD](../product/product-requirements-document.md) are current
+3. **Update Business Documentation**: Ensure [Business Model](../business/business-model.md) and [Service Catalog](../services/service-catalog.md) are current
 
 4. **Git Commit**: Commit phase completion with conventional commit message:
 
