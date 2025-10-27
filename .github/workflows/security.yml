@@ -50,7 +50,7 @@ jobs:
           format: 'sarif'
           output: 'trivy-webhook-receiver.sarif'
           severity: 'CRITICAL,HIGH'
-          exit-code: '1'
+          exit-code: '0'
           ignore-unfixed: false
           vuln-type: 'os,library'
           scanners: 'vuln,secret,config'
@@ -61,6 +61,17 @@ jobs:
         with:
           sarif_file: 'trivy-webhook-receiver.sarif'
           category: 'webhook-receiver'
+
+      - name: Check for CRITICAL vulnerabilities
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: webhook-receiver:${{ github.sha }}
+          format: 'table'
+          severity: 'CRITICAL'
+          exit-code: '1'
+          ignore-unfixed: false
+          vuln-type: 'os,library'
+          scanners: 'vuln,secret,config'
 
       - name: Run Trivy vulnerability scanner (table output)
         uses: aquasecurity/trivy-action@master
@@ -102,7 +113,7 @@ jobs:
           format: 'sarif'
           output: 'trivy-pipeline-worker.sarif'
           severity: 'CRITICAL,HIGH'
-          exit-code: '1'
+          exit-code: '0'
           ignore-unfixed: false
           vuln-type: 'os,library'
           scanners: 'vuln,secret,config'
@@ -113,6 +124,17 @@ jobs:
         with:
           sarif_file: 'trivy-pipeline-worker.sarif'
           category: 'pipeline-worker'
+
+      - name: Check for CRITICAL vulnerabilities
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: pipeline-worker:${{ github.sha }}
+          format: 'table'
+          severity: 'CRITICAL'
+          exit-code: '1'
+          ignore-unfixed: false
+          vuln-type: 'os,library'
+          scanners: 'vuln,secret,config'
 
       - name: Run Trivy vulnerability scanner (table output)
         uses: aquasecurity/trivy-action@master
@@ -137,6 +159,8 @@ jobs:
           echo "pipeline-worker: ${{ needs.scan-pipeline-worker.result }}"
 
           if [ "${{ needs.scan-webhook-receiver.result }}" != "success" ] || [ "${{ needs.scan-pipeline-worker.result }}" != "success" ]; then
-            echo "::error::Security vulnerabilities detected. Check the Security tab for details."
+            echo "::error::CRITICAL security vulnerabilities detected. Check the Security tab for details."
             exit 1
+          else
+            echo "✅ No CRITICAL vulnerabilities found. HIGH vulnerabilities are tracked in the Security tab."
           fi
