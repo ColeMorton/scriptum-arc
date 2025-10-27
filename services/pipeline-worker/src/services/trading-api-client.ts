@@ -127,6 +127,25 @@ export class TradingAPIClient {
     }
   }
 
+  async getJobStatus(
+    jobId: string
+  ): Promise<{ status: string; sweep_run_id?: string; error_message?: string }> {
+    try {
+      logger.info('Fetching job status', {
+        job_id: jobId,
+      })
+
+      const response = await this.client.get(`/api/v1/jobs/${jobId}`)
+      return response.data
+    } catch (error) {
+      logger.error('Failed to fetch job status', {
+        error,
+        job_id: jobId,
+      })
+      throw error
+    }
+  }
+
   async getBestResults(sweepRunId: string, ticker: string): Promise<BestResultsResponse> {
     try {
       logger.info('Fetching best results', {

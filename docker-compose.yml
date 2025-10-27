@@ -1,0 +1,448 @@
+version: '3.8'
+
+services:
+  # =============================================================================
+  # SHARED INFRASTRUCTURE (Always runs)
+  # =============================================================================
+
+  # Redis - Shared cache and job queue
+  redis:
+    image: redis:7-alpine
+    container_name: zixly-redis
+    ports:
+      - '6379:6379'
+    command: redis-server --appendonly yes --maxmemory 512mb --maxmemory-policy allkeys-lru
+    volumes:
+      - redis-data:/data
+    networks:
+      - unified-network
+    restart: unless-stopped
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  # LocalStack - Shared AWS service emulation
+  localstack:
+    image: localstack/localstack:3.0
+    container_name: zixly-localstack
+    ports:
+      - '4566:4566'
+      - '4510-4559:4510-4559'
+    environment:
+      - SERVICES=s3,sqs,sns,secretsmanager
+      - DEBUG=1
+      - DATA_DIR=/var/lib/localstack
+      - LAMBDA_EXECUTOR=docker
+      - DOCKER_HOST=unix:///var/run/docker.sock
+      - LOCALSTACK_HOST=localstack
+      - EDGE_PORT=4566
+    volumes:
+      - ./localstack-data:/var/lib/localstack
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./localstack/init-scripts:/etc/localstack/init/ready.d
+    networks:
+      - unified-network
+    restart: unless-stopped
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:4566/_localstack/health']
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  # PostgreSQL - Trading database
+  postgres:
+    image: postgres:15-alpine
+    container_name: zixly-postgres
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_DB: trading_db
+      POSTGRES_USER: trading_user
+      POSTGRES_PASSWORD: trading_password
+      POSTGRES_INITDB_ARGS: '--encoding=UTF-8 --locale=C'
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./init-scripts:/docker-entrypoint-initdb.d
+    networks:
+      - unified-network
+    restart: unless-stopped
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U trading_user -d trading_db']
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+
+  # =============================================================================
+  # ZIXLY SERVICES (Profile: zixly)
+  # =============================================================================
+
+  # Webhook Receiver - Express.js service for webhook ingestion
+  webhook-receiver:
+    build:
+      context: ./services/webhook-receiver
+      dockerfile: Dockerfile
+    container_name: zixly-webhook-receiver
+    ports:
+      - '3002:3000'
+    environment:
+      - NODE_ENV=development
+      - REDIS_URL=redis://redis:6379/1
+      - DATABASE_URL=${DATABASE_URL}
+      - SUPABASE_URL=${NEXT_PUBLIC_SUPABASE_URL}
+      - SUPABASE_ANON_KEY=${NEXT_PUBLIC_SUPABASE_ANON_KEY}
+      - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
+      - TRADING_API_URL=http://trading-api:8000
+      - TRADING_API_KEY=${TRADING_API_KEY:-dev-key-000000000000000000000000}
+      - WEBHOOK_BASE_URL=http://webhook-receiver:3000
+      - LOG_LEVEL=info
+      # AWS / LocalStack Configuration
+      - AWS_REGION=us-east-1
+      - AWS_ENDPOINT_URL=http://localstack:4566
+      - AWS_ACCESS_KEY_ID=test
+      - AWS_SECRET_ACCESS_KEY=test
+      - SQS_QUEUE_URL=${SQS_QUEUE_URL}
+    volumes:
+      - ./services/webhook-receiver/src:/app/src:ro
+      - /app/node_modules
+    depends_on:
+      redis:
+        condition: service_healthy
+      localstack:
+        condition: service_healthy
+    networks:
+      - unified-network
+    restart: unless-stopped
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:3000/health']
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    profiles:
+      - zixly
+
+  # Pipeline Worker - Processes jobs from Redis queue
+  pipeline-worker:
+    build:
+      context: ./services/pipeline-worker
+      dockerfile: Dockerfile
+    environment:
+      - NODE_ENV=development
+      - REDIS_URL=redis://redis:6379/1
+      - DATABASE_URL=${DATABASE_URL}
+      - SUPABASE_URL=${NEXT_PUBLIC_SUPABASE_URL}
+      - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
+      - TRADING_API_URL=http://trading-api:8000
+      - TRADING_API_KEY=${TRADING_API_KEY:-dev-key-000000000000000000000000}
+      - SMTP_HOST=${SMTP_HOST}
+      - SMTP_PORT=${SMTP_PORT}
+      - SMTP_USER=${SMTP_USER}
+      - SMTP_PASSWORD=${SMTP_PASSWORD}
+      - SMTP_FROM=${SMTP_FROM}
+      - NOTIFICATION_EMAIL=${NOTIFICATION_EMAIL:-cole.morton@hotmail.com}
+      - LOG_LEVEL=info
+      - WORKER_CONCURRENCY=2
+      # AWS / LocalStack Configuration
+      - AWS_REGION=us-east-1
+      - AWS_ENDPOINT_URL=http://localstack:4566
+      - AWS_ACCESS_KEY_ID=test
+      - AWS_SECRET_ACCESS_KEY=test
+      - SQS_QUEUE_URL=${SQS_QUEUE_URL}
+      - S3_BUCKET_NAME=${S3_BUCKET_NAME}
+      - TRADING_API_SECRET_NAME=${TRADING_API_SECRET_NAME}
+      - SMTP_SECRET_NAME=${SMTP_SECRET_NAME}
+    volumes:
+      - ./services/pipeline-worker/src:/app/src:ro
+      - /app/node_modules
+    depends_on:
+      redis:
+        condition: service_healthy
+      localstack:
+        condition: service_healthy
+    networks:
+      - unified-network
+    restart: unless-stopped
+    deploy:
+      replicas: 2
+      resources:
+        limits:
+          cpus: '1'
+          memory: 512M
+        reservations:
+          cpus: '0.5'
+          memory: 256M
+    profiles:
+      - zixly
+
+  # =============================================================================
+  # TRADING SERVICES (Profile: trading)
+  # =============================================================================
+
+  # Trading API - FastAPI application
+  trading-api:
+    build:
+      context: /Users/colemorton/Projects/trading
+      dockerfile: Dockerfile.api
+      target: development
+    container_name: zixly-trading-api
+    ports:
+      - '8000:8000'
+    environment:
+      - DATABASE_URL=postgresql://trading_user:trading_password@postgres:5432/trading_db
+      - REDIS_URL=redis://redis:6379/0
+      - ENVIRONMENT=development
+      - DEBUG=true
+      - API_KEY_SECRET=dev-secret-key-change-in-production
+    volumes:
+      - /Users/colemorton/Projects/trading:/app
+      - /app/node_modules
+    networks:
+      - unified-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:8000/health']
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    command: uvicorn app.api.main:app --host 0.0.0.0 --port 8000 --reload
+    profiles:
+      - trading
+
+  # ARQ Worker - Trading async job processing
+  arq-worker:
+    build:
+      context: /Users/colemorton/Projects/trading
+      dockerfile: Dockerfile.api
+      target: development
+    container_name: zixly-arq-worker
+    environment:
+      - DATABASE_URL=postgresql://trading_user:trading_password@postgres:5432/trading_db
+      - REDIS_URL=redis://redis:6379/0
+      - ENVIRONMENT=development
+      - DEBUG=true
+    volumes:
+      - /Users/colemorton/Projects/trading:/app
+      - /app/node_modules
+    networks:
+      - unified-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+    command: arq app.api.jobs.worker.WorkerSettings
+    profiles:
+      - trading
+
+  # =============================================================================
+  # FRONTEND SERVICES (Profile: frontend)
+  # =============================================================================
+
+  # Next.js App - Zixly frontend
+  nextjs-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+    container_name: zixly-nextjs-app
+    ports:
+      - '3000:3000'
+    environment:
+      - NODE_ENV=development
+      - DATABASE_URL=${DATABASE_URL}
+      - NEXT_PUBLIC_SUPABASE_URL=${NEXT_PUBLIC_SUPABASE_URL}
+      - NEXT_PUBLIC_SUPABASE_ANON_KEY=${NEXT_PUBLIC_SUPABASE_ANON_KEY}
+      - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/.next
+    networks:
+      - unified-network
+    restart: unless-stopped
+    profiles:
+      - frontend
+
+  # React App - Trading frontend (optional)
+  react-app:
+    build:
+      context: /Users/colemorton/Projects/trading/app/frontend/sensylate
+      dockerfile: Dockerfile
+      target: development
+    container_name: zixly-react-app
+    ports:
+      - '3100:3000'
+    environment:
+      - VITE_API_URL=http://localhost:8000
+      - VITE_GRAPHQL_URL=http://localhost:8000/graphql
+    volumes:
+      - /Users/colemorton/Projects/trading/app/frontend/sensylate:/app
+      - /app/node_modules
+    networks:
+      - unified-network
+    depends_on:
+      - trading-api
+    restart: unless-stopped
+    command: npm run dev
+    profiles:
+      - frontend
+
+  # =============================================================================
+  # MONITORING SERVICES (Profile: monitoring)
+  # =============================================================================
+
+  # Prometheus - Metrics collection
+  prometheus:
+    image: prom/prometheus:v2.48.0
+    container_name: zixly-prometheus
+    ports:
+      - '9090:9090'
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./prometheus/alerts.yml:/etc/prometheus/alerts.yml:ro
+      - prometheus-data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--storage.tsdb.retention.time=30d'
+      - '--web.enable-lifecycle'
+    networks:
+      - unified-network
+    restart: unless-stopped
+    healthcheck:
+      test: ['CMD', 'wget', '--quiet', '--tries=1', '--spider', 'http://localhost:9090/-/healthy']
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    profiles:
+      - monitoring
+
+  # Grafana - Visualization and dashboards
+  grafana:
+    image: grafana/grafana:10.2.2
+    container_name: zixly-grafana
+    ports:
+      - '3001:3000'
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD:-admin}
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_SERVER_ROOT_URL=http://localhost:3001
+      - GF_ANALYTICS_REPORTING_ENABLED=false
+      - GF_ANALYTICS_CHECK_FOR_UPDATES=false
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./grafana/dashboards:/var/lib/grafana/dashboards:ro
+      - grafana-data:/var/lib/grafana
+    depends_on:
+      - prometheus
+    networks:
+      - unified-network
+    restart: unless-stopped
+    healthcheck:
+      test: ['CMD', 'wget', '--quiet', '--tries=1', '--spider', 'http://localhost:3000/api/health']
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    profiles:
+      - monitoring
+
+  # =============================================================================
+  # ADMIN SERVICES (Profile: admin)
+  # =============================================================================
+
+  # pgAdmin - Database administration
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: zixly-pgadmin
+    ports:
+      - '5050:80'
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@zixly.local
+      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    networks:
+      - unified-network
+    depends_on:
+      - postgres
+    restart: unless-stopped
+    profiles:
+      - admin
+
+  # Redis Commander - Redis GUI
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    container_name: zixly-redis-commander
+    ports:
+      - '8081:8081'
+    environment:
+      - REDIS_HOSTS=local:redis:6379
+    depends_on:
+      - redis
+    networks:
+      - unified-network
+    restart: unless-stopped
+    profiles:
+      - admin
+
+  # =============================================================================
+  # LOCALSTACK INITIALIZATION
+  # =============================================================================
+
+  # LocalStack initialization service
+  localstack-init:
+    image: amazon/aws-cli
+    depends_on:
+      localstack:
+        condition: service_healthy
+    environment:
+      - AWS_ACCESS_KEY_ID=test
+      - AWS_SECRET_ACCESS_KEY=test
+      - AWS_DEFAULT_REGION=us-east-1
+    entrypoint: /bin/sh
+    command: >
+      -c "
+      echo 'Initializing LocalStack resources...'
+      aws --endpoint-url=http://localstack:4566 s3 mb s3://zixly-pipeline-data
+      aws --endpoint-url=http://localstack:4566 s3 mb s3://trading-results
+      aws --endpoint-url=http://localstack:4566 sqs create-queue --queue-name trading-sweep-jobs
+      aws --endpoint-url=http://localstack:4566 sqs create-queue --queue-name notifications
+      aws --endpoint-url=http://localstack:4566 secretsmanager create-secret --name trading-api-credentials --secret-string '{\"api_key\":\"dev-key-000000000000000000000000\"}'
+      aws --endpoint-url=http://localstack:4566 secretsmanager create-secret --name smtp-credentials --secret-string '{\"host\":\"smtp.office365.com\",\"port\":587,\"user\":\"cole.morton@hotmail.com\",\"password\":\"your_password\"}'
+      echo 'LocalStack initialization complete'
+      "
+    profiles:
+      - zixly
+
+networks:
+  unified-network:
+    driver: bridge
+    name: zixly-unified-network
+    ipam:
+      config:
+        - subnet: 172.25.0.0/16
+
+volumes:
+  redis-data:
+    name: zixly-redis-data
+  postgres-data:
+    name: zixly-postgres-data
+  prometheus-data:
+    name: zixly-prometheus-data
+  grafana-data:
+    name: zixly-grafana-data
+  pgadmin-data:
+    name: zixly-pgadmin-data
+  localstack-data:
+    name: zixly-localstack-data

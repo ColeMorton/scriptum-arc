@@ -82,3 +82,12 @@ postgres-data/
 # Service dependencies
 services/*/node_modules/
 services/*/dist/
+
+# Backup directories
+backup/
+
+# Environment configuration files
+env.unified
+
+# Temporary test scripts in root (not in /test directory)
+/test-*.js
