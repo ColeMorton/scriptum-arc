@@ -54,6 +54,7 @@ jobs:
           ignore-unfixed: false
           vuln-type: 'os,library'
           scanners: 'vuln,secret,config'
+          ignorefile: 'services/webhook-receiver/.trivyignore'
 
       - name: Upload Trivy results to GitHub Security
         uses: github/codeql-action/upload-sarif@v3
@@ -72,6 +73,7 @@ jobs:
           ignore-unfixed: false
           vuln-type: 'os,library'
           scanners: 'vuln,secret,config'
+          ignorefile: 'services/webhook-receiver/.trivyignore'
 
       - name: Run Trivy vulnerability scanner (table output)
         uses: aquasecurity/trivy-action@master
@@ -117,6 +119,7 @@ jobs:
           ignore-unfixed: false
           vuln-type: 'os,library'
           scanners: 'vuln,secret,config'
+          ignorefile: 'services/pipeline-worker/.trivyignore'
 
       - name: Upload Trivy results to GitHub Security
         uses: github/codeql-action/upload-sarif@v3
@@ -135,6 +138,7 @@ jobs:
           ignore-unfixed: false
           vuln-type: 'os,library'
           scanners: 'vuln,secret,config'
+          ignorefile: 'services/pipeline-worker/.trivyignore'
 
       - name: Run Trivy vulnerability scanner (table output)
         uses: aquasecurity/trivy-action@master

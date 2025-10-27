@@ -1,0 +1,13 @@
+# Trivy ignore file for webhook-receiver
+# This file contains vulnerabilities that are acceptable for this service
+
+# Development dependencies - not shipped to production
+# esbuild Go binary vulnerabilities (dev dependency only)
+CVE-2024-24790
+
+# Alpine OpenSSL vulnerabilities - fixed in newer versions but not yet available in Alpine 3.20
+# These are marked as "fixed" but Alpine package updates are pending
+CVE-2024-12797
+
+# cross-spawn vulnerability in dev dependencies
+CVE-2024-21538
