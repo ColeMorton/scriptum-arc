@@ -306,7 +306,7 @@ Comprehensive documentation is available in the `/docs` directory:
 - **[🔧 Architecture Decisions](./docs/architecture/decisions/)** - ADRs for technical choices
 - **[💰 Business Model](./docs/business/business-model-clarification.md)** - Service model and positioning
 - **[📊 Implementation Plans](./docs/implementation/)** - Phase-by-phase roadmap
-- **[🚀 Deployment Guide](./DEPLOYMENT.md)** - Local and production deployment
+- **[🚀 Deployment Guide](./docs/operations/deployment-guide.md)** - Local and production deployment
 
 ## 🚀 Infrastructure
 

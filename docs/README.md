@@ -12,9 +12,9 @@ Welcome to the comprehensive documentation for Zixly, a DevOps automation servic
 
 **Current Status & Planning**:
 
-- **[Implementation Status](https://github.com/colemorton/zixly/blob/main/STATUS.md)** - Current progress, milestones, and phase tracking
+- **[Implementation Status](./implementation/status.md)** - Current progress, milestones, and phase tracking
 - **[Implementation Plan](./implementation/plan.md)** - Phase-by-phase roadmap
-- **[Deployment Guide](https://github.com/colemorton/zixly/blob/main/DEPLOYMENT.md)** - Local and production deployment
+- **[Deployment Guide](./operations/deployment-guide.md)** - Local and production deployment
 
 **Architecture & Technical**:
 
@@ -62,7 +62,7 @@ Welcome to the comprehensive documentation for Zixly, a DevOps automation servic
 
 **Contributing**:
 
-- **[Implementation Status](https://github.com/colemorton/zixly/blob/main/STATUS.md)** - Current development focus
+- **[Implementation Status](./implementation/status.md)** - Current development focus
 - **[Local Development](./local-development/README.md)** - Setup your development environment
 
 **Patterns & Examples**:
@@ -155,7 +155,8 @@ docs/
 │   └── ...
 ├── implementation/                 # Development plans
 │   ├── plan.md                    # Phase-by-phase roadmap
-│   ├── current-status.md          # Current development status
+│   ├── status.md                   # Complete implementation status (consolidated)
+│   ├── current-status.md           # Summary pointing to status.md
 │   └── ...
 ├── pipelines/                      # Pipeline specifications
 │   ├── trading-api-strategy-sweep.md  # Example pipeline
@@ -241,7 +242,7 @@ docs/
 
 - ⏳ Phase 4: Production Readiness (Performance, Security, Testing)
 
-See **[STATUS.md](https://github.com/colemorton/zixly/blob/main/STATUS.md)** for detailed milestone tracking.
+See **[Implementation Status](./implementation/status.md)** for detailed milestone tracking.
 
 ---
 
@@ -249,7 +250,7 @@ See **[STATUS.md](https://github.com/colemorton/zixly/blob/main/STATUS.md)** for
 
 ### Internal Team
 
-1. Read **[Implementation Status](https://github.com/colemorton/zixly/blob/main/STATUS.md)** for current focus
+1. Read **[Implementation Status](./implementation/status.md)** for current focus
 2. Review **[Architecture Decisions](./architecture/decisions/)** for context
 3. Follow **[Local Development](./local-development/README.md)** setup
 4. Reference **[System Architecture](./architecture/system-architecture.md)** for patterns
@@ -270,7 +271,7 @@ When the project is open-sourced (Q2 2025):
 - **2025-01-27**: Documentation consolidation and optimization
 - **2025-01-27**: Business model updated to reflect DevOps automation focus
 - **2025-01-27**: Removed n8n references (business model pivot)
-- **2025-01-27**: Consolidated status files into single STATUS.md
+- **2025-01-27**: Consolidated all root-level documentation into ./docs directory
 - **2025-01-27**: Phase 1.5 (LocalStack + Terraform) complete
 - **2025-01-27**: Testing implementation complete (275 tests, 70-75% coverage)
 

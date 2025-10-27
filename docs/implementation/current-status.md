@@ -1,6 +1,6 @@
 # Zixly Implementation - Current Status
 
-> **Note**: This document provides a summary. For detailed, up-to-date status information, see **[STATUS.md](https://github.com/colemorton/zixly/blob/main/STATUS.md)** in the project root.
+> **Note**: This document provides a summary. For detailed, up-to-date status information, see **[status.md](./status.md)** in the implementation directory.
 
 ---
 
@@ -80,7 +80,7 @@ For comprehensive status information including:
 - **Metrics & KPIs**: Performance and development metrics
 - **Next Steps**: Immediate and upcoming priorities
 
-**See**: **[STATUS.md](https://github.com/colemorton/zixly/blob/main/STATUS.md)** (consolidated implementation status)
+**See**: **[status.md](./status.md)** (consolidated implementation status)
 
 ---
 
@@ -112,4 +112,4 @@ For comprehensive status information including:
 
 **Last Updated**: 2025-10-25  
 **Maintained By**: Zixly Development Team  
-**Primary Status Document**: [STATUS.md](https://github.com/colemorton/zixly/blob/main/STATUS.md)
+**Primary Status Document**: [status.md](./status.md)

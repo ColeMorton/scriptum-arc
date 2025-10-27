@@ -88,11 +88,34 @@ async function testCompleteSweepWorkflow() {
   console.log('✅ Job completed successfully!')
   console.log('')
 
-  // 4. Get sweep results
+  // 4. Get sweep_run_id from job result
   console.log('📈 Retrieving sweep results...')
-  const resultsResponse = await fetch(`${TRADING_API_URL}/api/v1/sweeps/${jobId}/results`, {
+
+  // Re-fetch job status to get result_data with sweep_run_id
+  const finalStatusResponse = await fetch(`${TRADING_API_URL}/api/v1/jobs/${jobId}`, {
     headers: { 'X-API-Key': TRADING_API_KEY },
   })
+
+  if (!finalStatusResponse.ok) {
+    throw new Error(`Final status check failed: ${finalStatusResponse.status}`)
+  }
+
+  const finalStatus = await finalStatusResponse.json()
+  const sweepRunId = finalStatus.result_data?.sweep_run_id
+
+  if (!sweepRunId) {
+    throw new Error('No sweep_run_id found in job result_data')
+  }
+
+  console.log(`📊 Sweep Run ID: ${sweepRunId}`)
+
+  // Get detailed results using sweep_run_id (without /results suffix)
+  const resultsResponse = await fetch(
+    `${TRADING_API_URL}/api/v1/sweeps/${sweepRunId}?ticker=${sweepParams.ticker}`,
+    {
+      headers: { 'X-API-Key': TRADING_API_KEY },
+    }
+  )
 
   if (!resultsResponse.ok) {
     throw new Error(`Results retrieval failed: ${resultsResponse.status}`)
@@ -100,15 +123,17 @@ async function testCompleteSweepWorkflow() {
 
   const results = await resultsResponse.json()
   console.log('✅ Sweep results retrieved')
-  console.log(`📊 Total parameter combinations tested: ${results.total_combinations || 'N/A'}`)
-  console.log(`⏱️  Execution time: ${results.execution_time || 'N/A'}`)
+  console.log(`📊 Total results: ${results.total_count || results.returned_count || 'N/A'}`)
   console.log('')
 
   // 5. Get best result
   console.log('🏆 Retrieving best result...')
-  const bestResponse = await fetch(`${TRADING_API_URL}/api/v1/sweeps/${jobId}/best`, {
-    headers: { 'X-API-Key': TRADING_API_KEY },
-  })
+  const bestResponse = await fetch(
+    `${TRADING_API_URL}/api/v1/sweeps/${sweepRunId}/best?ticker=${sweepParams.ticker}`,
+    {
+      headers: { 'X-API-Key': TRADING_API_KEY },
+    }
+  )
 
   if (!bestResponse.ok) {
     throw new Error(`Best result retrieval failed: ${bestResponse.status}`)
