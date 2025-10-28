@@ -70,7 +70,9 @@ const nextConfig: NextConfig = {
 
 
   // Output configuration for Vercel
-  output: 'standalone',
+  // Note: Vercel handles standalone builds automatically
+  // Only enable standalone for Docker/self-hosted deployments
+  output: process.env.DOCKER_BUILD === 'true' ? 'standalone' : undefined,
 
   // Webpack configuration
   webpack: (config, { buildId: _buildId, dev, isServer, defaultLoaders: _defaultLoaders, webpack: _webpack }) => {

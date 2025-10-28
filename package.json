@@ -8,6 +8,7 @@
     "build": "next build --turbopack",
     "build:analyze": "ANALYZE=true next build --turbopack",
     "start": "next start",
+    "start:standalone": "node .next/standalone/server.js",
     "type-check": "tsc --noEmit",
     "lint": "eslint . --ext .ts,.tsx,.js,.jsx",
     "lint:fix": "eslint . --ext .ts,.tsx,.js,.jsx --fix",

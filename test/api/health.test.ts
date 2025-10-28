@@ -33,7 +33,7 @@ describe('Health Check API Logic', () => {
     // Test Supabase configuration validation
     const validateSupabaseConfig = () => {
       const url = process.env.NEXT_PUBLIC_SUPABASE_URL
-      const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
+      const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
       return {
         hasUrl: !!url,

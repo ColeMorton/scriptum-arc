@@ -60,7 +60,7 @@ services:
     environment:
       POSTGRES_DB: trading_db
       POSTGRES_USER: trading_user
-      POSTGRES_PASSWORD: trading_password
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
       POSTGRES_INITDB_ARGS: '--encoding=UTF-8 --locale=C'
     volumes:
       - postgres-data:/var/lib/postgresql/data
@@ -190,7 +190,7 @@ services:
     ports:
       - '8000:8000'
     environment:
-      - DATABASE_URL=postgresql://trading_user:trading_password@postgres:5432/trading_db
+      - DATABASE_URL=${TRADING_DATABASE_URL:-postgresql://trading_user:changeme@postgres:5432/trading_db}
       - REDIS_URL=redis://redis:6379/0
       - ENVIRONMENT=development
       - DEBUG=true
@@ -224,7 +224,7 @@ services:
       target: development
     container_name: zixly-arq-worker
     environment:
-      - DATABASE_URL=postgresql://trading_user:trading_password@postgres:5432/trading_db
+      - DATABASE_URL=${TRADING_DATABASE_URL:-postgresql://trading_user:changeme@postgres:5432/trading_db}
       - REDIS_URL=redis://redis:6379/0
       - ENVIRONMENT=development
       - DEBUG=true
