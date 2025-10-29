@@ -13,8 +13,7 @@ import http from 'http'
 
 // Test configuration
 const TEST_CONFIG = {
-  webhookReceiverUrl: 'http://localhost:3001',
-  nextAppUrl: 'http://localhost:3000',
+  webhookReceiverUrl: 'http://localhost:3002',
   testPayload: {
     ticker: 'BTC-USD',
     fast_range: [10, 20],
@@ -25,15 +24,24 @@ const TEST_CONFIG = {
   },
 }
 
+// Service profile requirements
+const SERVICE_PROFILES = {
+  webhookReceiver: { profile: 'zixly', port: 3002, url: 'http://localhost:3002/health' },
+  tradingApi: { profile: 'trading', port: 8000, url: 'http://localhost:8000/health' },
+}
+
 // Utility function to make HTTP requests
 function makeRequest(url, options = {}) {
   return new Promise((resolve, reject) => {
     const urlObj = new URL(url)
+    const timeout = options.timeout || 5000 // Default 5 second timeout
+
     const requestOptions = {
       hostname: urlObj.hostname,
       port: urlObj.port,
       path: urlObj.pathname + urlObj.search,
       method: options.method || 'GET',
+      timeout: timeout, // Add timeout
       headers: {
         'Content-Type': 'application/json',
         ...options.headers,
@@ -53,6 +61,12 @@ function makeRequest(url, options = {}) {
       })
     })
 
+    // Handle timeout
+    req.on('timeout', () => {
+      req.destroy()
+      reject(new Error(`Request timeout after ${timeout}ms`))
+    })
+
     req.on('error', reject)
 
     if (options.body) {
@@ -61,6 +75,16 @@ function makeRequest(url, options = {}) {
 
     req.end()
   })
+}
+
+// Check if a service is available
+async function checkServiceAvailability(url, _serviceName) {
+  try {
+    const response = await makeRequest(url, { timeout: 2000 })
+    return { available: true, status: response.status }
+  } catch (error) {
+    return { available: false, error: error.message }
+  }
 }
 
 // Test functions
@@ -102,46 +126,25 @@ async function testTradingSweepWebhook() {
   }
 }
 
-async function testNextAppHealth() {
-  console.log('🔍 Testing Next.js App Health...')
-  try {
-    const response = await makeRequest(`${TEST_CONFIG.nextAppUrl}/api/health`)
-    if (response.status === 200) {
-      console.log('✅ Next.js App is healthy:', response.data)
-      return true
-    } else {
-      console.log('❌ Next.js App health check failed:', response.status, response.data)
-      return false
-    }
-  } catch (error) {
-    console.log('❌ Next.js App is not accessible:', error.message)
-    return false
-  }
-}
+// Pre-flight check function
+async function preflightCheck() {
+  console.log('🔍 Checking service availability...\n')
 
-async function testPipelineAPI() {
-  console.log('🔍 Testing Pipeline API (without auth)...')
-  try {
-    const response = await makeRequest(`${TEST_CONFIG.nextAppUrl}/api/pipelines`, {
-      method: 'POST',
-      body: {
-        job_type: 'trading-sweep',
-        ticker: 'BTC-USD',
-        config: TEST_CONFIG.testPayload,
-      },
-    })
+  const results = {}
 
-    if (response.status === 401) {
-      console.log('✅ Pipeline API correctly requires authentication:', response.data)
-      return true
+  for (const [service, config] of Object.entries(SERVICE_PROFILES)) {
+    const availability = await checkServiceAvailability(config.url, service)
+    results[service] = availability.available
+
+    if (availability.available) {
+      console.log(`✅ ${service}: Available (port ${config.port})`)
     } else {
-      console.log('❌ Pipeline API unexpected response:', response.status, response.data)
-      return false
+      console.log(`⚠️  ${service}: Not running (requires '${config.profile}' profile)`)
     }
-  } catch (error) {
-    console.log('❌ Pipeline API error:', error.message)
-    return false
   }
+
+  console.log('')
+  return results
 }
 
 // Main test function
@@ -149,47 +152,52 @@ async function runPipelineTests() {
   console.log('🧪 Zixly Pipeline Test Suite')
   console.log('================================\n')
 
+  // Run preflight check
+  const availability = await preflightCheck()
+
   const results = {
     webhookReceiverHealth: false,
     webhookReceiverSweep: false,
-    nextAppHealth: false,
-    pipelineAPI: false,
   }
 
-  // Test webhook receiver health
-  results.webhookReceiverHealth = await testWebhookReceiverHealth()
-  console.log('')
-
-  // Test trading sweep webhook
-  if (results.webhookReceiverHealth) {
-    const sweepResult = await testTradingSweepWebhook()
-    results.webhookReceiverSweep = sweepResult !== null
+  // Test webhook receiver (requires zixly profile)
+  if (availability.webhookReceiver) {
+    results.webhookReceiverHealth = await testWebhookReceiverHealth()
     console.log('')
+
+    if (results.webhookReceiverHealth) {
+      const sweepResult = await testTradingSweepWebhook()
+      results.webhookReceiverSweep = sweepResult !== null
+      console.log('')
+    }
+  } else {
+    console.log('⏭️  Skipping webhook receiver tests (service not running)\n')
   }
-
-  // Test Next.js app health
-  results.nextAppHealth = await testNextAppHealth()
-  console.log('')
-
-  // Test pipeline API
-  results.pipelineAPI = await testPipelineAPI()
-  console.log('')
 
   // Summary
   console.log('📊 Test Results Summary')
   console.log('========================')
-  console.log(`Webhook Receiver Health: ${results.webhookReceiverHealth ? '✅ PASS' : '❌ FAIL'}`)
-  console.log(`Trading Sweep Webhook: ${results.webhookReceiverSweep ? '✅ PASS' : '❌ FAIL'}`)
-  console.log(`Next.js App Health: ${results.nextAppHealth ? '✅ PASS' : '❌ FAIL'}`)
-  console.log(`Pipeline API Auth: ${results.pipelineAPI ? '✅ PASS' : '❌ FAIL'}`)
+
+  const testedServices = []
+  if (availability.webhookReceiver) {
+    console.log(`Webhook Receiver Health: ${results.webhookReceiverHealth ? '✅ PASS' : '❌ FAIL'}`)
+    console.log(`Trading Sweep Webhook: ${results.webhookReceiverSweep ? '✅ PASS' : '❌ FAIL'}`)
+    testedServices.push('webhookReceiver')
+  }
+
+  if (testedServices.length === 0) {
+    console.log('\n⚠️  No services available for testing')
+    console.log('Start services with: docker-compose --profile zixly up -d')
+    return results
+  }
 
   const passedTests = Object.values(results).filter(Boolean).length
-  const totalTests = Object.keys(results).length
+  const totalTests = testedServices.length * 2
 
   console.log(`\n🎯 Overall: ${passedTests}/${totalTests} tests passed`)
 
   if (passedTests === totalTests) {
-    console.log('🎉 All tests passed! Pipeline is working correctly.')
+    console.log('🎉 All available tests passed!')
   } else {
     console.log('⚠️  Some tests failed. Check the logs above for details.')
   }

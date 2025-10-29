@@ -53,7 +53,7 @@ aws secretsmanager create-secret \
 
 aws secretsmanager create-secret \
   --name zixly-database-credentials \
-  --secret-string '{"url":"postgresql://postgres:skRWwFvAE6viEqpA@db.qhndigeishvhanwhvuei.supabase.co:5432/postgres","password":"skRWwFvAE6viEqpA"}' \
+  --secret-string '{"url":"postgresql://trading_user:changeme@postgres:5432/trading_db","password":"changeme"}' \
   || echo "Secret zixly-database-credentials already exists"
 
 # List created resources

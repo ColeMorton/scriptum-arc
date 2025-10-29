@@ -277,6 +277,98 @@ ticker: BTC-USD
 
 ---
 
+## Real-Time Progress Monitoring with Native SSE
+
+The Trading API provides native Server-Sent Events support for real-time job progress updates.
+
+### Authentication
+
+First, authenticate to get a session cookie:
+
+```bash
+curl -X POST http://localhost:8000/api/v1/auth/login \
+  -H "Content-Type: application/json" \
+  -c cookies.txt \
+  -d '{"api_key":"dev-key-000000000000000000000000"}'
+```
+
+### Node.js Usage
+
+```javascript
+import { EventSource } from 'eventsource'
+import fetch from 'node-fetch'
+
+// 1. Authenticate
+const authResponse = await fetch('http://localhost:8000/api/v1/auth/login', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ api_key: process.env.TRADING_API_KEY }),
+})
+
+const sessionCookie = authResponse.headers.get('set-cookie')
+
+// 2. Connect to SSE proxy
+const eventSource = new EventSource(`http://localhost:8000/sse-proxy/jobs/${jobId}/stream`, {
+  headers: { Cookie: sessionCookie },
+})
+
+eventSource.onmessage = (event) => {
+  const data = JSON.parse(event.data)
+
+  if (data.done) {
+    console.log('Job completed:', data.status)
+    eventSource.close()
+  } else if (data.error) {
+    console.error('Job failed:', data.message)
+    eventSource.close()
+  } else {
+    console.log(`Progress: ${data.percent}% - ${data.message}`)
+  }
+}
+
+eventSource.onerror = (error) => {
+  console.error('Connection error:', error)
+  eventSource.close()
+}
+```
+
+### Browser Usage
+
+```javascript
+// 1. Authenticate (creates session cookie automatically)
+await fetch('http://localhost:8000/api/v1/auth/login', {
+  method: 'POST',
+  credentials: 'include',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ api_key: API_KEY }),
+})
+
+// 2. Open SSE connection (session cookie sent automatically)
+const eventSource = new EventSource(`http://localhost:8000/sse-proxy/jobs/${jobId}/stream`)
+
+eventSource.onmessage = (event) => {
+  const data = JSON.parse(event.data)
+  console.log(data.percent ? `${data.percent}%` : 'Done!')
+}
+```
+
+### Event Format
+
+**Progress**: `{ percent: 50, message: "Processing 5/10", timestamp: "..." }`  
+**Completion**: `{ done: true, status: "completed", sweep_run_id: "..." }`  
+**Error**: `{ error: true, message: "Error description", timestamp: "..." }`
+
+### Benefits Over Polling
+
+- **Lower Latency**: <50ms vs 250ms average
+- **Reduced Overhead**: Server pushes only when data changes
+- **Auto Reconnection**: Built-in with exponential backoff
+- **Standard API**: Native browser support
+
+**Reference**: See `test/test-sweep-e2e-complete.js` for complete example.
+
+---
+
 ## Data Schemas
 
 ### Zod Validation Schema (Webhook Receiver)

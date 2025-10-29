@@ -7,11 +7,15 @@
  * with proper Supabase authentication.
  */
 
+import { config } from 'dotenv'
 import http from 'http'
+
+// Load environment variables from .env.local
+config({ path: '.env.local' })
 
 // Test configuration
 const TEST_CONFIG = {
-  baseUrl: 'http://localhost:3000',
+  baseUrl: 'http://localhost:3001',
   testPayload: {
     job_type: 'trading-sweep',
     ticker: 'BTC-USD',
@@ -188,7 +192,7 @@ async function runPipelineAPITests() {
   console.log('2. A valid JWT token from Supabase auth')
   console.log('3. The user must have a tenant_id in their metadata')
   console.log('\nExample with real token:')
-  console.log('curl -X POST http://localhost:3000/api/pipelines \\')
+  console.log('curl -X POST http://localhost:3001/api/pipelines \\')
   console.log('  -H "Content-Type: application/json" \\')
   console.log('  -H "Authorization: Bearer YOUR_SUPABASE_JWT_TOKEN" \\')
   console.log('  -d \'{"job_type": "trading-sweep", "ticker": "BTC-USD"}\'')

@@ -1,13 +1,21 @@
-node_modules
-.next
-out
-build
-dist
-coverage
-*.config.js
-*.config.ts
-*.config.mjs
-prisma/migrations
-.vercel
-.env*
-package-lock.json
+# Dependencies
+node_modules/
+.next/
+out/
+build/
+dist/
+**/dist/
+
+# Documentation vendor files
+docs/vendor/
+docs/_site/
+
+# Prisma
+prisma/migrations/
+
+# Test files
+test/setup.ts
+test/mocks/
+
+# Generated files
+next-env.d.ts

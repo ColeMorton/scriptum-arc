@@ -3,7 +3,7 @@
 // Note that this config is unrelated to the Vercel Edge Runtime and is also required when running locally.
 // https://docs.sentry.io/platforms/javascript/guides/nextjs/
 
-import * as Sentry from "@sentry/nextjs";
+import * as Sentry from '@sentry/nextjs'
 
 // Only initialize Sentry if DSN is provided
 if (process.env.NEXT_PUBLIC_SENTRY_DSN) {
@@ -19,5 +19,5 @@ if (process.env.NEXT_PUBLIC_SENTRY_DSN) {
     // Enable sending user PII (Personally Identifiable Information)
     // https://docs.sentry.io/platforms/javascript/guides/nextjs/configuration/options/#sendDefaultPii
     sendDefaultPii: true,
-  });
+  })
 }

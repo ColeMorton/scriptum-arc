@@ -84,6 +84,7 @@ services:
     build:
       context: ./services/webhook-receiver
       dockerfile: Dockerfile
+    image: webhook-receiver:latest # Add generic image tag
     container_name: zixly-webhook-receiver
     ports:
       - '3002:3000'
@@ -115,11 +116,6 @@ services:
     networks:
       - unified-network
     restart: unless-stopped
-    healthcheck:
-      test: ['CMD', 'curl', '-f', 'http://localhost:3000/health']
-      interval: 30s
-      timeout: 5s
-      retries: 3
     profiles:
       - zixly
 
@@ -128,6 +124,7 @@ services:
     build:
       context: ./services/pipeline-worker
       dockerfile: Dockerfile
+    image: pipeline-worker:latest # Add generic image tag
     environment:
       - NODE_ENV=development
       - REDIS_URL=redis://redis:6379/1
@@ -182,10 +179,7 @@ services:
 
   # Trading API - FastAPI application
   trading-api:
-    build:
-      context: /Users/colemorton/Projects/trading
-      dockerfile: Dockerfile.api
-      target: development
+    image: trading-api:latest # Use pre-built generic image
     container_name: zixly-trading-api
     ports:
       - '8000:8000'
@@ -218,10 +212,7 @@ services:
 
   # ARQ Worker - Trading async job processing
   arq-worker:
-    build:
-      context: /Users/colemorton/Projects/trading
-      dockerfile: Dockerfile.api
-      target: development
+    image: arq-worker:latest # Use pre-built generic image
     container_name: zixly-arq-worker
     environment:
       - DATABASE_URL=${TRADING_DATABASE_URL:-postgresql://trading_user:changeme@postgres:5432/trading_db}
@@ -242,59 +233,6 @@ services:
     command: arq app.api.jobs.worker.WorkerSettings
     profiles:
       - trading
-
-  # =============================================================================
-  # FRONTEND SERVICES (Profile: frontend)
-  # =============================================================================
-
-  # Next.js App - Zixly frontend
-  nextjs-app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-      target: development
-    container_name: zixly-nextjs-app
-    ports:
-      - '3000:3000'
-    environment:
-      - NODE_ENV=development
-      - DATABASE_URL=${DATABASE_URL}
-      - NEXT_PUBLIC_SUPABASE_URL=${NEXT_PUBLIC_SUPABASE_URL}
-      - NEXT_PUBLIC_SUPABASE_ANON_KEY=${NEXT_PUBLIC_SUPABASE_ANON_KEY}
-      - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
-    volumes:
-      - .:/app
-      - /app/node_modules
-      - /app/.next
-    networks:
-      - unified-network
-    restart: unless-stopped
-    profiles:
-      - frontend
-
-  # React App - Trading frontend (optional)
-  react-app:
-    build:
-      context: /Users/colemorton/Projects/trading/app/frontend/sensylate
-      dockerfile: Dockerfile
-      target: development
-    container_name: zixly-react-app
-    ports:
-      - '3100:3000'
-    environment:
-      - VITE_API_URL=http://localhost:8000
-      - VITE_GRAPHQL_URL=http://localhost:8000/graphql
-    volumes:
-      - /Users/colemorton/Projects/trading/app/frontend/sensylate:/app
-      - /app/node_modules
-    networks:
-      - unified-network
-    depends_on:
-      - trading-api
-    restart: unless-stopped
-    command: npm run dev
-    profiles:
-      - frontend
 
   # =============================================================================
   # MONITORING SERVICES (Profile: monitoring)

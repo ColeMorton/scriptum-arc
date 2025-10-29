@@ -59,12 +59,28 @@ This guide helps resolve common Docker service issues when running the Zixly int
 
    ```bash
    # Check startup logs
-   docker-compose -f docker-compose.pipeline services.yml logs pipeline services
-   docker-compose -f docker-compose.pipeline services.yml logs postgres
-   docker-compose -f docker-compose.pipeline services.yml logs redis
+   docker-compose logs webhook-receiver
+   docker-compose logs trading-api
+   docker-compose logs pipeline-worker
+   docker-compose logs postgres
+   docker-compose logs redis
    ```
 
-2. **Verify Docker resources**:
+2. **Check if required images exist**:
+
+   ```bash
+   # Verify generic images are built
+   docker images | grep -E "trading-api|arq-worker|webhook-receiver|pipeline-worker"
+
+   # If images missing, build them
+   cd /Users/colemorton/Projects/trading
+   docker-compose build
+
+   cd /Users/colemorton/Projects/zixly
+   docker-compose build webhook-receiver pipeline-worker
+   ```
+
+3. **Verify Docker resources**:
 
    ```bash
    # Check Docker system info
@@ -74,7 +90,7 @@ This guide helps resolve common Docker service issues when running the Zixly int
    docker system df
    ```
 
-3. **Check Docker daemon status**:
+4. **Check Docker daemon status**:
 
    ```bash
    # Restart Docker if needed
@@ -271,7 +287,17 @@ This guide helps resolve common Docker service issues when running the Zixly int
 
 **Solutions**:
 
-1. **Check startup dependencies**:
+1. **Use pre-built images (Generic Image Strategy)**:
+
+   ```bash
+   # Ensure generic images are built and available
+   docker images | grep -E "trading-api|arq-worker|webhook-receiver|pipeline-worker"
+
+   # If using generic images, startup should be ~1.7 seconds
+   # If building from source, startup takes 30-60 seconds
+   ```
+
+2. **Check startup dependencies**:
 
    ```yaml
    # Ensure proper dependency order
@@ -280,19 +306,23 @@ This guide helps resolve common Docker service issues when running the Zixly int
      - redis
    ```
 
-2. **Optimize image sizes**:
+3. **Optimize image sizes**:
 
    ```bash
    # Check image sizes
-   docker images | grep zixly
+   docker images | grep -E "trading-api|arq-worker|webhook-receiver|pipeline-worker"
 
-   # Use smaller base images if possible
+   # Generic images should be:
+   # trading-api:latest      ~3.23GB
+   # arq-worker:latest       ~3.23GB
+   # webhook-receiver:latest ~508MB
+   # pipeline-worker:latest  ~517MB
    ```
 
-3. **Check system resources**:
+4. **Check system resources**:
    ```bash
    # Monitor startup process
-   docker-compose -f docker-compose.pipeline services.yml up --no-deps pipeline services
+   docker-compose up --no-deps trading-api
    ```
 
 ---

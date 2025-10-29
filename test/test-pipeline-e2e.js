@@ -5,7 +5,11 @@
  * Tests the complete pipeline functionality with authentication
  */
 
+import { config } from 'dotenv'
 import { createClient } from '@supabase/supabase-js'
+
+// Load environment variables from .env.local
+config({ path: '.env.local' })
 
 const SUPABASE_URL =
   process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://qhndigeishvhanwhvuei.supabase.co'
@@ -13,7 +17,7 @@ const SUPABASE_ANON_KEY =
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFobmRpZ2Vpc2h2aGFud2h2dWVpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg5MjkzMDMsImV4cCI6MjA3NDUwNTMwM30.Ax8ZRCVZVgqC1yUdfD8A7hi3X7HQjeZgufub067zrsE'
 
-const API_BASE_URL = 'http://localhost:3000'
+const API_BASE_URL = 'http://localhost:3001'
 const WEBHOOK_BASE_URL = 'http://localhost:3002'
 
 // Test user credentials (you'll need to create this user in Supabase)

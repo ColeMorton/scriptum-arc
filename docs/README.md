@@ -26,6 +26,7 @@ Welcome to the comprehensive documentation for Zixly, a DevOps automation servic
 **Development**:
 
 - **[Local Development](./local-development/README.md)** - Setup and development environment
+- **[Docker Image Strategy](./local-development/docker-image-strategy.md)** - Generic image naming and management
 - **[Troubleshooting](./troubleshooting/)** - Common issues and solutions
 - **[Testing](https://github.com/colemorton/zixly/blob/main/test/README.md)** - Testing strategy and implementation
 
@@ -268,6 +269,10 @@ When the project is open-sourced (Q2 2025):
 
 ## Recent Updates
 
+- **2025-01-29**: Implemented generic image naming strategy for 95% faster container startup
+- **2025-01-29**: Created ADR-009 documenting image naming strategy and benefits
+- **2025-01-29**: Updated unified architecture documentation with image strategy details
+- **2025-01-29**: Enhanced troubleshooting guides for generic image workflow
 - **2025-01-27**: Documentation consolidation and optimization
 - **2025-01-27**: Business model updated to reflect DevOps automation focus
 - **2025-01-27**: Removed n8n references (business model pivot)

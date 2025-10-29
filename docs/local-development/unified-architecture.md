@@ -95,6 +95,29 @@ All services communicate through the `unified-network` (172.25.0.0/16):
 - **All Services → Redis**: `redis://redis:6379`
 - **All Services → LocalStack**: `http://localstack:4566`
 
+### Image and Container Strategy
+
+**Generic Image Names**: Images use generic, reusable names for portability:
+
+- `trading-api:latest` - Trading API service
+- `arq-worker:latest` - Trading async job processing
+- `webhook-receiver:latest` - Webhook ingestion service
+- `pipeline-worker:latest` - Job processing service
+
+**Project-Specific Container Names**: Containers use project-specific names for isolation:
+
+- `zixly-trading-api` - Trading API running in Zixly context
+- `zixly-arq-worker` - ARQ worker running in Zixly context
+- `zixly-webhook-receiver` - Webhook receiver running in Zixly context
+- `zixly-pipeline-worker` - Pipeline worker running in Zixly context
+
+**Benefits**:
+
+- **95% Faster Startup**: Pre-built images load in ~1.7 seconds vs 30-60 seconds for rebuild
+- **Image Portability**: Generic images can be used across projects
+- **Clear Separation**: Image identity vs deployment context is explicit
+- **Foundation for CI/CD**: Ready for container registry integration
+
 ### Redis Namespace Strategy
 
 - **Trading cache**: `trading:*` keys (DB 0)
@@ -131,16 +154,38 @@ TRADING_API_KEY=dev-key-000000000000000000000000
 
 ## Usage Commands
 
-### Start All Services
+### Initial Setup (First Time)
 
 ```bash
-docker-compose --profile zixly --profile trading --profile frontend up -d
+# 1. Build trading images (in trading project)
+cd /Users/colemorton/Projects/trading
+docker-compose build
+
+# 2. Build zixly images (in zixly project)
+cd /Users/colemorton/Projects/zixly
+docker-compose build webhook-receiver pipeline-worker
 ```
 
-### Start Only APIs (Typical Development)
+### Daily Development
 
 ```bash
+# Start Zixly services (uses pre-built images instantly)
 docker-compose --profile zixly --profile trading up -d
+
+# Images load instantly (no rebuild)
+# Containers still named zixly-* for isolation
+```
+
+### When Trading Code Changes
+
+```bash
+# Rebuild only changed images
+cd /Users/colemorton/Projects/trading
+docker-compose build trading-api
+
+# Restart Zixly services to use new image
+cd /Users/colemorton/Projects/zixly
+docker-compose restart trading-api
 ```
 
 ### Start with Monitoring

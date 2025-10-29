@@ -1,157 +1,152 @@
-# Integration Testing Suite
+# Testing Guide
 
-This directory contains comprehensive integration tests for the Zixly application, covering API endpoints, database operations, authentication, and Row-Level Security (RLS).
+## Prerequisites
 
-## Test Structure
+Different test suites require different Docker Compose profiles to be running.
 
-```
-test/
-├── setup.ts                 # Global test setup and configuration
-├── env.test.ts             # Environment configuration tests
-├── mocks/
-│   └── server.ts           # Mock Service Worker setup for API mocking
-├── api/
-│   ├── health.test.ts      # Health check API tests
-│   └── tenants.test.ts     # Tenants API endpoint tests
-├── database/
-│   ├── setup.ts            # Database test utilities and helpers
-│   ├── schema.test.ts      # Database schema and model tests
-│   └── rls.test.ts         # Row-Level Security integration tests
-└── auth/
-    ├── auth.test.ts        # Authentication utility tests
-    └── middleware.test.ts  # Supabase middleware tests
-```
-
-## Running Tests
-
-### All Tests
+### Start Services by Profile
 
 ```bash
-npm test                    # Run tests in watch mode
-npm run test:run           # Run tests once
-npm run test:ui            # Run tests with UI
+# Zixly services (webhook receiver, pipeline workers)
+docker-compose --profile zixly up -d
+
+# Trading services (trading API, ARQ worker)
+docker-compose --profile trading up -d
+
+# All services
+docker-compose --profile zixly --profile trading up -d
 ```
 
-### Specific Test Suites
+### Test Coverage by Profile
+
+| Test                    | Required Profile | Services              |
+| ----------------------- | ---------------- | --------------------- |
+| Webhook Receiver Health | `zixly`          | webhook-receiver:3002 |
+| Trading Sweep Webhook   | `zixly`          | webhook-receiver:3002 |
+
+### Running Tests
 
 ```bash
-npm run test:api           # API endpoint tests
-npm run test:database      # Database integration tests
-npm run test:auth          # Authentication tests
+# Run all tests (skips tests for unavailable services)
+node test/test-pipeline.js
+
+# The script will automatically detect which services are running
+# and skip tests for services that aren't available
 ```
 
-### Coverage
+### Timeout Configuration
 
-```bash
-npm run test:coverage      # Generate coverage report
-```
+All HTTP requests have a 5-second default timeout. Tests fail fast if services don't respond within this time, preventing indefinite hangs.
 
-## Test Categories
+## Testing the Fix
 
-### 1. API Tests (`test/api/`)
+1. **Test with no services running**:
 
-- **Health Check**: Tests the `/api/health` endpoint
-- **Tenants API**: Tests the `/api/tenants` endpoint with authentication
+   ```bash
+   docker-compose down
+   node test/test-pipeline.js
+   ```
 
-### 2. Database Tests (`test/database/`)
+   Should complete quickly, showing all services unavailable
 
-- **Schema Tests**: Validates all Prisma models and relationships
-- **RLS Tests**: Comprehensive Row-Level Security testing
-  - Tenant data isolation
-  - Cross-tenant access prevention
-  - Data integrity across tenants
+2. **Test with zixly profile only**:
 
-### 3. Authentication Tests (`test/auth/`)
+   ```bash
+   docker-compose --profile zixly up -d
+   node test/test-pipeline.js
+   ```
 
-- **Auth Utilities**: Tests `getCurrentUser()` and `requireAuth()`
-- **Middleware**: Tests Supabase middleware functionality
+   Should test webhook receiver successfully
 
-## Test Environment
-
-### Mocking Strategy
-
-- **Supabase API**: Mocked using MSW (Mock Service Worker)
-- **Database**: Uses test database with cleanup between tests
-- **Authentication**: Mocked Supabase auth responses
-
-### Test Data Management
-
-- Automatic cleanup between tests
-- Isolated test data creation
-- Tenant context management for RLS testing
-
-## Key Testing Features
-
-### Multi-tenant Testing
-
-- Tests tenant data isolation
-- Validates RLS policies
-- Ensures cross-tenant access prevention
-
-### Authentication Flow
-
-- Tests authenticated and unauthenticated scenarios
-- Validates user metadata handling
-- Tests tenant association requirements
-
-### Database Operations
-
-- CRUD operations for all models
-- Relationship integrity
-- Constraint validation
-
-## Test Utilities
-
-### Database Helpers (`test/database/setup.ts`)
-
-```typescript
-// Clean up test data
-await cleanupTestData()
-
-// Create test entities
-const tenant = await createTestTenant()
-const user = await createTestUser(tenant.id)
-const client = await createTestClient(tenant.id)
-
-// Set tenant context for RLS
-await setTenantContext(tenant.id)
-```
-
-### Mock Configuration (`test/mocks/server.ts`)
-
-- Mock Supabase Auth endpoints
-- Mock REST API responses
-- Mock health check responses
-
-## Best Practices
-
-1. **Isolation**: Each test is completely isolated with fresh data
-2. **Cleanup**: Automatic cleanup prevents test interference
-3. **Mocking**: External services are mocked for reliable testing
-4. **Coverage**: Comprehensive coverage of critical paths
-5. **RLS Testing**: Extensive testing of multi-tenant security
+3. **Test with all profiles**:
+   ```bash
+   docker-compose --profile zixly --profile trading up -d
+   node test/test-pipeline.js
+   ```
+   Should run all tests successfully
 
 ## Troubleshooting
 
 ### Common Issues
 
-1. **Database Connection**: Ensure test database is accessible
-2. **Environment Variables**: Verify test environment configuration
-3. **Mock Setup**: Check MSW server configuration
-4. **Cleanup**: Ensure test data is properly cleaned up
+**Test hangs indefinitely**
 
-### Debug Mode
+- This was fixed by adding 5-second timeouts to all HTTP requests
+- Tests now fail fast if services aren't available
+
+**Tests skip unexpectedly**
+
+- Check which Docker Compose profiles are running: `docker-compose ps`
+- Start required profiles: `docker-compose --profile zixly --profile trading up -d`
+
+**Webhook receiver shows as unhealthy**
+
+- This was fixed by removing the curl-based healthcheck override
+- The service now uses the Node.js-based healthcheck from the Dockerfile
+
+**Port connection errors**
+
+- Webhook receiver runs on port 3002
+- Trading API runs on port 8000
+- Test script automatically detects correct ports
+
+### Service Status Commands
 
 ```bash
-# Run specific test with verbose output
-npm test -- --reporter=verbose test/api/health.test.ts
+# Check all running services
+docker-compose ps
+
+# Check specific service health
+docker-compose ps webhook-receiver
+docker-compose ps trading-api
+
+# View service logs
+docker-compose logs webhook-receiver
+docker-compose logs trading-api
+
+# Restart a service
+docker-compose restart webhook-receiver
 ```
 
-## Continuous Integration
+## Development
 
-These tests are designed to run in CI/CD pipelines:
+### Adding New Tests
 
-- No external dependencies
-- Deterministic results
-- Fast execution
-- Comprehensive coverage
+1. Add service configuration to `SERVICE_PROFILES` in `test-pipeline.js`
+2. Create test function following the pattern of existing tests
+3. Add availability check before running the test
+4. Update the main test function to include the new test
+
+### Test Structure
+
+```javascript
+// Service configuration
+const SERVICE_PROFILES = {
+  newService: { profile: 'profile-name', port: 3000, url: 'http://localhost:3000/health' },
+}
+
+// Test function
+async function testNewService() {
+  console.log('🔍 Testing New Service...')
+
+  const availability = await checkServiceAvailability(
+    `${TEST_CONFIG.newServiceUrl}/health`,
+    'New Service'
+  )
+
+  if (!availability.available) {
+    console.log('⚠️  New Service is not running (requires profile-name profile)')
+    return false
+  }
+
+  // ... test implementation
+}
+```
+
+## Impact
+
+- ✅ **No more indefinite hangs** - 5-second timeout on all requests
+- ✅ **Smart test execution** - Only tests available services
+- ✅ **Clear feedback** - Shows which services are required and how to start them
+- ✅ **Fast failure** - Tests fail in seconds, not minutes
+- ✅ **Better documentation** - Clear guide on running tests with proper profiles
