@@ -113,7 +113,11 @@ npm run dev
 # → http://localhost:3000
 
 # Start pipeline stack (separate terminal)
-docker-compose -f docker-compose.pipeline.yml up
+# NOTE: Core services only (webhook-receiver, pipeline-worker)
+docker-compose --profile zixly up -d
+
+# Optional: Start trading API services (requires external trading project)
+# docker-compose --profile zixly --profile trading up -d
 # → Webhook receiver: http://localhost:3000/webhook
 # → Grafana: http://localhost:3001
 # → Prometheus: http://localhost:9090

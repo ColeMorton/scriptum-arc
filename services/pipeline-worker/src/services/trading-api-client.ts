@@ -1,6 +1,9 @@
 import axios, { AxiosInstance } from 'axios'
 import logger from './logger'
 
+// Note: Service-level constants are loaded from environment variables
+// This keeps services decoupled from the main app's configuration
+// For centralized constants, see lib/config/constants.ts
 const TRADING_API_URL = process.env.TRADING_API_URL || 'http://localhost:8000'
 const TRADING_API_KEY = process.env.TRADING_API_KEY || 'dev-key-000000000000000000000000'
 

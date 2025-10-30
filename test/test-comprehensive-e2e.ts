@@ -7,8 +7,12 @@
 
 import { spawn } from 'child_process'
 import { setTimeout } from 'timers/promises'
+import { TEST_SERVICES, TEST_CREDENTIALS } from './config/test-constants'
+import { HEALTH_ENDPOINTS } from '@/lib/config/constants'
 
-const colors = {
+type Color = 'reset' | 'bright' | 'red' | 'green' | 'yellow' | 'blue' | 'magenta' | 'cyan'
+
+const colors: Record<Color, string> = {
   reset: '\x1b[0m',
   bright: '\x1b[1m',
   red: '\x1b[31m',
@@ -19,18 +23,44 @@ const colors = {
   cyan: '\x1b[36m',
 }
 
-function log(message, color = 'reset') {
+interface HTTPResponse {
+  status: number
+  ok: boolean
+  data?: string
+  headers?: Headers
+  error?: string
+}
+
+interface SpawnResult {
+  code: number | null
+  output: string
+}
+
+interface Service {
+  name: string
+  url?: string
+  test?: string
+}
+
+interface Endpoint {
+  name: string
+  url: string
+}
+
+type TestStatus = 'PASS' | 'FAIL' | 'WARN'
+
+function log(message: string, color: Color = 'reset'): void {
   console.log(`${colors[color]}${message}${colors.reset}`)
 }
 
-function logSection(title) {
+function logSection(title: string): void {
   log(`\n${'='.repeat(80)}`, 'cyan')
   log(`  ${title}`, 'bright')
   log(`${'='.repeat(80)}`, 'cyan')
 }
 
-function logTest(testName, status, details = '') {
-  const statusColor = status === 'PASS' ? 'green' : status === 'FAIL' ? 'red' : 'yellow'
+function logTest(testName: string, status: TestStatus, details: string = ''): void {
+  const statusColor: Color = status === 'PASS' ? 'green' : status === 'FAIL' ? 'red' : 'yellow'
   const statusSymbol = status === 'PASS' ? '✅' : status === 'FAIL' ? '❌' : '⚠️'
   log(`${statusSymbol} ${testName}: ${status}`, statusColor)
   if (details) {
@@ -38,53 +68,60 @@ function logTest(testName, status, details = '') {
   }
 }
 
-async function makeRequest(url, options = {}) {
+async function makeRequest(
+  url: string,
+  options: Record<string, unknown> = {}
+): Promise<HTTPResponse> {
   const fetch = (await import('node-fetch')).default
   try {
-    const response = await fetch(url, {
+    const response = await (fetch as never as typeof fetch)(url, {
       method: 'GET',
       ...options,
-    })
+    } as never)
     const data = await response.text()
     return {
       status: response.status,
       ok: response.ok,
-      data: data,
-      headers: response.headers,
+      data,
+      headers: response.headers as unknown as Headers,
     }
   } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error'
     return {
       status: 0,
       ok: false,
-      error: error.message,
+      error: errorMessage,
     }
   }
 }
 
-async function testServiceHealth() {
+async function testServiceHealth(): Promise<void> {
   logSection('SERVICE HEALTH VERIFICATION')
 
-  const services = [
-    { name: 'Webhook Receiver', url: 'http://localhost:3002/health' },
-    { name: 'Trading API', url: 'http://localhost:8000/health/' },
+  const services: Service[] = [
+    {
+      name: 'Webhook Receiver',
+      url: `${TEST_SERVICES.WEBHOOK_RECEIVER}${HEALTH_ENDPOINTS.WEBHOOK_RECEIVER}`,
+    },
+    { name: 'Trading API', url: `${TEST_SERVICES.TRADING_API}${HEALTH_ENDPOINTS.TRADING_API}` },
     { name: 'Redis', test: 'redis' },
-    { name: 'LocalStack', url: 'http://localhost:4566/_localstack/health' },
+    { name: 'LocalStack', url: `${TEST_SERVICES.LOCALSTACK}${HEALTH_ENDPOINTS.LOCALSTACK}` },
     { name: 'PostgreSQL', test: 'postgres' },
   ]
 
   for (const service of services) {
     if (service.test === 'redis') {
       try {
-        const result = await new Promise((resolve, _reject) => {
+        const result = await new Promise<SpawnResult>((resolve) => {
           const child = spawn('docker-compose', ['exec', '-T', 'redis', 'redis-cli', 'ping'], {
             stdio: ['pipe', 'pipe', 'pipe'],
           })
 
           let output = ''
-          child.stdout.on('data', (data) => (output += data.toString()))
-          child.stderr.on('data', (data) => (output += data.toString()))
+          child.stdout.on('data', (data: Buffer) => (output += data.toString()))
+          child.stderr.on('data', (data: Buffer) => (output += data.toString()))
 
-          child.on('close', (code) => {
+          child.on('close', (code: number | null) => {
             resolve({ code, output })
           })
         })
@@ -95,11 +132,12 @@ async function testServiceHealth() {
           logTest(service.name, 'FAIL', `Redis not responding: ${result.output}`)
         }
       } catch (error) {
-        logTest(service.name, 'FAIL', `Redis test failed: ${error.message}`)
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+        logTest(service.name, 'FAIL', `Redis test failed: ${errorMessage}`)
       }
     } else if (service.test === 'postgres') {
       try {
-        const result = await new Promise((resolve, _reject) => {
+        const result = await new Promise<SpawnResult>((resolve) => {
           const child = spawn(
             'docker-compose',
             ['exec', '-T', 'postgres', 'pg_isready', '-U', 'trading_user', '-d', 'trading_db'],
@@ -109,10 +147,10 @@ async function testServiceHealth() {
           )
 
           let output = ''
-          child.stdout.on('data', (data) => (output += data.toString()))
-          child.stderr.on('data', (data) => (output += data.toString()))
+          child.stdout.on('data', (data: Buffer) => (output += data.toString()))
+          child.stderr.on('data', (data: Buffer) => (output += data.toString()))
 
-          child.on('close', (code) => {
+          child.on('close', (code: number | null) => {
             resolve({ code, output })
           })
         })
@@ -123,9 +161,10 @@ async function testServiceHealth() {
           logTest(service.name, 'FAIL', `PostgreSQL not ready: ${result.output}`)
         }
       } catch (error) {
-        logTest(service.name, 'FAIL', `PostgreSQL test failed: ${error.message}`)
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+        logTest(service.name, 'FAIL', `PostgreSQL test failed: ${errorMessage}`)
       }
-    } else {
+    } else if (service.url) {
       const response = await makeRequest(service.url)
       if (response.ok) {
         logTest(service.name, 'PASS', `Status: ${response.status}`)
@@ -140,15 +179,14 @@ async function testServiceHealth() {
   }
 }
 
-async function testTradingAPIEndpoints() {
+async function testTradingAPIEndpoints(): Promise<void> {
   logSection('TRADING API ENDPOINT ANALYSIS')
 
-  // Test basic endpoints
-  const basicEndpoints = [
-    { name: 'Root Endpoint', url: 'http://localhost:8000/' },
-    { name: 'Health Check', url: 'http://localhost:8000/health/' },
-    { name: 'API Documentation', url: 'http://localhost:8000/api/docs' },
-    { name: 'OpenAPI Schema', url: 'http://localhost:8000/api/openapi.json' },
+  const basicEndpoints: Endpoint[] = [
+    { name: 'Root Endpoint', url: `${TEST_SERVICES.TRADING_API}/` },
+    { name: 'Health Check', url: `${TEST_SERVICES.TRADING_API}${HEALTH_ENDPOINTS.TRADING_API}` },
+    { name: 'API Documentation', url: `${TEST_SERVICES.TRADING_API}/api/docs` },
+    { name: 'OpenAPI Schema', url: `${TEST_SERVICES.TRADING_API}/api/openapi.json` },
   ]
 
   for (const endpoint of basicEndpoints) {
@@ -158,13 +196,12 @@ async function testTradingAPIEndpoints() {
 
       if (endpoint.name === 'OpenAPI Schema') {
         try {
-          const schema = JSON.parse(response.data)
+          const schema = JSON.parse(response.data!)
           const paths = Object.keys(schema.paths || {})
           logTest('  Available Endpoints', 'PASS', `${paths.length} endpoints available`)
 
-          // Check for key trading endpoints
           const tradingEndpoints = paths.filter(
-            (path) =>
+            (path: string) =>
               path.includes('/strategy/') || path.includes('/sweeps/') || path.includes('/jobs/')
           )
           logTest(
@@ -186,11 +223,10 @@ async function testTradingAPIEndpoints() {
   }
 }
 
-async function testTradingAPIAuthentication() {
+async function testTradingAPIAuthentication(): Promise<void> {
   logSection('TRADING API AUTHENTICATION TESTS')
 
-  // Test without API key
-  const noAuthResponse = await makeRequest('http://localhost:8000/api/v1/strategy/sweep', {
+  const noAuthResponse = await makeRequest(`${TEST_SERVICES.TRADING_API}/api/v1/strategy/sweep`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -202,18 +238,17 @@ async function testTradingAPIAuthentication() {
     }),
   })
 
-  if (noAuthResponse.status === 401 || noAuthResponse.data.includes('API key required')) {
+  if (noAuthResponse.status === 401 || noAuthResponse.data?.includes('API key required')) {
     logTest('Authentication Required', 'PASS', 'API correctly requires authentication')
   } else {
     logTest('Authentication Required', 'FAIL', 'API should require authentication')
   }
 
-  // Test with API key
-  const authResponse = await makeRequest('http://localhost:8000/api/v1/strategy/sweep', {
+  const authResponse = await makeRequest(`${TEST_SERVICES.TRADING_API}/api/v1/strategy/sweep`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'X-API-Key': 'dev-key-000000000000000000000000',
+      'X-API-Key': TEST_CREDENTIALS.TRADING_API_KEY,
     },
     body: JSON.stringify({
       ticker: 'BTC-USD',
@@ -224,7 +259,10 @@ async function testTradingAPIAuthentication() {
     }),
   })
 
-  if (authResponse.status === 500 && authResponse.data.includes('relation "jobs" does not exist')) {
+  if (
+    authResponse.status === 500 &&
+    authResponse.data?.includes('relation "jobs" does not exist')
+  ) {
     logTest('API Key Authentication', 'PASS', 'API key accepted, but database schema missing')
     logTest('Database Schema', 'FAIL', 'Database tables not created - migration needed')
   } else if (authResponse.ok) {
@@ -234,10 +272,9 @@ async function testTradingAPIAuthentication() {
   }
 }
 
-async function testZixlyIntegration() {
+async function testZixlyIntegration(): Promise<void> {
   logSection('ZIXLY INTEGRATION TESTS')
 
-  // Test webhook receiver functionality
   const webhookPayload = {
     ticker: 'BTC-USD',
     fast_range: [10, 20],
@@ -248,7 +285,7 @@ async function testZixlyIntegration() {
 
   log('Testing webhook receiver → trading API integration...', 'blue')
 
-  const response = await makeRequest('http://localhost:3002/webhook/trading-sweep', {
+  const response = await makeRequest(`${TEST_SERVICES.WEBHOOK_RECEIVER}/webhook/trading-sweep`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -257,10 +294,9 @@ async function testZixlyIntegration() {
   })
 
   if (response.ok) {
-    const data = JSON.parse(response.data)
+    const data = JSON.parse(response.data!)
     logTest('Webhook Integration', 'PASS', `Job ID: ${data.job_id}`)
 
-    // Wait for job processing
     log('Waiting for job processing...', 'yellow')
     await setTimeout(3000)
 
@@ -270,21 +306,20 @@ async function testZixlyIntegration() {
   }
 }
 
-async function testSharedInfrastructure() {
+async function testSharedInfrastructure(): Promise<void> {
   logSection('SHARED INFRASTRUCTURE TESTS')
 
-  // Test LocalStack S3
   try {
-    const result = await new Promise((resolve, _reject) => {
+    const result = await new Promise<SpawnResult>((resolve) => {
       const child = spawn('docker-compose', ['exec', '-T', 'localstack', 'awslocal', 's3', 'ls'], {
         stdio: ['pipe', 'pipe', 'pipe'],
       })
 
       let output = ''
-      child.stdout.on('data', (data) => (output += data.toString()))
-      child.stderr.on('data', (data) => (output += data.toString()))
+      child.stdout.on('data', (data: Buffer) => (output += data.toString()))
+      child.stderr.on('data', (data: Buffer) => (output += data.toString()))
 
-      child.on('close', (code) => {
+      child.on('close', (code: number | null) => {
         resolve({ code, output })
       })
     })
@@ -298,12 +333,12 @@ async function testSharedInfrastructure() {
       logTest('LocalStack S3', 'FAIL', `S3 buckets not found: ${result.output}`)
     }
   } catch (error) {
-    logTest('LocalStack S3', 'FAIL', `S3 test failed: ${error.message}`)
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+    logTest('LocalStack S3', 'FAIL', `S3 test failed: ${errorMessage}`)
   }
 
-  // Test LocalStack SQS
   try {
-    const result = await new Promise((resolve, _reject) => {
+    const result = await new Promise<SpawnResult>((resolve) => {
       const child = spawn(
         'docker-compose',
         ['exec', '-T', 'localstack', 'awslocal', 'sqs', 'list-queues'],
@@ -313,10 +348,10 @@ async function testSharedInfrastructure() {
       )
 
       let output = ''
-      child.stdout.on('data', (data) => (output += data.toString()))
-      child.stderr.on('data', (data) => (output += data.toString()))
+      child.stdout.on('data', (data: Buffer) => (output += data.toString()))
+      child.stderr.on('data', (data: Buffer) => (output += data.toString()))
 
-      child.on('close', (code) => {
+      child.on('close', (code: number | null) => {
         resolve({ code, output })
       })
     })
@@ -327,24 +362,25 @@ async function testSharedInfrastructure() {
       logTest('LocalStack SQS', 'FAIL', `SQS queues not found: ${result.output}`)
     }
   } catch (error) {
-    logTest('LocalStack SQS', 'FAIL', `SQS test failed: ${error.message}`)
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+    logTest('LocalStack SQS', 'FAIL', `SQS test failed: ${errorMessage}`)
   }
 }
 
-async function testWorkerLogs() {
+async function testWorkerLogs(): Promise<void> {
   logSection('WORKER LOG ANALYSIS')
 
   try {
-    const result = await new Promise((resolve, _reject) => {
+    const result = await new Promise<SpawnResult>((resolve) => {
       const child = spawn('docker-compose', ['logs', 'pipeline-worker', '--tail', '20'], {
         stdio: ['pipe', 'pipe', 'pipe'],
       })
 
       let output = ''
-      child.stdout.on('data', (data) => (output += data.toString()))
-      child.stderr.on('data', (data) => (output += data.toString()))
+      child.stdout.on('data', (data: Buffer) => (output += data.toString()))
+      child.stderr.on('data', (data: Buffer) => (output += data.toString()))
 
-      child.on('close', (code) => {
+      child.on('close', (code: number | null) => {
         resolve({ code, output })
       })
     })
@@ -366,16 +402,16 @@ async function testWorkerLogs() {
       logTest('Worker → Trading API', 'WARN', 'No trading API calls found in recent logs')
     }
   } catch (error) {
-    logTest('Worker Log Analysis', 'FAIL', `Log analysis failed: ${error.message}`)
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+    logTest('Worker Log Analysis', 'FAIL', `Log analysis failed: ${errorMessage}`)
   }
 }
 
-async function testPerformanceMetrics() {
+async function testPerformanceMetrics(): Promise<void> {
   logSection('PERFORMANCE METRICS')
 
-  // Test response times
   const startTime = Date.now()
-  const response = await makeRequest('http://localhost:8000/health/')
+  const response = await makeRequest(`${TEST_SERVICES.TRADING_API}/health/`)
   const endTime = Date.now()
   const responseTime = endTime - startTime
 
@@ -388,9 +424,8 @@ async function testPerformanceMetrics() {
     logTest('Trading API Response Time', 'FAIL', `Request failed: ${response.error}`)
   }
 
-  // Test webhook response time
   const webhookStartTime = Date.now()
-  const webhookResponse = await makeRequest('http://localhost:3002/health')
+  const webhookResponse = await makeRequest(`${TEST_SERVICES.WEBHOOK_RECEIVER}/health`)
   const webhookEndTime = Date.now()
   const webhookResponseTime = webhookEndTime - webhookStartTime
 
@@ -401,7 +436,7 @@ async function testPerformanceMetrics() {
   }
 }
 
-async function generateComprehensiveReport() {
+async function generateComprehensiveReport(): Promise<void> {
   logSection('COMPREHENSIVE E2E TEST REPORT')
 
   log('🎯 System Status Summary:', 'green')
@@ -440,7 +475,7 @@ async function generateComprehensiveReport() {
   log('   • Memory Savings: ~300MB through shared services', 'reset')
 }
 
-async function main() {
+async function main(): Promise<void> {
   log('🧪 COMPREHENSIVE E2E TEST SUITE', 'bright')
   log('Testing all components and documenting current state...', 'blue')
 
@@ -457,7 +492,8 @@ async function main() {
     log('\n🎉 Comprehensive testing completed!', 'green')
     log('System is functional with identified issues documented.', 'green')
   } catch (error) {
-    log(`\n❌ Test suite failed: ${error.message}`, 'red')
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+    log(`\n❌ Test suite failed: ${errorMessage}`, 'red')
     process.exit(1)
   }
 }

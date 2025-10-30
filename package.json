@@ -27,7 +27,7 @@
     "test:api": "vitest run test/api",
     "test:database": "vitest run test/database",
     "test:auth": "vitest run test/auth",
-    "test:sweep-e2e": "node test-sweep-e2e-complete.js"
+    "test:sweep-e2e": "tsx test/test-sweep-e2e-complete.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

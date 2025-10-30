@@ -43,6 +43,9 @@ COPY --from=builder --chown=worker:nodejs /app/dist ./dist
 COPY --from=builder --chown=worker:nodejs /app/node_modules ./node_modules
 COPY --from=builder --chown=worker:nodejs /app/package.json ./package.json
 
+# Create directories for writable data (temp, logs, health check)
+RUN mkdir -p /tmp /app/logs && chown -R worker:nodejs /tmp /app/logs
+
 USER worker
 
 # Worker doesn't expose ports but we add health check via file

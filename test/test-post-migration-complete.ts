@@ -1,39 +1,55 @@
 import fetch from 'node-fetch'
 import { execSync } from 'child_process'
+import { TEST_DB_CONFIG } from './config/test-constants'
 
-const WEBHOOK_RECEIVER_URL = 'http://localhost:3002'
-const TRADING_API_URL = 'http://localhost:8000'
-// const _REDIS_HOST = 'localhost';
-// const _REDIS_PORT = '6379';
-const REDIS_PASSWORD = 'local_dev_password'
-const LOCALSTACK_URL = 'http://localhost:4566'
-const TRADING_API_KEY = 'dev-key-000000000000000000000000'
+const WEBHOOK_RECEIVER_URL = TEST_DB_CONFIG.WEBHOOK_RECEIVER_URL
+const TRADING_API_URL = TEST_DB_CONFIG.TRADING_API_URL
+const REDIS_PASSWORD = TEST_DB_CONFIG.REDIS_PASSWORD
+const LOCALSTACK_URL = TEST_DB_CONFIG.LOCALSTACK_URL
+const TRADING_API_KEY = TEST_DB_CONFIG.TRADING_API_KEY
 
-async function runTest(name, testFn) {
+interface HealthResponse {
+  status?: string
+}
+
+interface SweepResponse {
+  job_id: string
+}
+
+type JobsResponse = unknown[]
+
+type SweepsResponse = unknown[]
+
+interface SchemaResponse {
+  paths: Record<string, unknown>
+}
+
+async function runTest(name: string, testFn: () => Promise<unknown>): Promise<boolean> {
   process.stdout.write(`Testing ${name}... `)
   try {
     await testFn()
     console.log('✅ PASS')
     return true
   } catch (error) {
-    console.error(`❌ FAIL\n   Error: ${error.message}`)
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+    console.error(`❌ FAIL\n   Error: ${errorMessage}`)
     return false
   }
 }
 
-async function checkServiceHealth(url) {
+async function checkServiceHealth(url: string): Promise<HealthResponse> {
   const response = await fetch(url)
   if (!response.ok) {
     throw new Error(`Status: ${response.status}, ${await response.text()}`)
   }
-  const data = await response.json()
+  const data = (await response.json()) as HealthResponse
   if (data.status && data.status !== 'healthy' && data.status !== 'ok') {
     throw new Error(`Service not healthy: ${JSON.stringify(data)}`)
   }
   return data
 }
 
-async function checkRedisPing(db = 0) {
+async function checkRedisPing(db: number = 0): Promise<boolean> {
   try {
     const command = `docker-compose exec redis redis-cli -a ${REDIS_PASSWORD} -n ${db} ping`
     const output = execSync(command, { encoding: 'utf8' }).trim()
@@ -42,11 +58,12 @@ async function checkRedisPing(db = 0) {
     }
     return true
   } catch (error) {
-    throw new Error(`Redis not responding: ${error.message}`)
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+    throw new Error(`Redis not responding: ${errorMessage}`)
   }
 }
 
-async function checkPostgresHealth() {
+async function checkPostgresHealth(): Promise<boolean> {
   try {
     const command = `docker-compose exec postgres pg_isready -U trading_user -d trading_db`
     const output = execSync(command, { encoding: 'utf8' }).trim()
@@ -55,11 +72,12 @@ async function checkPostgresHealth() {
     }
     return true
   } catch (error) {
-    throw new Error(`PostgreSQL health check failed: ${error.message}`)
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+    throw new Error(`PostgreSQL health check failed: ${errorMessage}`)
   }
 }
 
-async function getTradingApiInfo() {
+async function getTradingApiInfo(): Promise<unknown> {
   const response = await fetch(`${TRADING_API_URL}/`)
   if (!response.ok) {
     throw new Error(`Status: ${response.status}, ${await response.text()}`)
@@ -67,7 +85,7 @@ async function getTradingApiInfo() {
   return response.json()
 }
 
-async function getTradingApiDocs() {
+async function getTradingApiDocs(): Promise<string> {
   const response = await fetch(`${TRADING_API_URL}/docs`)
   if (!response.ok) {
     throw new Error(`Status: ${response.status}, ${await response.text()}`)
@@ -75,20 +93,20 @@ async function getTradingApiDocs() {
   return response.text()
 }
 
-async function getTradingApiSchema() {
+async function getTradingApiSchema(): Promise<SchemaResponse> {
   const response = await fetch(`${TRADING_API_URL}/openapi.json`)
   if (!response.ok) {
     throw new Error(`Status: ${response.status}, ${await response.text()}`)
   }
-  return response.json()
+  return (await response.json()) as SchemaResponse
 }
 
-async function getTradingApiEndpoints() {
+async function getTradingApiEndpoints(): Promise<string[]> {
   const schema = await getTradingApiSchema()
   return Object.keys(schema.paths)
 }
 
-async function testTradingApiAuthRequired() {
+async function testTradingApiAuthRequired(): Promise<boolean> {
   const response = await fetch(`${TRADING_API_URL}/api/v1/strategy/sweep`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -100,7 +118,7 @@ async function testTradingApiAuthRequired() {
   return true
 }
 
-async function testTradingApiAuthWithKey() {
+async function testTradingApiAuthWithKey(): Promise<SweepResponse> {
   const payload = {
     ticker: 'BTC-USD',
     fast_range: [10, 20],
@@ -119,7 +137,7 @@ async function testTradingApiAuthWithKey() {
   if (!response.ok) {
     throw new Error(`Status: ${response.status}, Error: ${await response.text()}`)
   }
-  const result = await response.json()
+  const result = (await response.json()) as SweepResponse
   if (!result.job_id) {
     throw new Error(`Job ID not returned: ${JSON.stringify(result)}`)
   }
@@ -127,7 +145,7 @@ async function testTradingApiAuthWithKey() {
   return result
 }
 
-async function testTradingJobsEndpoint() {
+async function testTradingJobsEndpoint(): Promise<JobsResponse> {
   const response = await fetch(`${TRADING_API_URL}/api/v1/jobs/`, {
     headers: {
       'X-API-Key': TRADING_API_KEY,
@@ -136,12 +154,12 @@ async function testTradingJobsEndpoint() {
   if (!response.ok) {
     throw new Error(`Status: ${response.status}, Error: ${await response.text()}`)
   }
-  const jobs = await response.json()
+  const jobs = (await response.json()) as JobsResponse
   console.log(`   Found ${jobs.length} jobs`)
   return jobs
 }
 
-async function testTradingSweepsEndpoint() {
+async function testTradingSweepsEndpoint(): Promise<SweepsResponse> {
   const response = await fetch(`${TRADING_API_URL}/api/v1/sweeps/`, {
     headers: {
       'X-API-Key': TRADING_API_KEY,
@@ -150,26 +168,12 @@ async function testTradingSweepsEndpoint() {
   if (!response.ok) {
     throw new Error(`Status: ${response.status}, Error: ${await response.text()}`)
   }
-  const sweeps = await response.json()
+  const sweeps = (await response.json()) as SweepsResponse
   console.log(`   Found ${sweeps.length} sweeps`)
   return sweeps
 }
 
-// async function _testTradingJobStatus(jobId) {
-//     const response = await fetch(`${TRADING_API_URL}/api/v1/jobs/${jobId}`, {
-//         headers: {
-//             'X-API-Key': TRADING_API_KEY
-//         }
-//     });
-//     if (!response.ok) {
-//         throw new Error(`Status: ${response.status}, Error: ${await response.text()}`);
-//     }
-//     const job = await response.json();
-//     console.log(`   Job ${jobId} Status: ${job.status}`);
-//     return job;
-// }
-
-async function checkDatabaseTables() {
+async function checkDatabaseTables(): Promise<string[]> {
   try {
     const command = `docker-compose exec postgres psql -U trading_user -d trading_db -c "SELECT table_name FROM information_schema.tables WHERE table_schema = 'public';"`
     const output = execSync(command, { encoding: 'utf8' })
@@ -185,11 +189,12 @@ async function checkDatabaseTables() {
     console.log(`   Found ${tables.length} tables in database`)
     return tables
   } catch (error) {
-    throw new Error(`Database table check failed: ${error.message}`)
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+    throw new Error(`Database table check failed: ${errorMessage}`)
   }
 }
 
-async function checkJobInDatabase(jobId) {
+async function checkJobInDatabase(jobId: string): Promise<boolean> {
   try {
     const command = `docker-compose exec postgres psql -U trading_user -d trading_db -c "SELECT id, status, created_at FROM jobs WHERE id = '${jobId}';"`
     const output = execSync(command, { encoding: 'utf8' })
@@ -199,11 +204,12 @@ async function checkJobInDatabase(jobId) {
     console.log(`   Job ${jobId} found in database`)
     return true
   } catch (error) {
-    throw new Error(`Database job check failed: ${error.message}`)
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+    throw new Error(`Database job check failed: ${errorMessage}`)
   }
 }
 
-async function checkLocalStackS3Buckets() {
+async function checkLocalStackS3Buckets(): Promise<boolean> {
   try {
     const command = `docker-compose exec localstack-init aws --endpoint-url=${LOCALSTACK_URL} s3 ls`
     const output = execSync(command, { encoding: 'utf8' })
@@ -216,11 +222,12 @@ async function checkLocalStackS3Buckets() {
     }
     return true
   } catch (error) {
-    throw new Error(`LocalStack S3 check failed: ${error.message}`)
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+    throw new Error(`LocalStack S3 check failed: ${errorMessage}`)
   }
 }
 
-async function checkLocalStackSQSQueues() {
+async function checkLocalStackSQSQueues(): Promise<boolean> {
   try {
     const command = `docker-compose exec localstack-init aws --endpoint-url=${LOCALSTACK_URL} sqs list-queues`
     const output = execSync(command, { encoding: 'utf8' })
@@ -229,35 +236,27 @@ async function checkLocalStackSQSQueues() {
     }
     return true
   } catch (error) {
-    throw new Error(`LocalStack SQS check failed: ${error.message}`)
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+    throw new Error(`LocalStack SQS check failed: ${errorMessage}`)
   }
 }
 
-async function getWorkerLogs() {
+async function getWorkerLogs(): Promise<string> {
   try {
     const command = `docker-compose logs zixly-pipeline-worker-1 zixly-pipeline-worker-2`
     return execSync(command, { encoding: 'utf8' })
   } catch (error) {
-    return `Error fetching logs: ${error.message}`
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+    return `Error fetching logs: ${errorMessage}`
   }
 }
 
-// async function getTradingApiLogs() {
-//     try {
-//         const command = `docker-compose logs zixly-trading-api`;
-//         return execSync(command, { encoding: 'utf8' });
-//     } catch (error) {
-//         return `Error fetching logs: ${error.message}`;
-//     }
-// }
-
-async function main() {
+async function main(): Promise<void> {
   console.log('🧪 POST-MIGRATION COMPREHENSIVE TEST SUITE')
   console.log('Testing unified architecture with complete database schema...\n')
 
   let allTestsPassed = true
   let workerLogs = await getWorkerLogs()
-  // let _tradingApiLogs = await getTradingApiLogs();
 
   console.log('================================================================================')
   console.log('  SERVICE HEALTH VERIFICATION')
@@ -298,7 +297,7 @@ async function main() {
   allTestsPassed =
     (await runTest('OpenAPI Schema: PASS', () => getTradingApiSchema())) && allTestsPassed
 
-  let endpoints = []
+  let endpoints: string[] = []
   allTestsPassed =
     (await runTest('  Available Endpoints: PASS', async () => {
       endpoints = await getTradingApiEndpoints()
@@ -307,7 +306,7 @@ async function main() {
     })) && allTestsPassed
 
   allTestsPassed =
-    (await runTest('  Trading Endpoints: PASS', () => {
+    (await runTest('  Trading Endpoints: PASS', async () => {
       const tradingEndpoints = endpoints.filter(
         (e) =>
           e.startsWith('/api/v1/strategy') ||
@@ -350,7 +349,7 @@ async function main() {
     step: 5,
     strategy_type: 'SMA',
   }
-  let zixlyJobId = null
+  let zixlyJobId: string | null = null
   allTestsPassed =
     (await runTest('Webhook Integration: PASS', async () => {
       const response = await fetch(`${WEBHOOK_RECEIVER_URL}/webhook/trading-sweep`, {
@@ -361,7 +360,7 @@ async function main() {
       if (!response.ok) {
         throw new Error(`Status: ${response.status}, ${await response.text()}`)
       }
-      const data = await response.json()
+      const data = (await response.json()) as SweepResponse
       if (!data.job_id) {
         throw new Error(`Job ID not returned: ${JSON.stringify(data)}`)
       }
@@ -371,11 +370,11 @@ async function main() {
 
   if (zixlyJobId) {
     console.log('Waiting for job processing...')
-    await new Promise((resolve) => setTimeout(resolve, 5000)) // Wait for worker to pick up
-    workerLogs = await getWorkerLogs() // Refresh logs
+    await new Promise<void>((resolve) => setTimeout(() => resolve(), 5000))
+    workerLogs = await getWorkerLogs()
     allTestsPassed =
       (await runTest('Job Processing: PASS', async () => {
-        if (!workerLogs.includes(zixlyJobId) || !workerLogs.includes('Processing trading sweep')) {
+        if (!workerLogs.includes(zixlyJobId!) || !workerLogs.includes('Processing trading sweep')) {
           throw new Error(`Job ${zixlyJobId} not found in worker logs or not processed.`)
         }
       })) && allTestsPassed
@@ -387,7 +386,7 @@ async function main() {
   console.log('================================================================================')
   if (zixlyJobId) {
     allTestsPassed =
-      (await runTest('Job in Database: PASS', () => checkJobInDatabase(zixlyJobId))) &&
+      (await runTest('Job in Database: PASS', () => checkJobInDatabase(zixlyJobId!))) &&
       allTestsPassed
   }
   console.log('\n')
@@ -405,7 +404,7 @@ async function main() {
   console.log('  WORKER LOG ANALYSIS')
   console.log('================================================================================')
   allTestsPassed =
-    (await runTest('Worker Job Processing: PASS', () => {
+    (await runTest('Worker Job Processing: PASS', async () => {
       if (
         !workerLogs.includes('Job picked up') ||
         !workerLogs.includes('Processing trading sweep')
@@ -414,7 +413,7 @@ async function main() {
       }
     })) && allTestsPassed
   allTestsPassed =
-    (await runTest('Worker → Trading API: PASS', () => {
+    (await runTest('Worker → Trading API: PASS', async () => {
       if (!workerLogs.includes('Sweep submitted to Trading API')) {
         throw new Error('Workers are not calling trading API')
       }

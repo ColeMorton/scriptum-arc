@@ -11,6 +11,7 @@ vi.mock('@/lib/prisma', () => ({
     pipelineJob: {
       create: vi.fn(),
       findUnique: vi.fn(),
+      findFirst: vi.fn(),
       findMany: vi.fn(),
       update: vi.fn(),
       count: vi.fn(),
@@ -48,6 +49,7 @@ interface MockPrisma {
   pipelineJob: {
     create: ReturnType<typeof vi.fn>
     findUnique: ReturnType<typeof vi.fn>
+    findFirst: ReturnType<typeof vi.fn>
     findMany: ReturnType<typeof vi.fn>
     update: ReturnType<typeof vi.fn>
     count: ReturnType<typeof vi.fn>

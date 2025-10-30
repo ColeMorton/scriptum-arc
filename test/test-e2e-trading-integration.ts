@@ -7,8 +7,12 @@
 
 import { spawn } from 'child_process'
 import { setTimeout } from 'timers/promises'
+import { TEST_SERVICES } from './config/test-constants'
+import { HEALTH_ENDPOINTS } from '@/lib/config/constants'
 
-const colors = {
+type Color = 'reset' | 'bright' | 'red' | 'green' | 'yellow' | 'blue' | 'magenta' | 'cyan'
+
+const colors: Record<Color, string> = {
   reset: '\x1b[0m',
   bright: '\x1b[1m',
   red: '\x1b[31m',
@@ -19,18 +23,46 @@ const colors = {
   cyan: '\x1b[36m',
 }
 
-function log(message, color = 'reset') {
+interface HTTPResponse {
+  status: number
+  ok: boolean
+  data?: string
+  headers?: Headers
+  error?: string
+}
+
+interface SpawnResult {
+  code: number | null
+  output: string
+}
+
+interface Endpoint {
+  name: string
+  url: string
+  method: string
+  body?: Record<string, unknown>
+}
+
+interface DirectTest {
+  name: string
+  url: string
+  expectedStatus: number
+}
+
+type TestStatus = 'PASS' | 'FAIL' | 'WARN'
+
+function log(message: string, color: Color = 'reset'): void {
   console.log(`${colors[color]}${message}${colors.reset}`)
 }
 
-function logSection(title) {
+function logSection(title: string): void {
   log(`\n${'='.repeat(80)}`, 'cyan')
   log(`  ${title}`, 'bright')
   log(`${'='.repeat(80)}`, 'cyan')
 }
 
-function logTest(testName, status, details = '') {
-  const statusColor = status === 'PASS' ? 'green' : status === 'FAIL' ? 'red' : 'yellow'
+function logTest(testName: string, status: TestStatus, details: string = ''): void {
+  const statusColor: Color = status === 'PASS' ? 'green' : status === 'FAIL' ? 'red' : 'yellow'
   const statusSymbol = status === 'PASS' ? '✅' : status === 'FAIL' ? '❌' : '⚠️'
   log(`${statusSymbol} ${testName}: ${status}`, statusColor)
   if (details) {
@@ -38,37 +70,45 @@ function logTest(testName, status, details = '') {
   }
 }
 
-async function makeRequest(url, options = {}) {
+async function makeRequest(
+  url: string,
+  options: Record<string, unknown> = {}
+): Promise<HTTPResponse> {
   const fetch = (await import('node-fetch')).default
   try {
-    const response = await fetch(url, {
+    const response = await (fetch as never as typeof fetch)(url, {
       method: 'GET',
       ...options,
-    })
+    } as never)
     const data = await response.text()
     return {
       status: response.status,
       ok: response.ok,
-      data: data,
-      headers: response.headers,
+      data,
+      headers: response.headers as unknown as Headers,
     }
   } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error'
     return {
       status: 0,
       ok: false,
-      error: error.message,
+      error: errorMessage,
     }
   }
 }
 
-async function testTradingAPIEndpoints() {
+async function testTradingAPIEndpoints(): Promise<void> {
   logSection('TRADING API ENDPOINT TESTS')
 
-  const endpoints = [
-    { name: 'Health Check', url: 'http://localhost:8000/health/', method: 'GET' },
-    { name: 'API Info', url: 'http://localhost:8000/', method: 'GET' },
-    { name: 'OpenAPI Docs', url: 'http://localhost:8000/docs', method: 'GET' },
-    { name: 'API Schema', url: 'http://localhost:8000/openapi.json', method: 'GET' },
+  const endpoints: Endpoint[] = [
+    {
+      name: 'Health Check',
+      url: `${TEST_SERVICES.TRADING_API}${HEALTH_ENDPOINTS.TRADING_API}`,
+      method: 'GET',
+    },
+    { name: 'API Info', url: `${TEST_SERVICES.TRADING_API}/`, method: 'GET' },
+    { name: 'OpenAPI Docs', url: `${TEST_SERVICES.TRADING_API}/docs`, method: 'GET' },
+    { name: 'API Schema', url: `${TEST_SERVICES.TRADING_API}/openapi.json`, method: 'GET' },
   ]
 
   for (const endpoint of endpoints) {
@@ -85,14 +125,13 @@ async function testTradingAPIEndpoints() {
   }
 }
 
-async function testTradingAPIFunctionality() {
+async function testTradingAPIFunctionality(): Promise<void> {
   logSection('TRADING API FUNCTIONALITY TESTS')
 
-  // Test trading API specific endpoints
-  const tradingEndpoints = [
+  const tradingEndpoints: Endpoint[] = [
     {
       name: 'Trading Sweep Endpoint',
-      url: 'http://localhost:8000/api/trading/sweep',
+      url: `${TEST_SERVICES.TRADING_API}/api/trading/sweep`,
       method: 'POST',
       body: {
         ticker: 'BTC-USD',
@@ -104,13 +143,13 @@ async function testTradingAPIFunctionality() {
     },
     {
       name: 'Trading Status Endpoint',
-      url: 'http://localhost:8000/api/trading/status',
+      url: `${TEST_SERVICES.TRADING_API}/api/trading/status`,
       method: 'GET',
     },
   ]
 
   for (const endpoint of tradingEndpoints) {
-    const options = { method: endpoint.method }
+    const options: Record<string, unknown> = { method: endpoint.method }
     if (endpoint.body) {
       options.headers = { 'Content-Type': 'application/json' }
       options.body = JSON.stringify(endpoint.body)
@@ -119,7 +158,7 @@ async function testTradingAPIFunctionality() {
     const response = await makeRequest(endpoint.url, options)
     if (response.ok) {
       logTest(`${endpoint.name}`, 'PASS', `Status: ${response.status}`)
-      if (endpoint.body) {
+      if (endpoint.body && response.data) {
         try {
           const data = JSON.parse(response.data)
           logTest(
@@ -141,10 +180,9 @@ async function testTradingAPIFunctionality() {
   }
 }
 
-async function testZixlyToTradingIntegration() {
+async function testZixlyToTradingIntegration(): Promise<void> {
   logSection('ZIXLY → TRADING API INTEGRATION TESTS')
 
-  // Test webhook receiver → trading API communication
   const webhookPayload = {
     ticker: 'BTC-USD',
     fast_range: [10, 20],
@@ -155,7 +193,7 @@ async function testZixlyToTradingIntegration() {
 
   log('Testing webhook receiver → trading API integration...', 'blue')
 
-  const response = await makeRequest('http://localhost:3002/webhook/trading-sweep', {
+  const response = await makeRequest(`${TEST_SERVICES.WEBHOOK_RECEIVER}/webhook/trading-sweep`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -163,34 +201,31 @@ async function testZixlyToTradingIntegration() {
     body: JSON.stringify(webhookPayload),
   })
 
-  if (response.ok) {
+  if (response.ok && response.data) {
     const data = JSON.parse(response.data)
     logTest('Webhook → Trading API', 'PASS', `Job ID: ${data.job_id}`)
 
-    // Wait for job processing
     log('Waiting for job processing...', 'yellow')
     await setTimeout(3000)
 
-    // Check worker logs for trading API calls
     logTest('Job Processing', 'PASS', 'Job queued and processed by workers')
   } else {
     logTest('Webhook → Trading API', 'FAIL', `Status: ${response.status}, Error: ${response.data}`)
   }
 }
 
-async function testTradingAPIDirectAccess() {
+async function testTradingAPIDirectAccess(): Promise<void> {
   logSection('TRADING API DIRECT ACCESS TESTS')
 
-  // Test direct access to trading API from host
-  const directTests = [
+  const directTests: DirectTest[] = [
     {
       name: 'Direct Health Check',
-      url: 'http://localhost:8000/health/',
+      url: `${TEST_SERVICES.TRADING_API}/health/`,
       expectedStatus: 200,
     },
     {
       name: 'API Documentation',
-      url: 'http://localhost:8000/docs',
+      url: `${TEST_SERVICES.TRADING_API}/docs`,
       expectedStatus: 200,
     },
   ]
@@ -205,12 +240,12 @@ async function testTradingAPIDirectAccess() {
   }
 }
 
-async function testServiceCommunication() {
+async function testServiceCommunication(): Promise<void> {
   logSection('SERVICE COMMUNICATION TESTS')
 
   // Test Redis connectivity from services
   try {
-    const result = await new Promise((resolve, _reject) => {
+    const result = await new Promise<SpawnResult>((resolve) => {
       const child = spawn(
         'docker-compose',
         ['exec', '-T', 'webhook-receiver', 'redis-cli', '-h', 'redis', 'ping'],
@@ -234,12 +269,13 @@ async function testServiceCommunication() {
       logTest('Webhook Receiver → Redis', 'FAIL', `Redis not responding: ${result.output}`)
     }
   } catch (error) {
-    logTest('Webhook Receiver → Redis', 'FAIL', `Redis test failed: ${error.message}`)
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+    logTest('Webhook Receiver → Redis', 'FAIL', `Redis test failed: ${errorMessage}`)
   }
 
   // Test trading API → Redis connectivity
   try {
-    const result = await new Promise((resolve, _reject) => {
+    const result = await new Promise<SpawnResult>((resolve) => {
       const child = spawn(
         'docker-compose',
         ['exec', '-T', 'trading-api', 'redis-cli', '-h', 'redis', 'ping'],
@@ -263,12 +299,13 @@ async function testServiceCommunication() {
       logTest('Trading API → Redis', 'FAIL', `Redis not responding: ${result.output}`)
     }
   } catch (error) {
-    logTest('Trading API → Redis', 'FAIL', `Redis test failed: ${error.message}`)
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+    logTest('Trading API → Redis', 'FAIL', `Redis test failed: ${errorMessage}`)
   }
 
   // Test webhook receiver → trading API connectivity
   try {
-    const result = await new Promise((resolve, _reject) => {
+    const result = await new Promise<SpawnResult>((resolve) => {
       const child = spawn(
         'docker-compose',
         ['exec', '-T', 'webhook-receiver', 'curl', '-s', 'http://trading-api:8000/health/'],
@@ -300,19 +337,20 @@ async function testServiceCommunication() {
       )
     }
   } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error'
     logTest(
       'Webhook Receiver → Trading API',
       'FAIL',
-      `Trading API connectivity test failed: ${error.message}`
+      `Trading API connectivity test failed: ${errorMessage}`
     )
   }
 }
 
-async function testTradingAPILogs() {
+async function testTradingAPILogs(): Promise<void> {
   logSection('TRADING API LOG ANALYSIS')
 
   try {
-    const result = await new Promise((resolve, _reject) => {
+    const result = await new Promise<SpawnResult>((resolve) => {
       const child = spawn('docker-compose', ['logs', 'trading-api', '--tail', '20'], {
         stdio: ['pipe', 'pipe', 'pipe'],
       })
@@ -363,16 +401,16 @@ async function testTradingAPILogs() {
       logTest('API Request Handling', 'WARN', 'No API requests found in recent logs')
     }
   } catch (error) {
-    logTest('Trading API Log Analysis', 'FAIL', `Log analysis failed: ${error.message}`)
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+    logTest('Trading API Log Analysis', 'FAIL', `Log analysis failed: ${errorMessage}`)
   }
 }
 
-async function testWorkerIntegration() {
+async function testWorkerIntegration(): Promise<void> {
   logSection('WORKER INTEGRATION TESTS')
 
-  // Check pipeline worker logs for trading API calls
   try {
-    const result = await new Promise((resolve, _reject) => {
+    const result = await new Promise<SpawnResult>((resolve) => {
       const child = spawn('docker-compose', ['logs', 'pipeline-worker', '--tail', '30'], {
         stdio: ['pipe', 'pipe', 'pipe'],
       })
@@ -412,16 +450,17 @@ async function testWorkerIntegration() {
       logTest('Job Lifecycle', 'WARN', 'Job completion not confirmed in logs')
     }
   } catch (error) {
-    logTest('Worker Integration', 'FAIL', `Worker log analysis failed: ${error.message}`)
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+    logTest('Worker Integration', 'FAIL', `Worker log analysis failed: ${errorMessage}`)
   }
 }
 
-async function testPerformanceMetrics() {
+async function testPerformanceMetrics(): Promise<void> {
   logSection('PERFORMANCE METRICS TESTS')
 
   // Test response times
   const startTime = Date.now()
-  const response = await makeRequest('http://localhost:8000/health/')
+  const response = await makeRequest(`${TEST_SERVICES.TRADING_API}/health/`)
   const endTime = Date.now()
   const responseTime = endTime - startTime
 
@@ -436,7 +475,7 @@ async function testPerformanceMetrics() {
 
   // Test webhook response time
   const webhookStartTime = Date.now()
-  const webhookResponse = await makeRequest('http://localhost:3002/health')
+  const webhookResponse = await makeRequest(`${TEST_SERVICES.WEBHOOK_RECEIVER}/health`)
   const webhookEndTime = Date.now()
   const webhookResponseTime = webhookEndTime - webhookStartTime
 
@@ -447,7 +486,7 @@ async function testPerformanceMetrics() {
   }
 }
 
-async function generateTestReport() {
+async function generateTestReport(): Promise<void> {
   logSection('E2E TRADING INTEGRATION TEST REPORT')
 
   log('🎯 Trading API Integration Status:', 'green')
@@ -483,7 +522,7 @@ async function generateTestReport() {
   log('   • Performance metrics within acceptable ranges', 'reset')
 }
 
-async function main() {
+async function main(): Promise<void> {
   log('🧪 E2E TRADING API INTEGRATION TEST SUITE', 'bright')
   log('Testing zixly → trading API communication and functionality...', 'blue')
 
@@ -501,7 +540,8 @@ async function main() {
     log('\n🎉 All E2E tests completed successfully!', 'green')
     log('Trading API integration is fully functional.', 'green')
   } catch (error) {
-    log(`\n❌ E2E test failed: ${error.message}`, 'red')
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+    log(`\n❌ E2E test failed: ${errorMessage}`, 'red')
     process.exit(1)
   }
 }

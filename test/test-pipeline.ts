@@ -10,10 +10,59 @@
  */
 
 import http from 'http'
+import { URL } from 'url'
+import { TEST_SERVICES, PORTS } from './config/test-constants'
+import { HEALTH_ENDPOINTS as ENDPOINTS } from '@/lib/config/constants'
 
-// Test configuration
-const TEST_CONFIG = {
-  webhookReceiverUrl: 'http://localhost:3002',
+interface TestConfig {
+  webhookReceiverUrl: string
+  testPayload: {
+    ticker: string
+    fast_range: [number, number]
+    slow_range: [number, number]
+    step: number
+    strategy_type: string
+    min_trades: number
+  }
+}
+
+interface ServiceProfile {
+  profile: string
+  port: number
+  url: string
+}
+
+interface HTTPRequestOptions {
+  method?: string
+  headers?: Record<string, string>
+  body?: unknown
+  timeout?: number
+}
+
+interface HTTPResponse {
+  status: number
+  data: unknown
+  headers: http.IncomingHttpHeaders
+}
+
+interface ServiceAvailability {
+  available: boolean
+  status?: number
+  error?: string
+}
+
+interface TestResults {
+  webhookReceiverHealth: boolean
+  webhookReceiverSweep: boolean
+}
+
+interface AvailabilityResults {
+  webhookReceiver?: boolean
+  tradingApi?: boolean
+}
+
+const TEST_CONFIG: TestConfig = {
+  webhookReceiverUrl: TEST_SERVICES.WEBHOOK_RECEIVER,
   testPayload: {
     ticker: 'BTC-USD',
     fast_range: [10, 20],
@@ -24,44 +73,49 @@ const TEST_CONFIG = {
   },
 }
 
-// Service profile requirements
-const SERVICE_PROFILES = {
-  webhookReceiver: { profile: 'zixly', port: 3002, url: 'http://localhost:3002/health' },
-  tradingApi: { profile: 'trading', port: 8000, url: 'http://localhost:8000/health' },
+const SERVICE_PROFILES: Record<string, ServiceProfile> = {
+  webhookReceiver: {
+    profile: 'zixly',
+    port: PORTS.WEBHOOK_RECEIVER,
+    url: `${TEST_SERVICES.WEBHOOK_RECEIVER}${ENDPOINTS.WEBHOOK_RECEIVER}`,
+  },
+  tradingApi: {
+    profile: 'trading',
+    port: PORTS.TRADING_API,
+    url: `${TEST_SERVICES.TRADING_API}${ENDPOINTS.TRADING_API}`,
+  },
 }
 
-// Utility function to make HTTP requests
-function makeRequest(url, options = {}) {
+function makeRequest(url: string, options: HTTPRequestOptions = {}): Promise<HTTPResponse> {
   return new Promise((resolve, reject) => {
     const urlObj = new URL(url)
-    const timeout = options.timeout || 5000 // Default 5 second timeout
+    const timeout = options.timeout || 5000
 
-    const requestOptions = {
+    const requestOptions: http.RequestOptions = {
       hostname: urlObj.hostname,
       port: urlObj.port,
       path: urlObj.pathname + urlObj.search,
       method: options.method || 'GET',
-      timeout: timeout, // Add timeout
+      timeout,
       headers: {
         'Content-Type': 'application/json',
         ...options.headers,
       },
     }
 
-    const req = http.request(requestOptions, (res) => {
+    const req = http.request(requestOptions, (res: http.IncomingMessage) => {
       let data = ''
-      res.on('data', (chunk) => (data += chunk))
+      res.on('data', (chunk: Buffer) => (data += chunk))
       res.on('end', () => {
         try {
           const jsonData = data ? JSON.parse(data) : {}
-          resolve({ status: res.statusCode, data: jsonData, headers: res.headers })
+          resolve({ status: res.statusCode!, data: jsonData, headers: res.headers })
         } catch {
-          resolve({ status: res.statusCode, data: data, headers: res.headers })
+          resolve({ status: res.statusCode!, data, headers: res.headers })
         }
       })
     })
 
-    // Handle timeout
     req.on('timeout', () => {
       req.destroy()
       reject(new Error(`Request timeout after ${timeout}ms`))
@@ -77,18 +131,20 @@ function makeRequest(url, options = {}) {
   })
 }
 
-// Check if a service is available
-async function checkServiceAvailability(url, _serviceName) {
+async function checkServiceAvailability(
+  url: string,
+  _serviceName: string
+): Promise<ServiceAvailability> {
   try {
     const response = await makeRequest(url, { timeout: 2000 })
     return { available: true, status: response.status }
   } catch (error) {
-    return { available: false, error: error.message }
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+    return { available: false, error: errorMessage }
   }
 }
 
-// Test functions
-async function testWebhookReceiverHealth() {
+async function testWebhookReceiverHealth(): Promise<boolean> {
   console.log('🔍 Testing Webhook Receiver Health...')
   try {
     const response = await makeRequest(`${TEST_CONFIG.webhookReceiverUrl}/health`)
@@ -100,12 +156,13 @@ async function testWebhookReceiverHealth() {
       return false
     }
   } catch (error) {
-    console.log('❌ Webhook Receiver is not accessible:', error.message)
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+    console.log('❌ Webhook Receiver is not accessible:', errorMessage)
     return false
   }
 }
 
-async function testTradingSweepWebhook() {
+async function testTradingSweepWebhook(): Promise<unknown> {
   console.log('🚀 Testing Trading Sweep Webhook...')
   try {
     const response = await makeRequest(`${TEST_CONFIG.webhookReceiverUrl}/webhook/trading-sweep`, {
@@ -121,20 +178,20 @@ async function testTradingSweepWebhook() {
       return null
     }
   } catch (error) {
-    console.log('❌ Trading sweep webhook error:', error.message)
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+    console.log('❌ Trading sweep webhook error:', errorMessage)
     return null
   }
 }
 
-// Pre-flight check function
-async function preflightCheck() {
+async function preflightCheck(): Promise<AvailabilityResults> {
   console.log('🔍 Checking service availability...\n')
 
-  const results = {}
+  const results: AvailabilityResults = {}
 
   for (const [service, config] of Object.entries(SERVICE_PROFILES)) {
     const availability = await checkServiceAvailability(config.url, service)
-    results[service] = availability.available
+    results[service as keyof AvailabilityResults] = availability.available
 
     if (availability.available) {
       console.log(`✅ ${service}: Available (port ${config.port})`)
@@ -147,20 +204,17 @@ async function preflightCheck() {
   return results
 }
 
-// Main test function
-async function runPipelineTests() {
+async function runPipelineTests(): Promise<TestResults> {
   console.log('🧪 Zixly Pipeline Test Suite')
   console.log('================================\n')
 
-  // Run preflight check
   const availability = await preflightCheck()
 
-  const results = {
+  const results: TestResults = {
     webhookReceiverHealth: false,
     webhookReceiverSweep: false,
   }
 
-  // Test webhook receiver (requires zixly profile)
   if (availability.webhookReceiver) {
     results.webhookReceiverHealth = await testWebhookReceiverHealth()
     console.log('')
@@ -174,11 +228,10 @@ async function runPipelineTests() {
     console.log('⏭️  Skipping webhook receiver tests (service not running)\n')
   }
 
-  // Summary
   console.log('📊 Test Results Summary')
   console.log('========================')
 
-  const testedServices = []
+  const testedServices: string[] = []
   if (availability.webhookReceiver) {
     console.log(`Webhook Receiver Health: ${results.webhookReceiverHealth ? '✅ PASS' : '❌ FAIL'}`)
     console.log(`Trading Sweep Webhook: ${results.webhookReceiverSweep ? '✅ PASS' : '❌ FAIL'}`)
@@ -205,7 +258,6 @@ async function runPipelineTests() {
   return results
 }
 
-// Run the tests
 if (import.meta.url === `file://${process.argv[1]}`) {
   runPipelineTests().catch(console.error)
 }

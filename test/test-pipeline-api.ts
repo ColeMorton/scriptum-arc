@@ -9,13 +9,46 @@
 
 import { config } from 'dotenv'
 import http from 'http'
+import { URL } from 'url'
+import { TEST_SERVICES } from './config/test-constants'
 
-// Load environment variables from .env.local
 config({ path: '.env.local' })
 
-// Test configuration
-const TEST_CONFIG = {
-  baseUrl: 'http://localhost:3001',
+interface TestConfig {
+  baseUrl: string
+  testPayload: {
+    job_type: string
+    ticker: string
+    config: {
+      fast_range: [number, number]
+      slow_range: [number, number]
+      step: number
+      strategy_type: string
+    }
+  }
+}
+
+interface HTTPRequestOptions {
+  method?: string
+  headers?: Record<string, string>
+  body?: unknown
+}
+
+interface HTTPResponse {
+  status: number
+  headers: http.IncomingHttpHeaders
+  data: unknown
+}
+
+interface TestResults {
+  health: boolean
+  pipelineAuth: boolean
+  listAuth: boolean
+  mockAuth: boolean
+}
+
+const TEST_CONFIG: TestConfig = {
+  baseUrl: TEST_SERVICES.GRAFANA,
   testPayload: {
     job_type: 'trading-sweep',
     ticker: 'BTC-USD',
@@ -28,11 +61,10 @@ const TEST_CONFIG = {
   },
 }
 
-// Utility function to make HTTP requests
-function makeRequest(url, options = {}) {
+function makeRequest(url: string, options: HTTPRequestOptions = {}): Promise<HTTPResponse> {
   return new Promise((resolve, reject) => {
     const urlObj = new URL(url)
-    const requestOptions = {
+    const requestOptions: http.RequestOptions = {
       hostname: urlObj.hostname,
       port: urlObj.port,
       path: urlObj.pathname + urlObj.search,
@@ -43,30 +75,30 @@ function makeRequest(url, options = {}) {
       },
     }
 
-    const req = http.request(requestOptions, (res) => {
+    const req = http.request(requestOptions, (res: http.IncomingMessage) => {
       let data = ''
-      res.on('data', (chunk) => {
+      res.on('data', (chunk: Buffer) => {
         data += chunk
       })
       res.on('end', () => {
         try {
           const parsedData = JSON.parse(data)
           resolve({
-            status: res.statusCode,
+            status: res.statusCode!,
             headers: res.headers,
             data: parsedData,
           })
         } catch {
           resolve({
-            status: res.statusCode,
+            status: res.statusCode!,
             headers: res.headers,
-            data: data,
+            data,
           })
         }
       })
     })
 
-    req.on('error', (error) => {
+    req.on('error', (error: Error) => {
       reject(error)
     })
 
@@ -78,8 +110,7 @@ function makeRequest(url, options = {}) {
   })
 }
 
-// Test functions
-async function testHealthEndpoint() {
+async function testHealthEndpoint(): Promise<boolean> {
   console.log('🔍 Testing Health Endpoint...')
   try {
     const response = await makeRequest(`${TEST_CONFIG.baseUrl}/api/health`)
@@ -87,12 +118,13 @@ async function testHealthEndpoint() {
     console.log(`Response:`, response.data)
     return response.status === 200
   } catch (error) {
-    console.log(`❌ Health check failed: ${error.message}`)
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+    console.log(`❌ Health check failed: ${errorMessage}`)
     return false
   }
 }
 
-async function testPipelineAPIWithoutAuth() {
+async function testPipelineAPIWithoutAuth(): Promise<boolean> {
   console.log('\n🔍 Testing Pipeline API (without authentication)...')
   try {
     const response = await makeRequest(`${TEST_CONFIG.baseUrl}/api/pipelines`, {
@@ -103,18 +135,19 @@ async function testPipelineAPIWithoutAuth() {
     console.log(`Status: ${response.status}`)
     console.log(`Response:`, response.data)
 
-    if (response.status === 401 && response.data.error === 'Unauthorized') {
+    if (response.status === 401 && (response.data as { error?: string }).error === 'Unauthorized') {
       console.log('✅ API correctly requires authentication')
       return true
     }
     return false
   } catch (error) {
-    console.log(`❌ API test failed: ${error.message}`)
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+    console.log(`❌ API test failed: ${errorMessage}`)
     return false
   }
 }
 
-async function testPipelineListWithoutAuth() {
+async function testPipelineListWithoutAuth(): Promise<boolean> {
   console.log('\n🔍 Testing Pipeline List API (without authentication)...')
   try {
     const response = await makeRequest(`${TEST_CONFIG.baseUrl}/api/pipelines`)
@@ -122,18 +155,19 @@ async function testPipelineListWithoutAuth() {
     console.log(`Status: ${response.status}`)
     console.log(`Response:`, response.data)
 
-    if (response.status === 401 && response.data.error === 'Unauthorized') {
+    if (response.status === 401 && (response.data as { error?: string }).error === 'Unauthorized') {
       console.log('✅ List API correctly requires authentication')
       return true
     }
     return false
   } catch (error) {
-    console.log(`❌ List API test failed: ${error.message}`)
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+    console.log(`❌ List API test failed: ${errorMessage}`)
     return false
   }
 }
 
-async function testWithMockAuth() {
+async function testWithMockAuth(): Promise<boolean> {
   console.log('\n🔍 Testing Pipeline API (with mock authentication)...')
   try {
     const response = await makeRequest(`${TEST_CONFIG.baseUrl}/api/pipelines`, {
@@ -147,20 +181,19 @@ async function testWithMockAuth() {
     console.log(`Status: ${response.status}`)
     console.log(`Response:`, response.data)
 
-    // This will likely fail with authentication error, which is expected
     return response.status === 401
   } catch (error) {
-    console.log(`❌ Mock auth test failed: ${error.message}`)
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+    console.log(`❌ Mock auth test failed: ${errorMessage}`)
     return false
   }
 }
 
-// Main test runner
-async function runPipelineAPITests() {
+async function runPipelineAPITests(): Promise<void> {
   console.log('🧪 Zixly Pipeline API Test Suite')
   console.log('================================\n')
 
-  const results = {
+  const results: TestResults = {
     health: await testHealthEndpoint(),
     pipelineAuth: await testPipelineAPIWithoutAuth(),
     listAuth: await testPipelineListWithoutAuth(),
@@ -192,13 +225,12 @@ async function runPipelineAPITests() {
   console.log('2. A valid JWT token from Supabase auth')
   console.log('3. The user must have a tenant_id in their metadata')
   console.log('\nExample with real token:')
-  console.log('curl -X POST http://localhost:3001/api/pipelines \\')
+  console.log(`curl -X POST ${TEST_CONFIG.baseUrl}/api/pipelines \\`)
   console.log('  -H "Content-Type: application/json" \\')
   console.log('  -H "Authorization: Bearer YOUR_SUPABASE_JWT_TOKEN" \\')
   console.log('  -d \'{"job_type": "trading-sweep", "ticker": "BTC-USD"}\'')
 }
 
-// Run the tests
 if (import.meta.url === `file://${process.argv[1]}`) {
   runPipelineAPITests().catch(console.error)
 }

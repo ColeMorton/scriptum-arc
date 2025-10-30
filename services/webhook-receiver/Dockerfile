@@ -43,6 +43,9 @@ COPY --from=builder --chown=webhook:nodejs /app/dist ./dist
 COPY --from=builder --chown=webhook:nodejs /app/node_modules ./node_modules
 COPY --from=builder --chown=webhook:nodejs /app/package.json ./package.json
 
+# Create directories for writable data (temp, logs)
+RUN mkdir -p /tmp /app/logs && chown -R webhook:nodejs /tmp /app/logs
+
 USER webhook
 
 EXPOSE 3000

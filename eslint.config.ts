@@ -4,7 +4,6 @@ import { FlatCompat } from '@eslint/eslintrc'
 import js from '@eslint/js'
 import typescript from '@typescript-eslint/eslint-plugin'
 import typescriptParser from '@typescript-eslint/parser'
-
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 

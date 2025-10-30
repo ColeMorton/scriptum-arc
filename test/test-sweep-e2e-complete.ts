@@ -23,15 +23,102 @@ config({ path: '.env.local' })
 import fetch from 'node-fetch'
 import http from 'http'
 import { URL } from 'url'
+import { TEST_DB_CONFIG } from './config/test-constants'
 
-const TRADING_API_URL = 'http://localhost:8000'
-const TRADING_API_KEY = 'dev-key-000000000000000000000000'
+const TRADING_API_URL = TEST_DB_CONFIG.TRADING_API_URL
+const TRADING_API_KEY = TEST_DB_CONFIG.TRADING_API_KEY
+
+interface SweepParams {
+  ticker: string
+  fast_range: [number, number]
+  slow_range: [number, number]
+  step: number
+  strategy_type: string
+  min_trades: number
+}
+
+interface SweepResponse {
+  job_id: string
+  created_at: string
+  status_url: string
+}
+
+interface SSEMetrics {
+  connectionEstablished: string | null
+  firstProgressUpdate: string | null
+  completionDetected: string | null
+  totalDuration: number | null
+  updatesReceived: number
+}
+
+interface SSEEventData {
+  done?: boolean
+  error?: boolean
+  message?: string
+  percent?: number
+  result_data?: {
+    sweep_run_id?: string
+    output?: string
+  }
+}
+
+interface SSEEvent {
+  data: string
+}
+
+interface SSEErrorEvent {
+  type: string
+  message: string
+  status?: number
+}
+
+interface StreamingSSEOptions {
+  headers?: Record<string, string>
+}
+
+interface SSEResult {
+  sweepRunId: string | null
+  status: string
+  data: SSEEventData
+}
+
+interface BestResultParameters {
+  fast?: number
+  slow?: number
+  signal?: number
+}
+
+interface BestResult {
+  parameters?: BestResultParameters
+  total_return?: number
+  sharpe_ratio?: number
+  max_drawdown?: number
+  win_rate?: number
+}
+
+interface SweepResults {
+  total_count?: number
+  returned_count?: number
+}
+
+interface TestResult {
+  jobId: string
+  sweepParams: SweepParams
+  bestResult: BestResult
+  results: SweepResults
+}
+
+interface JobStatus {
+  result_data?: {
+    output?: string
+  }
+}
 
 /**
  * Extract sweep_run_id from Trading API CLI output
  * The output contains text like: "run ID: 32cc8bdd-1234-5678-90ab-cdef12345678"
  */
-function extractSweepRunId(output) {
+function extractSweepRunId(output: string | undefined): string | null {
   if (!output) return null
 
   // Match UUID pattern after "run ID: " (most common format)
@@ -40,7 +127,6 @@ function extractSweepRunId(output) {
     /run\s*ID:\s*([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}(?:\.\.\.)?)/i
   )
   if (match && match[1]) {
-    // Remove trailing dots if present
     return match[1].replace(/\.\.\.$/, '')
   }
 
@@ -63,12 +149,12 @@ function extractSweepRunId(output) {
   return null
 }
 
-async function testCompleteSweepWorkflow() {
+async function testCompleteSweepWorkflow(): Promise<TestResult> {
   console.log('🚀 Starting Complete Sweep E2E Test (SSE Version)')
   console.log('==================================================')
 
   // 1. Define sweep parameters
-  const sweepParams = {
+  const sweepParams: SweepParams = {
     ticker: 'NVDA',
     fast_range: [10, 20],
     slow_range: [20, 30],
@@ -98,7 +184,7 @@ async function testCompleteSweepWorkflow() {
     )
   }
 
-  const sweepResult = await sweepResponse.json()
+  const sweepResult = (await sweepResponse.json()) as SweepResponse
   const jobId = sweepResult.job_id
 
   console.log('✅ Sweep job created successfully')
@@ -138,7 +224,7 @@ async function testCompleteSweepWorkflow() {
   console.log('📡 Opening SSE stream for real-time progress updates...')
 
   // Performance metrics
-  const metrics = {
+  const metrics: SSEMetrics = {
     connectionEstablished: null,
     firstProgressUpdate: null,
     completionDetected: null,
@@ -159,7 +245,19 @@ async function testCompleteSweepWorkflow() {
 
   // True streaming SSE client using Node.js native streams
   class StreamingSSEClient {
-    constructor(url, options = {}) {
+    private url: URL
+    private headers: Record<string, string>
+    private listeners: Record<string, Array<(data: SSEEvent | SSEErrorEvent) => void>>
+    private isConnected: boolean
+    private shouldReconnect: boolean
+    private reconnectDelay: number
+    private maxReconnectAttempts: number
+    private reconnectAttempts: number
+    private lastEventId: string | null
+    private request: http.ClientRequest | null
+    private isClosing: boolean
+
+    constructor(url: string, options: StreamingSSEOptions = {}) {
       this.url = new URL(url)
       this.headers = options.headers || {}
       this.listeners = { message: [], error: [], open: [] }
@@ -170,29 +268,30 @@ async function testCompleteSweepWorkflow() {
       this.reconnectAttempts = 0
       this.lastEventId = null
       this.request = null
-      this.isClosing = false // Add this flag
+      this.isClosing = false
     }
 
-    addEventListener(event, handler) {
+    addEventListener(event: string, handler: (data: SSEEvent | SSEErrorEvent) => void): void {
       if (!this.listeners[event]) this.listeners[event] = []
       this.listeners[event].push(handler)
     }
 
-    emit(event, data) {
+    private emit(event: string, data: SSEEvent | SSEErrorEvent): void {
       if (this.listeners[event]) {
         this.listeners[event].forEach((handler) => handler(data))
       }
     }
 
-    async connect() {
+    async connect(): Promise<void> {
       try {
         console.log('🔗 Connecting to SSE stream...')
 
-        const options = {
+        const options: http.RequestOptions = {
           hostname: this.url.hostname,
           port: this.url.port || 80,
           path: this.url.pathname + this.url.search,
           method: 'GET',
+          timeout: 0,
           headers: {
             Accept: 'text/event-stream',
             'Cache-Control': 'no-cache',
@@ -202,7 +301,10 @@ async function testCompleteSweepWorkflow() {
         }
 
         if (this.lastEventId) {
-          options.headers['Last-Event-ID'] = this.lastEventId
+          options.headers = {
+            ...options.headers,
+            'Last-Event-ID': this.lastEventId,
+          }
         }
 
         this.request = http.request(options, (response) => {
@@ -219,12 +321,12 @@ async function testCompleteSweepWorkflow() {
 
           this.isConnected = true
           this.reconnectAttempts = 0
-          this.emit('open', { type: 'open' })
+          this.emit('open', { type: 'open' } as SSEErrorEvent)
           console.log('✅ SSE connection established')
 
           let buffer = ''
 
-          response.on('data', (chunk) => {
+          response.on('data', (chunk: Buffer) => {
             buffer += chunk.toString()
             const lines = buffer.split('\n')
             buffer = lines.pop() || ''
@@ -247,7 +349,7 @@ async function testCompleteSweepWorkflow() {
             this.handleReconnection()
           })
 
-          response.on('error', (error) => {
+          response.on('error', (error: NodeJS.ErrnoException) => {
             // Suppress "aborted" errors when connection is being intentionally closed
             if (this.isClosing && (error.message === 'aborted' || error.code === 'ECONNRESET')) {
               return
@@ -260,7 +362,7 @@ async function testCompleteSweepWorkflow() {
           })
         })
 
-        this.request.on('error', (error) => {
+        this.request.on('error', (error: NodeJS.ErrnoException) => {
           // Suppress "aborted" errors when connection is being intentionally closed
           if (this.isClosing && (error.message === 'aborted' || error.code === 'ECONNRESET')) {
             return
@@ -274,13 +376,14 @@ async function testCompleteSweepWorkflow() {
 
         this.request.end()
       } catch (error) {
-        console.error('❌ Connection error:', error.message)
-        this.emit('error', { type: 'error', message: error.message })
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+        console.error('❌ Connection error:', errorMessage)
+        this.emit('error', { type: 'error', message: errorMessage })
         this.handleReconnection()
       }
     }
 
-    handleReconnection() {
+    private handleReconnection(): void {
       if (this.shouldReconnect && this.reconnectAttempts < this.maxReconnectAttempts) {
         this.reconnectAttempts++
         const delay = this.reconnectDelay * Math.pow(2, this.reconnectAttempts - 1)
@@ -291,10 +394,10 @@ async function testCompleteSweepWorkflow() {
       }
     }
 
-    close() {
+    close(): void {
       this.isConnected = false
       this.shouldReconnect = false
-      this.isClosing = true // Set flag before closing
+      this.isClosing = true
       if (this.request) {
         this.request.destroy()
         this.request = null
@@ -309,9 +412,9 @@ async function testCompleteSweepWorkflow() {
   })
 
   // Promise to handle SSE completion
-  const ssePromise = new Promise((resolve, reject) => {
+  const ssePromise = new Promise<SSEResult>((resolve, reject) => {
     let jobCompleted = false
-    let sweepRunId = null
+    let sweepRunId: string | null = null
 
     // Timeout safety net (1 hour max)
     const timeout = setTimeout(() => {
@@ -325,7 +428,8 @@ async function testCompleteSweepWorkflow() {
     // Handle messages
     eventSource.addEventListener('message', (event) => {
       try {
-        const data = JSON.parse(event.data)
+        const rawEvent = event as SSEEvent
+        const data: SSEEventData = JSON.parse(rawEvent.data)
         metrics.updatesReceived++
 
         if (!metrics.firstProgressUpdate && data.percent !== undefined) {
@@ -376,14 +480,18 @@ async function testCompleteSweepWorkflow() {
 
     // Handle errors with detailed diagnostics
     eventSource.addEventListener('error', (error) => {
+      const errorEvent = error as SSEErrorEvent
       // Suppress "aborted" errors when job is already complete
-      if (jobCompleted && (error.message === 'aborted' || error.message === 'ECONNRESET')) {
+      if (
+        jobCompleted &&
+        (errorEvent.message === 'aborted' || errorEvent.message === 'ECONNRESET')
+      ) {
         return
       }
 
-      console.error('❌ SSE connection error:', error)
-      console.error('   Error type:', error.type)
-      console.error('   Message:', error.message)
+      console.error('❌ SSE connection error:', errorEvent)
+      console.error('   Error type:', errorEvent.type)
+      console.error('   Message:', errorEvent.message)
 
       if (!jobCompleted) {
         clearTimeout(timeout)
@@ -424,7 +532,7 @@ async function testCompleteSweepWorkflow() {
       throw new Error(`Final status check failed: ${finalStatusResponse.status}`)
     }
 
-    const finalStatus = await finalStatusResponse.json()
+    const finalStatus = (await finalStatusResponse.json()) as JobStatus
 
     // Parse sweep_run_id from CLI output
     const output = finalStatus.result_data?.output || ''
@@ -470,7 +578,7 @@ async function testCompleteSweepWorkflow() {
     throw new Error(`Results retrieval failed: ${resultsResponse.status}`)
   }
 
-  const results = await resultsResponse.json()
+  const results = (await resultsResponse.json()) as SweepResults
   console.log('✅ Sweep results retrieved')
   console.log(`📊 Total results: ${results.total_count || results.returned_count || 'N/A'}`)
   console.log('')
@@ -488,7 +596,7 @@ async function testCompleteSweepWorkflow() {
     throw new Error(`Best result retrieval failed: ${bestResponse.status}`)
   }
 
-  const bestResult = await bestResponse.json()
+  const bestResult = (await bestResponse.json()) as BestResult
 
   console.log('✅ Best result retrieved successfully!')
   console.log('')
@@ -535,11 +643,11 @@ async function testCompleteSweepWorkflow() {
 
 // Run the test
 testCompleteSweepWorkflow()
-  .then((_result) => {
+  .then(() => {
     console.log('🎉 Test completed successfully!')
     process.exit(0)
   })
-  .catch((error) => {
+  .catch((error: Error) => {
     console.error('❌ Test failed:', error.message)
     process.exit(1)
   })

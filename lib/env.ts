@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { LOCAL_SERVICES, CONTAINER_SERVICES } from './config/constants'
 
 /**
  * Environment variable validation schema
@@ -10,7 +11,7 @@ const envSchema = z.object({
   // 1. APPLICATION CONFIGURATION
   // =============================================================================
   NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
-  NEXT_PUBLIC_APP_URL: z.string().url().default('http://localhost:3000'),
+  NEXT_PUBLIC_APP_URL: z.string().url().default(LOCAL_SERVICES.NEXT_APP),
   NEXT_PUBLIC_pipeline_URL: z.string().url().default('http://localhost:5678'),
 
   // =============================================================================
@@ -35,12 +36,12 @@ const envSchema = z.object({
   TRADING_DATABASE_URL: z
     .string()
     .url()
-    .default('postgresql://trading_user:changeme@postgres:5432/trading_db'),
+    .default(CONTAINER_SERVICES.POSTGRES.replace('PASSWORD', 'changeme')),
 
   // =============================================================================
   // 4. TRADING API CONFIGURATION
   // =============================================================================
-  TRADING_API_URL: z.string().url().default('http://trading-api:8000'),
+  TRADING_API_URL: z.string().url().default(CONTAINER_SERVICES.TRADING_API),
   TRADING_API_KEY: z.string().default('dev-key-000000000000000000000000'),
   API_KEY_SECRET: z.string().default('dev-secret-key-change-in-production'),
   ENVIRONMENT: z.string().default('development'),
@@ -52,7 +53,7 @@ const envSchema = z.object({
   // =============================================================================
   // 5. AWS / LOCALSTACK CONFIGURATION
   // =============================================================================
-  AWS_ENDPOINT_URL: z.string().url().default('http://localstack:4566'),
+  AWS_ENDPOINT_URL: z.string().url().default(CONTAINER_SERVICES.LOCALSTACK),
   AWS_REGION: z.string().default('us-east-1'),
   AWS_ACCESS_KEY_ID: z.string().default('test'),
   AWS_SECRET_ACCESS_KEY: z.string().default('test'),
@@ -142,8 +143,8 @@ const envSchema = z.object({
   WORKER_CONCURRENCY: z.string().default('2').transform(Number),
 
   // Frontend Configuration (React App)
-  VITE_API_URL: z.string().url().default('http://localhost:8000'),
-  VITE_GRAPHQL_URL: z.string().url().default('http://localhost:8000/graphql'),
+  VITE_API_URL: z.string().url().default(LOCAL_SERVICES.TRADING_API),
+  VITE_GRAPHQL_URL: z.string().url().default(`${LOCAL_SERVICES.TRADING_API}/graphql`),
 })
 
 /**
