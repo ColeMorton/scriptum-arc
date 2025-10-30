@@ -20,7 +20,8 @@ COPY --from=deps /app/node_modules ./node_modules
 # Copy source code
 COPY . .
 
-# Prisma schema is already copied in the source code
+# Copy the actual Prisma schema file (not symlink)
+COPY prisma/schema.prisma.backup prisma/schema.prisma
 
 # Generate Prisma client
 RUN npx prisma generate
