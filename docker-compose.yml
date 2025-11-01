@@ -60,7 +60,7 @@ services:
     environment:
       POSTGRES_DB: trading_db
       POSTGRES_USER: trading_user
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD environment variable must be set}
       POSTGRES_INITDB_ARGS: '--encoding=UTF-8 --locale=C'
     volumes:
       - postgres-data:/var/lib/postgresql/data
@@ -114,8 +114,14 @@ services:
       localstack:
         condition: service_healthy
     networks:
-      - unified-network
+      - unified-network # Legacy compatibility
+      - frontend-network # Public-facing services
+      - backend-network # Access to worker and databases
     restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
     profiles:
       - zixly
 
@@ -138,7 +144,7 @@ services:
       - SMTP_USER=${SMTP_USER}
       - SMTP_PASSWORD=${SMTP_PASSWORD}
       - SMTP_FROM=${SMTP_FROM}
-      - NOTIFICATION_EMAIL=${NOTIFICATION_EMAIL:-cole.morton@hotmail.com}
+      - NOTIFICATION_EMAIL=${NOTIFICATION_EMAIL:-admin@example.com}
       - LOG_LEVEL=info
       - WORKER_CONCURRENCY=2
       # AWS / LocalStack Configuration
@@ -159,7 +165,8 @@ services:
       localstack:
         condition: service_healthy
     networks:
-      - unified-network
+      - unified-network # Legacy compatibility
+      - backend-network # Internal worker network
     restart: unless-stopped
     deploy:
       replicas: 2
@@ -170,14 +177,75 @@ services:
         reservations:
           cpus: '0.5'
           memory: 256M
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    profiles:
+      - zixly
+
+  # NestJS Backend - Main API server
+  backend:
+    build:
+      context: .
+      dockerfile: apps/backend/Dockerfile
+    image: zixly-backend:latest
+    container_name: zixly-backend
+    ports:
+      - '3001:3001'
+    environment:
+      - NODE_ENV=development
+      - PORT=3001
+      - DATABASE_URL=${DATABASE_URL}
+      - SUPABASE_URL=${NEXT_PUBLIC_SUPABASE_URL}
+      - SUPABASE_JWT_SECRET=${SUPABASE_JWT_SECRET}
+      - REDIS_URL=redis://redis:6379/1
+      - LOG_LEVEL=info
+    volumes:
+      - ./apps/backend/src:/app/apps/backend/src:ro
+      - /app/node_modules
+      - /app/apps/backend/node_modules
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - unified-network
+      - backend-network
+    restart: unless-stopped
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:3001/api/health']
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    cap_add:
+      - NET_BIND_SERVICE
     profiles:
       - zixly
 
   # =============================================================================
   # TRADING SERVICES (Profile: trading)
   # =============================================================================
+  # NOTE: trading-api and arq-worker depend on an external project located at
+  # /Users/colemorton/Projects/trading. This is a separate codebase not included
+  # in this repository. These services require:
+  # 1. Pre-built Docker images (trading-api:latest and arq-worker:latest)
+  # 2. External trading project directory mounted as a volume
+  # 3. Trading database configured in postgres service
+  #
+  # To use these services:
+  # - Ensure trading project exists at the specified path
+  # - Build trading-api and arq-worker images separately
+  # - Start with profile: docker-compose --profile trading up -d
+  # =============================================================================
 
-  # Trading API - FastAPI application
+  # Trading API - FastAPI application (External Dependency)
   trading-api:
     image: trading-api:latest # Use pre-built generic image
     container_name: zixly-trading-api
@@ -190,6 +258,8 @@ services:
       - DEBUG=true
       - API_KEY_SECRET=dev-secret-key-change-in-production
     volumes:
+      # WARNING: This path is machine-specific. Change to your trading project location
+      # or set via environment variable if path differs
       - /Users/colemorton/Projects/trading:/app
       - /app/node_modules
     networks:
@@ -220,6 +290,8 @@ services:
       - ENVIRONMENT=development
       - DEBUG=true
     volumes:
+      # WARNING: This path is machine-specific. Change to your trading project location
+      # or set via environment variable if path differs
       - /Users/colemorton/Projects/trading:/app
       - /app/node_modules
     networks:
@@ -269,12 +341,12 @@ services:
     image: grafana/grafana:10.2.2
     container_name: zixly-grafana
     ports:
-      - '3001:3000'
+      - '3003:3000'
     environment:
       - GF_SECURITY_ADMIN_USER=admin
-      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD:-admin}
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD:?GRAFANA_ADMIN_PASSWORD environment variable must be set}
       - GF_USERS_ALLOW_SIGN_UP=false
-      - GF_SERVER_ROOT_URL=http://localhost:3001
+      - GF_SERVER_ROOT_URL=http://localhost:3003
       - GF_ANALYTICS_REPORTING_ENABLED=false
       - GF_ANALYTICS_CHECK_FOR_UPDATES=false
     volumes:
@@ -348,6 +420,11 @@ services:
       - AWS_ACCESS_KEY_ID=test
       - AWS_SECRET_ACCESS_KEY=test
       - AWS_DEFAULT_REGION=us-east-1
+      - TRADING_API_KEY=${TRADING_API_KEY:-dev-key-change-me}
+      - SMTP_HOST=${SMTP_HOST:-smtp.office365.com}
+      - SMTP_PORT=${SMTP_PORT:-587}
+      - SMTP_USER=${SMTP_USER:-admin@example.com}
+      - SMTP_PASSWORD=${SMTP_PASSWORD:-change-me}
     entrypoint: /bin/sh
     command: >
       -c "
@@ -356,8 +433,8 @@ services:
       aws --endpoint-url=http://localstack:4566 s3 mb s3://trading-results
       aws --endpoint-url=http://localstack:4566 sqs create-queue --queue-name trading-sweep-jobs
       aws --endpoint-url=http://localstack:4566 sqs create-queue --queue-name notifications
-      aws --endpoint-url=http://localstack:4566 secretsmanager create-secret --name trading-api-credentials --secret-string '{\"api_key\":\"dev-key-000000000000000000000000\"}'
-      aws --endpoint-url=http://localstack:4566 secretsmanager create-secret --name smtp-credentials --secret-string '{\"host\":\"smtp.office365.com\",\"port\":587,\"user\":\"cole.morton@hotmail.com\",\"password\":\"your_password\"}'
+      aws --endpoint-url=http://localstack:4566 secretsmanager create-secret --name trading-api-credentials --secret-string \"{\\\"api_key\\\":\\\"$${TRADING_API_KEY}\\\"}\"
+      aws --endpoint-url=http://localstack:4566 secretsmanager create-secret --name smtp-credentials --secret-string \"{\\\"host\\\":\\\"$${SMTP_HOST}\\\",\\\"port\\\":$${SMTP_PORT},\\\"user\\\":\\\"$${SMTP_USER}\\\",\\\"password\\\":\\\"$${SMTP_PASSWORD}\\\"}\"
       echo 'LocalStack initialization complete'
       "
     profiles:
@@ -370,6 +447,28 @@ networks:
     ipam:
       config:
         - subnet: 172.25.0.0/16
+
+  # Segmented networks for better security and clarity
+  frontend-network:
+    driver: bridge
+    name: zixly-frontend-network
+    ipam:
+      config:
+        - subnet: 172.26.0.0/16
+
+  backend-network:
+    driver: bridge
+    name: zixly-backend-network
+    ipam:
+      config:
+        - subnet: 172.27.0.0/16
+
+  monitoring-network:
+    driver: bridge
+    name: zixly-monitoring-network
+    ipam:
+      config:
+        - subnet: 172.28.0.0/16
 
 volumes:
   redis-data:

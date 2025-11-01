@@ -3,6 +3,7 @@ import { prisma } from '@/lib/prisma'
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import { Prisma } from '@prisma/client'
+import { LOCAL_SERVICES } from '@/lib/config/constants'
 
 // Validation schemas
 const triggerJobSchema = z.object({
@@ -161,7 +162,7 @@ export async function POST(request: NextRequest) {
 
     // TODO: Trigger webhook to webhook-receiver service
     // For now, we'll return the job and let the user know to trigger manually
-    const webhookUrl = process.env.WEBHOOK_RECEIVER_URL || 'http://localhost:3000'
+    const webhookUrl = process.env.WEBHOOK_RECEIVER_URL || LOCAL_SERVICES.NEXT_APP
 
     // In production, trigger the webhook:
     // await fetch(`${webhookUrl}/webhook/trading-sweep`, {

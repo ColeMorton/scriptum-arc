@@ -20,7 +20,8 @@ COPY --from=deps /app/node_modules ./node_modules
 # Copy source code
 COPY . .
 
-# Prisma schema is already copied in the source code
+# Copy the actual Prisma schema file (not symlink)
+COPY prisma/schema.prisma.backup prisma/schema.prisma
 
 # Generate Prisma client
 RUN npx prisma generate
@@ -42,6 +43,9 @@ RUN addgroup --system --gid 1001 nodejs && \
 COPY --from=builder --chown=worker:nodejs /app/dist ./dist
 COPY --from=builder --chown=worker:nodejs /app/node_modules ./node_modules
 COPY --from=builder --chown=worker:nodejs /app/package.json ./package.json
+
+# Create directories for writable data (temp, logs, health check)
+RUN mkdir -p /tmp /app/logs && chown -R worker:nodejs /tmp /app/logs
 
 USER worker
 

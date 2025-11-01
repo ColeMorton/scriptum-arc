@@ -1,5 +1,6 @@
 import { setupServer } from 'msw/node'
 import { http, HttpResponse } from 'msw'
+import { LOCAL_SERVICES } from '@/lib/config/constants'
 
 // Mock Supabase API responses
 export const server = setupServer(
@@ -35,7 +36,7 @@ export const server = setupServer(
   }),
 
   // Mock health check endpoint
-  http.get('http://localhost:3000/api/health', () => {
+  http.get(`${LOCAL_SERVICES.NEXT_APP}/api/health`, () => {
     return HttpResponse.json({
       status: 'ok',
       message: 'Supabase connected successfully',

@@ -3,6 +3,7 @@
 > **DevOps Automation Services for Brisbane Businesses**
 
 [![Next.js](https://img.shields.io/badge/Next.js-15.5.5-black?style=flat-square&logo=next.js)](https://nextjs.org/)
+[![NestJS](https://img.shields.io/badge/NestJS-10.x-E0234E?style=flat-square&logo=nestjs)](https://nestjs.com/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue?style=flat-square&logo=typescript)](https://www.typescriptlang.org/)
 [![Kubernetes](https://img.shields.io/badge/Kubernetes-Orchestration-326CE5?style=flat-square&logo=kubernetes)](https://kubernetes.io/)
 [![Docker](https://img.shields.io/badge/Docker-Containerization-2496ED?style=flat-square&logo=docker)](https://docker.com/)
@@ -29,23 +30,24 @@
 
 ### Service Delivery Stack
 
-| Layer                 | Technology                | Purpose                                |
-| --------------------- | ------------------------- | -------------------------------------- |
-| **Frontend**          | Next.js 15.5.5 + React 19 | Pipeline monitoring dashboard          |
-| **Styling**           | Tailwind CSS 4.x          | Utility-first responsive design        |
-| **Backend**           | Next.js API Routes        | Pipeline management APIs               |
-| **Database**          | PostgreSQL (Supabase)     | Pipeline results and job tracking      |
-| **ORM**               | Prisma 6.x                | Type-safe database access              |
-| **Auth**              | Supabase Auth             | User authentication and access control |
-| **Orchestration**     | Docker Compose/Kubernetes | Container orchestration                |
-| **Job Queue**         | SQS (LocalStack/AWS)      | Async job processing                   |
-| **Storage**           | S3 (LocalStack/AWS)       | Pipeline result datasets               |
-| **Secrets**           | Secrets Manager           | Credential management                  |
-| **Monitoring**        | Prometheus + Grafana      | Metrics and observability              |
-| **Infrastructure**    | Terraform + LocalStack    | Infrastructure as Code (local & AWS)   |
-| **CI/CD**             | GitHub Actions            | Automated deployment pipelines         |
-| **Cloud Platform**    | AWS (EKS/ECS)             | Production cloud infrastructure        |
-| **Dashboard Hosting** | Vercel                    | Web application deployment             |
+| Layer                | Technology                | Purpose                                  |
+| -------------------- | ------------------------- | ---------------------------------------- |
+| **Frontend**         | Next.js 15.5.5 + React 19 | Pipeline monitoring dashboard            |
+| **Styling**          | Tailwind CSS 4.x          | Utility-first responsive design          |
+| **Backend API**      | NestJS 10.x               | RESTful API server with Swagger docs     |
+| **Database**         | PostgreSQL (Supabase)     | Pipeline results and job tracking        |
+| **ORM**              | Prisma 6.x                | Type-safe database access                |
+| **Auth**             | Supabase Auth + JWT       | User authentication and access control   |
+| **Architecture**     | Monorepo (npm workspaces) | Shared packages and workspace management |
+| **Orchestration**    | Docker Compose/Kubernetes | Container orchestration                  |
+| **Job Queue**        | SQS (LocalStack/AWS)      | Async job processing                     |
+| **Storage**          | S3 (LocalStack/AWS)       | Pipeline result datasets                 |
+| **Secrets**          | Secrets Manager           | Credential management                    |
+| **Monitoring**       | Prometheus + Grafana      | Metrics and observability                |
+| **Infrastructure**   | Terraform + LocalStack    | Infrastructure as Code (local & AWS)     |
+| **CI/CD**            | GitHub Actions            | Automated deployment pipelines           |
+| **Cloud Platform**   | AWS (EKS/ECS)             | Production cloud infrastructure          |
+| **Frontend Hosting** | Vercel                    | Next.js application deployment           |
 
 ### Pipeline Architecture
 
@@ -95,7 +97,10 @@ git clone https://github.com/colemorton/zixly.git
 cd zixly
 
 # Install dependencies
-npm install
+npm install --legacy-peer-deps
+
+# Generate Prisma client
+npm run db:generate
 
 # Setup environment
 cp .env.local.template .env.local
@@ -108,14 +113,21 @@ npm run db:migrate
 ./scripts/init-localstack-terraform.sh
 # Creates SQS queue, S3 bucket, and Secrets Manager
 
-# Start development server
-npm run dev
+# Start NestJS backend (Terminal 1)
+npm run dev:backend
+# → http://localhost:3001
+# → Swagger docs: http://localhost:3001/api/docs
+
+# Start Next.js frontend (Terminal 2)
+npm run dev:frontend
 # → http://localhost:3000
 
-# Start pipeline stack (separate terminal)
-docker-compose -f docker-compose.pipeline.yml up
-# → Webhook receiver: http://localhost:3000/webhook
-# → Grafana: http://localhost:3001
+# OR: Start both with Docker Compose
+docker-compose --profile zixly up -d
+# → Backend: http://localhost:3001
+# → Frontend: http://localhost:3000
+# → Webhook receiver: http://localhost:3002
+# → Grafana: http://localhost:3003
 # → Prometheus: http://localhost:9090
 # → LocalStack: http://localhost:4566
 ```
@@ -173,10 +185,14 @@ curl -X POST http://localhost:3000/api/pipelines/trigger \
 ### Development Commands
 
 ```bash
-# Development
-npm run dev              # Start Next.js dev server with Turbopack
-npm run build            # Build for production
-npm run start            # Start production server
+# Development (Monorepo)
+npm run dev              # Start all services (frontend + backend)
+npm run dev:frontend     # Start Next.js dev server (port 3000)
+npm run dev:backend      # Start NestJS API server (port 3001)
+npm run build            # Build all workspaces
+npm run build:frontend   # Build Next.js only
+npm run build:backend    # Build NestJS only
+npm run type-check       # Type check all workspaces
 
 # Database
 npm run db:generate      # Generate Prisma client
@@ -185,6 +201,47 @@ npm run db:studio        # Open Prisma Studio
 npm run db:seed          # Seed database with sample data
 npm run db:reset         # Reset database (WARNING: destroys data)
 ```
+
+### Monorepo Structure
+
+The project uses **npm workspaces** with a monorepo architecture for code sharing and modularity:
+
+```
+zixly/
+├── apps/
+│   ├── frontend/              # Next.js 15 application
+│   │   ├── app/              # App Router pages
+│   │   ├── components/       # React components
+│   │   └── lib/              # API client and utilities
+│   └── backend/              # NestJS 10 API server
+│       ├── src/
+│       │   ├── auth/         # JWT authentication
+│       │   ├── pipelines/    # Pipeline management
+│       │   ├── dashboards/   # Dashboard aggregation
+│       │   └── health/       # Health checks
+│       └── Dockerfile        # Multi-stage build
+├── packages/
+│   ├── database/             # Prisma client & schema
+│   │   ├── prisma/          # Database schema
+│   │   └── src/             # Client exports
+│   └── shared/              # Shared types & utilities
+│       ├── types/           # TypeScript interfaces
+│       ├── utils/           # Common functions
+│       └── schemas/         # Zod validation schemas
+├── services/
+│   ├── webhook-receiver/     # Express.js webhook endpoint
+│   └── pipeline-worker/      # Bull queue worker
+├── docker-compose.yml        # Multi-service orchestration
+└── package.json             # Workspace configuration
+```
+
+**Benefits:**
+
+- ✅ Shared types between frontend and backend (type safety)
+- ✅ Single Prisma client for all services
+- ✅ Centralized dependency management
+- ✅ Simplified development workflow
+- ✅ Consistent TypeScript configuration
 
 ## 📊 Service Capabilities
 
