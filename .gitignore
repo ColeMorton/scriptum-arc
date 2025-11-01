@@ -10,6 +10,12 @@
 !.yarn/releases
 !.yarn/versions
 
+# monorepo workspaces
+apps/*/node_modules/
+apps/*/dist/
+packages/*/node_modules/
+packages/*/dist/
+
 # testing
 /coverage
 
@@ -19,6 +25,7 @@
 
 # production
 /build
+dist
 
 # misc
 .DS_Store
