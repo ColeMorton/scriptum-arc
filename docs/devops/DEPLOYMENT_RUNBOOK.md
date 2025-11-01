@@ -1,12 +1,17 @@
 # Zixly Deployment Runbook
 
-**Version:** 1.0  
-**Last Updated:** 2024-01-XX  
+**Version:** 2.0
+**Last Updated:** 2025-11-01
 **Owner:** DevOps Team
 
 ## Overview
 
-This runbook provides step-by-step instructions for deploying the Zixly platform across different environments.
+This runbook provides step-by-step instructions for deploying the Zixly platform across different environments. As of v2.0, Zixly uses a monorepo architecture with:
+
+- **Next.js Frontend** (apps/frontend)
+- **NestJS Backend API** (apps/backend)
+- **Webhook Receiver** (services/webhook-receiver)
+- **Pipeline Worker** (services/pipeline-worker)
 
 ## Pre-Deployment Checklist
 
@@ -24,12 +29,24 @@ This runbook provides step-by-step instructions for deploying the Zixly platform
 Verify all required environment variables are set:
 
 ```bash
-# Development
+# Shared
 export DATABASE_URL="postgresql://..."
+export POSTGRES_PASSWORD="..."
+
+# Frontend (Next.js)
 export NEXT_PUBLIC_SUPABASE_URL="http://..."
 export NEXT_PUBLIC_SUPABASE_ANON_KEY="..."
+export NEXT_PUBLIC_API_URL="http://localhost:3001"
+
+# Backend (NestJS)
+export PORT="3001"
+export SUPABASE_URL="http://..."
+export SUPABASE_JWT_SECRET="..."
+export REDIS_URL="redis://localhost:6379/1"
+export LOG_LEVEL="info"
+
+# Services
 export SUPABASE_SERVICE_ROLE_KEY="..."
-export POSTGRES_PASSWORD="..."
 export TRADING_API_KEY="..."
 export SMTP_HOST="..."
 export SMTP_PORT="587"
@@ -68,11 +85,34 @@ docker-compose --profile zixly down -v
 
 **Verification Steps:**
 
-1. Webhook Receiver: `curl http://localhost:3002/health`
-2. Pipeline Worker: Check logs for "Worker started"
-3. Next.js App: `curl http://localhost:3000`
-4. Redis: `docker-compose exec redis redis-cli ping`
-5. PostgreSQL: `docker-compose exec postgres pg_isready -U trading_user`
+1. NestJS Backend: `curl http://localhost:3001/api/health`
+2. Next.js Frontend: `curl http://localhost:3000`
+3. Webhook Receiver: `curl http://localhost:3002/health`
+4. Pipeline Worker: Check logs for "Worker started"
+5. Redis: `docker-compose exec redis redis-cli ping`
+6. PostgreSQL: `docker-compose exec postgres pg_isready -U trading_user`
+
+**NPM Workspace Development (without Docker):**
+
+```bash
+# Install dependencies
+npm install --legacy-peer-deps
+
+# Generate Prisma client
+npm run db:generate
+
+# Start backend (port 3001)
+npm run dev:backend
+
+# In another terminal, start frontend (port 3000)
+npm run dev:frontend
+
+# Build all workspaces
+npm run build
+
+# Type check
+npm run type-check
+```
 
 ### 2. GitHub Actions CI/CD Deployment
 
@@ -151,7 +191,181 @@ vercel logs
 open https://your-domain.vercel.app
 ```
 
-### 4. AWS EKS Deployment (Microservices)
+### 4. NestJS Backend Deployment
+
+**Use Case**: Deploy backend API server
+
+#### Docker Build and Deploy
+
+**Build Docker Image:**
+
+```bash
+# Build from monorepo root
+docker build -f apps/backend/Dockerfile -t zixly-backend:latest .
+
+# Tag for registry
+docker tag zixly-backend:latest ghcr.io/your-org/zixly/backend:latest
+
+# Push to GitHub Container Registry
+docker push ghcr.io/your-org/zixly/backend:latest
+```
+
+**Run with Docker:**
+
+```bash
+# Run backend container
+docker run -d \
+  --name zixly-backend \
+  -p 3001:3001 \
+  -e DATABASE_URL="${DATABASE_URL}" \
+  -e SUPABASE_URL="${SUPABASE_URL}" \
+  -e SUPABASE_JWT_SECRET="${SUPABASE_JWT_SECRET}" \
+  -e REDIS_URL="redis://redis:6379/1" \
+  -e LOG_LEVEL="info" \
+  ghcr.io/your-org/zixly/backend:latest
+
+# Check health
+curl http://localhost:3001/api/health
+
+# View logs
+docker logs -f zixly-backend
+```
+
+**Run with Docker Compose:**
+
+```bash
+# Start backend with dependencies
+docker-compose --profile zixly up -d backend
+
+# Check status
+docker-compose ps backend
+
+# View logs
+docker-compose logs -f backend
+
+# Stop backend
+docker-compose stop backend
+```
+
+#### Kubernetes Deployment
+
+**Create Backend Deployment:**
+
+```yaml
+# backend-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+  namespace: zixly
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+        - name: backend
+          image: ghcr.io/your-org/zixly/backend:latest
+          ports:
+            - containerPort: 3001
+          env:
+            - name: NODE_ENV
+              value: 'production'
+            - name: PORT
+              value: '3001'
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: backend-secrets
+                  key: database-url
+            - name: SUPABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: backend-secrets
+                  key: supabase-url
+            - name: SUPABASE_JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: backend-secrets
+                  key: supabase-jwt-secret
+            - name: REDIS_URL
+              value: 'redis://redis:6379/1'
+            - name: LOG_LEVEL
+              value: 'info'
+          resources:
+            requests:
+              cpu: 200m
+              memory: 256Mi
+            limits:
+              cpu: 1000m
+              memory: 1Gi
+          livenessProbe:
+            httpGet:
+              path: /api/health
+              port: 3001
+            initialDelaySeconds: 40
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /api/health
+              port: 3001
+            initialDelaySeconds: 10
+            periodSeconds: 5
+---
+# Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend
+  namespace: zixly
+spec:
+  selector:
+    app: backend
+  ports:
+    - port: 80
+      targetPort: 3001
+  type: ClusterIP
+```
+
+**Create Secrets:**
+
+```bash
+kubectl create secret generic backend-secrets \
+  --from-literal=database-url="${DATABASE_URL}" \
+  --from-literal=supabase-url="${SUPABASE_URL}" \
+  --from-literal=supabase-jwt-secret="${SUPABASE_JWT_SECRET}" \
+  --namespace=zixly
+```
+
+**Deploy:**
+
+```bash
+kubectl apply -f backend-deployment.yaml
+
+# Check deployment status
+kubectl get deployments -n zixly
+
+# Check pods
+kubectl get pods -n zixly -l app=backend
+
+# Check logs
+kubectl logs -f deployment/backend -n zixly
+
+# Test health endpoint
+kubectl port-forward svc/backend 3001:80 -n zixly
+curl http://localhost:3001/api/health
+```
+
+**Swagger Documentation:**
+
+Access API docs at: `http://your-backend-url/api/docs`
+
+### 5. AWS EKS Deployment (Microservices)
 
 **Use Case**: Production deployment of webhook-receiver and pipeline-worker
 
@@ -366,19 +580,31 @@ spec:
 ### Health Checks
 
 ```bash
+# NestJS Backend
+curl https://api.your-domain.com/api/health
+# Expected: {"status":"ok","database":"connected"}
+
+# Next.js Frontend
+curl https://your-domain.com
+# Expected: HTML response
+
 # Webhook Receiver
 curl https://api.your-domain.com/health
 
 # Pipeline Worker
 kubectl logs -f deployment/pipeline-worker -n zixly | grep "Worker started"
 
-# Database connectivity
-kubectl exec -it deployment/webhook-receiver -n zixly -- \
-  psql $DATABASE_URL -c "SELECT version();"
+# Backend API Swagger Docs
+curl https://api.your-domain.com/api/docs
+# Expected: HTML swagger UI
+
+# Database connectivity (from backend)
+kubectl exec -it deployment/backend -n zixly -- \
+  node -e "require('@prisma/client').PrismaClient().then(c => c.\$queryRaw\`SELECT version()\`)"
 
 # Redis connectivity
-kubectl exec -it deployment/webhook-receiver -n zixly -- \
-  redis-cli -h redis -p 6379 ping
+kubectl exec -it deployment/backend -n zixly -- \
+  node -e "require('redis').createClient({url:process.env.REDIS_URL}).ping()"
 ```
 
 ### Performance Checks

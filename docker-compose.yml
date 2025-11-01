@@ -184,6 +184,51 @@ services:
     profiles:
       - zixly
 
+  # NestJS Backend - Main API server
+  backend:
+    build:
+      context: .
+      dockerfile: apps/backend/Dockerfile
+    image: zixly-backend:latest
+    container_name: zixly-backend
+    ports:
+      - '3001:3001'
+    environment:
+      - NODE_ENV=development
+      - PORT=3001
+      - DATABASE_URL=${DATABASE_URL}
+      - SUPABASE_URL=${NEXT_PUBLIC_SUPABASE_URL}
+      - SUPABASE_JWT_SECRET=${SUPABASE_JWT_SECRET}
+      - REDIS_URL=redis://redis:6379/1
+      - LOG_LEVEL=info
+    volumes:
+      - ./apps/backend/src:/app/apps/backend/src:ro
+      - /app/node_modules
+      - /app/apps/backend/node_modules
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - unified-network
+      - backend-network
+    restart: unless-stopped
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:3001/api/health']
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    cap_add:
+      - NET_BIND_SERVICE
+    profiles:
+      - zixly
+
   # =============================================================================
   # TRADING SERVICES (Profile: trading)
   # =============================================================================
@@ -296,12 +341,12 @@ services:
     image: grafana/grafana:10.2.2
     container_name: zixly-grafana
     ports:
-      - '3001:3000'
+      - '3003:3000'
     environment:
       - GF_SECURITY_ADMIN_USER=admin
       - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD:?GRAFANA_ADMIN_PASSWORD environment variable must be set}
       - GF_USERS_ALLOW_SIGN_UP=false
-      - GF_SERVER_ROOT_URL=http://localhost:3001
+      - GF_SERVER_ROOT_URL=http://localhost:3003
       - GF_ANALYTICS_REPORTING_ENABLED=false
       - GF_ANALYTICS_CHECK_FOR_UPDATES=false
     volumes:

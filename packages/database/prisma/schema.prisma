@@ -1,0 +1,276 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// INTERNAL OPERATIONS: Zixly organization (single tenant for internal use)
+// This represents the Zixly service business itself
+model Tenant {
+  id              String   @id @default(cuid())
+  name            String   // "Zixly" - the service business
+  industry        String?  // "pipeline Automation Services"
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  clientKPIs      ClientKPI[]      // Service clients (businesses using Zixly services)
+  users           User[]            // Zixly team members
+  integrations    Integration[]     // Zixly's own system integrations (Xero, etc.)
+  workflowMetadata WorkflowMetadata[] // Internal pipeline workflows for Zixly operations
+  dataSyncStatus  DataSyncStatus[]   // Internal data sync health monitoring
+
+  @@map("tenants")
+}
+
+model User {
+  id              String   @id @default(cuid())
+  tenantId        String
+  email           String   @unique
+  role            UserRole @default(VIEWER)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  tenant          Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId])
+  @@map("users")
+}
+
+enum UserRole {
+  ADMIN
+  EDITOR
+  VIEWER
+}
+
+// INTERNAL OPERATIONS: Service clients (businesses using Zixly services)
+// Each record represents a client that has engaged Zixly for pipeline automation services
+model ClientKPI {
+  id              String   @id @default(cuid())
+  tenantId        String
+  clientId        String   // External client identifier (unique per tenant)
+  clientName      String   // Client business name (e.g., "Brisbane Construction Co")
+  industry        String?  // Client's industry (e.g., "Construction", "Professional Services")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  tenant          Tenant          @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  financials      Financial[]    // Zixly revenue/expenses per client project
+  leadEvents      LeadEvent[]    // Zixly sales pipeline (leads for service contracts)
+  customMetrics   CustomMetric[] // Internal KPIs (billable hours, project velocity, etc.)
+
+  @@unique([tenantId, clientId])
+  @@index([tenantId])
+  @@map("client_kpis")
+}
+
+// INTERNAL OPERATIONS: Zixly revenue/expenses per client project
+// Tracks financial performance of Zixly service delivery to each client
+model Financial {
+  id              String   @id @default(cuid())
+  clientKPIId     String
+  recordDate      DateTime @db.Date
+  revenue         Decimal  @db.Decimal(12, 2) // Zixly revenue from this client
+  expenses        Decimal  @db.Decimal(12, 2) // Zixly costs for this client (consultant time, tools, etc.)
+  netProfit       Decimal  @db.Decimal(12, 2) // Zixly profit from this client
+  cashFlow        Decimal  @db.Decimal(12, 2) // Cash flow impact
+  currency        String   @default("AUD")
+  sourceSystem    String?  // e.g., "xero", "invoice_ninja" (Zixly's accounting systems)
+  externalId      String?  // External system record ID
+  metadata        Json?    // Project details, billing tier, service type
+  createdAt       DateTime @default(now())
+
+  clientKPI       ClientKPI @relation(fields: [clientKPIId], references: [id], onDelete: Cascade)
+
+  @@unique([clientKPIId, recordDate, sourceSystem])
+  @@index([clientKPIId, recordDate])
+  @@index([recordDate])
+  @@map("financials")
+}
+
+// INTERNAL OPERATIONS: Zixly sales pipeline (leads for service contracts)
+// Tracks potential clients through Zixly's sales process
+model LeadEvent {
+  id              String   @id @default(cuid())
+  clientKPIId     String
+  eventDate       DateTime
+  leadId          String   // External lead/deal identifier
+  stage           String   // e.g., "prospect", "qualified", "proposal", "closed-won"
+  value           Decimal? @db.Decimal(12, 2) // Potential contract value
+  status          String   // e.g., "active", "stale", "lost"
+  sourceSystem    String?  // e.g., "mautic", "hubspot" (Zixly's marketing/sales tools)
+  externalId      String?
+  metadata        Json?    // Lead source, contact details, service tier interest
+  createdAt       DateTime @default(now())
+
+  clientKPI       ClientKPI @relation(fields: [clientKPIId], references: [id], onDelete: Cascade)
+
+  @@index([clientKPIId, eventDate])
+  @@index([leadId])
+  @@index([stage, status])
+  @@map("lead_events")
+}
+
+// INTERNAL OPERATIONS: Internal KPIs (billable hours, project velocity, etc.)
+// Tracks Zixly's service delivery performance and operational metrics
+model CustomMetric {
+  id              String   @id @default(cuid())
+  clientKPIId     String
+  metricName      String   // e.g., "billable_hours", "project_velocity", "client_satisfaction", "service_delivery_days"
+  metricValue     Decimal  @db.Decimal(12, 4)
+  unit            String?  // e.g., "hours", "days", "percent", "count", "AUD"
+  recordDate      DateTime
+  sourceSystem    String?  // e.g., "plane", "time_tracking", "chatwoot" (Zixly's operational tools)
+  metadata        Json?    // Project details, consultant info, service tier
+  embedding       Unsupported("vector(1536)")? // Future: OpenAI embeddings for RAG
+  createdAt       DateTime @default(now())
+
+  clientKPI       ClientKPI @relation(fields: [clientKPIId], references: [id], onDelete: Cascade)
+
+  @@index([clientKPIId, metricName, recordDate])
+  @@map("custom_metrics")
+}
+
+// INTERNAL OPERATIONS: Zixly's own system integrations (Xero for accounting, etc.)
+// Stores OAuth tokens for Zixly's business systems (not client systems)
+model Integration {
+  id              String   @id @default(cuid())
+  tenantId        String
+  provider        String   // e.g., "xero", "plane", "nextcloud", "metabase" (Zixly's tools)
+  status          IntegrationStatus @default(PENDING)
+  accessToken     String   @db.Text // Encrypted at application layer
+  refreshToken    String?  @db.Text // Encrypted
+  expiresAt       DateTime?
+  metadata        Json?    // Provider-specific config
+  lastSyncAt      DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  tenant          Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@unique([tenantId, provider])
+  @@index([tenantId])
+  @@map("integrations")
+}
+
+enum IntegrationStatus {
+  PENDING
+  ACTIVE
+  ERROR
+  DISABLED
+}
+
+// INTERNAL OPERATIONS: Internal pipeline workflows for Zixly operations
+// Tracks Zixly's own automation workflows (client onboarding, time tracking, etc.)
+model WorkflowMetadata {
+  id              String   @id @default(cuid())
+  tenantId        String
+  workflowId      String   // pipeline workflow ID (reference only)
+  workflowName    String   // e.g., "Client Onboarding", "Time Tracking Sync", "Financial Reporting"
+  description     String?  // Workflow purpose and functionality
+  category        String   // e.g., "client_onboarding", "time_tracking", "financial", "support"
+  isActive        Boolean  @default(true)
+  lastRunAt       DateTime?
+  metadata        Json?    // Display metadata for UI, workflow configuration
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  tenant          Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  
+  @@unique([tenantId, workflowId])
+  @@index([tenantId])
+  @@map("workflow_metadata")
+}
+
+// INTERNAL OPERATIONS: Internal data sync health monitoring
+// Tracks sync status of Zixly's own data sources (Xero, Plane, Nextcloud, etc.)
+model DataSyncStatus {
+  id              String   @id @default(cuid())
+  tenantId        String
+  dataSource      String   // e.g., "xero", "plane", "nextcloud", "metabase" (Zixly's tools)
+  lastSyncAt      DateTime
+  nextSyncAt      DateTime?
+  recordCount     Int?
+  status          String   // "success", "error", "pending"
+  errorMessage    String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  tenant          Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  
+  @@unique([tenantId, dataSource])
+  @@index([tenantId])
+  @@map("data_sync_status")
+}
+
+// ==============================================================================
+// DEVOPS AUTOMATION PIPELINE MODELS
+// ==============================================================================
+
+// Pipeline Jobs: Webhook-triggered async job execution
+// Tracks all pipeline jobs from creation to completion
+model PipelineJob {
+  id              String    @id @default(cuid())
+  tenantId        String
+  jobType         String    // "trading-sweep", "data-etl", "ml-inference", etc.
+  status          JobStatus @default(QUEUED)
+  parameters      Json      // Job-specific parameters (ticker, ranges, etc.)
+  result          Json?     // Final results summary
+  metrics         Json?     // Execution metrics (duration, combinations, etc.)
+  errorMessage    String?   @db.Text
+  createdAt       DateTime  @default(now())
+  startedAt       DateTime?
+  completedAt     DateTime?
+  
+  results         TradingSweepResult[] // Trading sweep results (if applicable)
+  
+  @@index([tenantId, status])
+  @@index([jobType, status])
+  @@index([createdAt])
+  @@map("pipeline_jobs")
+}
+
+enum JobStatus {
+  QUEUED      // Job created, waiting for worker
+  RUNNING     // Worker picked up job, in progress
+  COMPLETED   // Job finished successfully
+  FAILED      // Job failed with error
+}
+
+// Trading Sweep Results: Backtest performance metrics
+// Stores detailed results from trading strategy parameter sweeps
+model TradingSweepResult {
+  id                  String   @id @default(cuid())
+  jobId               String
+  sweepRunId          String   // Trading API sweep run identifier
+  ticker              String   // Trading pair (e.g., "BTC-USD", "ETH-USD")
+  strategyType        String   // "SMA", "EMA", "MACD", "RSI"
+  fastPeriod          Int      // Fast moving average period
+  slowPeriod          Int      // Slow moving average period
+  score               Decimal  @db.Decimal(10, 2) // Composite performance score
+  sharpeRatio         Decimal  @db.Decimal(10, 2) // Risk-adjusted return
+  sortinoRatio        Decimal  @db.Decimal(10, 2) // Downside risk-adjusted return
+  totalReturnPct      Decimal  @db.Decimal(10, 2) // Total return percentage
+  annualizedReturn    Decimal  @db.Decimal(10, 2) // Annualized return percentage
+  maxDrawdownPct      Decimal  @db.Decimal(10, 2) // Maximum drawdown percentage
+  winRatePct          Decimal  @db.Decimal(10, 2) // Win rate percentage
+  profitFactor        Decimal  @db.Decimal(10, 2) // Profit factor (gross profit / gross loss)
+  totalTrades         Int      // Total number of trades
+  tradesPerMonth      Decimal  @db.Decimal(10, 2) // Average trades per month
+  avgTradeDuration    String   // Average trade duration (e.g., "5.2 days")
+  createdAt           DateTime @default(now())
+  
+  job                 PipelineJob @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  
+  @@index([jobId])
+  @@index([sweepRunId])
+  @@index([ticker, score])
+  @@index([strategyType, score])
+  @@map("trading_sweep_results")
+}
